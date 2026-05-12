@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tractor cost calculator — Spanish plantations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg-1: #111111;
+  --bg-2: #161616;
+  --bg-3: #1e1e1e;
+  --line: #262626;
+  --line-soft: #1c1c1c;
+  --ink: #fafafa;
+  --ink-soft: #a3a3a3;
+  --ink-mute: #6b6b6b;
+  --ink-dim: #404040;
+  --volt: #95a53f;                  /* olive drab — main accent, lifted from #4b5320 for dark-bg legibility */
+  --volt-bright: #b1c14f;           /* slightly brighter olive for high-emphasis spots */
+  --volt-soft: rgba(149,165,63,0.14);
+  --volt-line: rgba(149,165,63,0.32);
+  --cyan: #56dcff;
+  --amber: #ffb84d;
+  --rose: #ff6b6b;
+  --violet: #c4a8ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv11";
+}
+body {
+  background-image:
+    radial-gradient(circle at 8% 0%, rgba(149,165,63,0.07), transparent 35%),
+    radial-gradient(circle at 92% 100%, rgba(86,220,255,0.04), transparent 35%);
+  min-height: 100vh;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+.shell {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 36px 32px 90px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Masthead */
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-bottom: 24px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: var(--volt-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.brand-mark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), transparent 60%);
+}
+.brand-mark svg { width: 22px; height: 22px; position: relative; z-index: 1; }
+.brand-text .eyebrow {
+  font-family: "Geist Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--volt);
+  margin-bottom: 2px;
+}
+.brand-text h1 {
+  font-family: "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.masthead-meta {
+  font-family: "Geist Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink-mute);
+  text-align: right;
+  text-transform: uppercase;
+}
+.masthead-meta .live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-soft);
+}
+.masthead-meta .live::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--volt-bright);
+  box-shadow: 0 0 8px var(--volt-bright);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 32px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.tab {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  font-family: "Geist", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  padding: 9px 16px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  border-radius: 999px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tab:hover { color: var(--ink); border-color: #383838; }
+.tab.active {
+  background: var(--volt);
+  color: #0a0a0a;
+  border-color: var(--volt);
+  font-weight: 600;
+}
+.tab.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+.tab .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--volt); }
+.tab.active .dot { background: rgba(10,10,10,0.4); }
+.tab .badge {
+  font-family: "Geist Mono", monospace;
+  font-size: 9px;
+  padding: 1px 6px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 4px;
+  font-weight: 500;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+}
+
+/* Layout */
+.main-grid {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 1080px) { .main-grid { grid-template-columns: 1fr; } }
+
+.form-panel {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+@media (max-width: 1080px) { .form-panel { position: static; max-height: none; } }
+.form-panel::-webkit-scrollbar { width: 6px; }
+.form-panel::-webkit-scrollbar-track { background: transparent; }
+.form-panel::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+.form-panel::-webkit-scrollbar-thumb:hover { background: #383838; }
+
+.form-section {
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+}
+.form-section:last-child { border-bottom: 0; padding-bottom: 0; margin-bottom: 0; }
+.form-section h3 {
+  font-family: "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+}
+.form-section h3 .num {
+  font-family: "Geist Mono", monospace;
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.05em;
+  font-weight: 400;
+  background: var(--bg-2);
+  padding: 3px 7px;
+  border-radius: 5px;
+}
+
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+  letter-spacing: -0.003em;
+}
+.field label .hint {
+  font-weight: 400;
+  color: var(--ink-mute);
+  font-size: 10px;
+  margin-left: 4px;
+}
+.field select, .field input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  border-radius: 8px;
+  font-family: "Geist", sans-serif;
+  font-size: 13px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.field select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3e%3cpath fill='%23a3a3a3' d='M5 6L0 0h10z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 32px;
+  cursor: pointer;
+}
+.field select:hover { border-color: #383838; }
+.field select:focus, .field input:focus {
+  outline: 0;
+  border-color: var(--volt);
+  box-shadow: 0 0 0 3px var(--volt-soft);
+}
+.field select:disabled { background-color: var(--bg-1); color: var(--ink-mute); cursor: not-allowed; opacity: 0.5; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.field-row .field { margin-bottom: 0; }
+
+.field-warning {
+  color: var(--amber);
+  font-size: 11px;
+  margin-top: 6px;
+  display: none;
+  padding: 6px 10px;
+  background: rgba(255,184,77,0.08);
+  border: 1px solid rgba(255,184,77,0.2);
+  border-radius: 6px;
+  line-height: 1.4;
+}
+.field-warning.show { display: block; }
+
+.advanced-toggle {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  font-family: "Geist Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  width: 100%;
+  transition: all 0.15s ease;
+}
+.advanced-toggle:hover { color: var(--ink); border-color: #383838; }
+.advanced-toggle .chevron { transition: transform 0.2s; }
+.advanced-toggle.open .chevron { transform: rotate(90deg); color: var(--volt); }
+.advanced-content { display: none; }
+.advanced-content.open { display: block; }
+
+.results-panel { display: flex; flex-direction: column; gap: 16px; }
+
+.heroic-warning {
+  background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+  border: 1px solid rgba(255,184,77,0.3);
+  padding: 32px;
+  border-radius: 16px;
+}
+.heroic-warning h2 {
+  font-family: "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--amber);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.heroic-warning p { color: var(--ink-soft); line-height: 1.6; }
+.heroic-warning p + p { margin-top: 12px; }
+
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 780px) { .summary-row { grid-template-columns: repeat(2, 1fr); } }
+.card {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+.card:hover { border-color: #303030; }
+.card .label {
+  font-family: "Geist Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card .label .marker { width: 4px; height: 4px; border-radius: 50%; background: var(--ink-mute); }
+.card .value {
+  font-family: "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  font-feature-settings: "tnum";
+}
+.card .unit {
+  font-family: "Geist Mono", monospace;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--ink-mute);
+  margin-left: 4px;
+  letter-spacing: -0.01em;
+}
+.card .range {
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-top: 8px;
+  font-family: "Geist Mono", monospace;
+  letter-spacing: -0.005em;
+}
+.card.feature {
+  background: linear-gradient(160deg, var(--volt-soft), transparent 80%), var(--bg-1);
+  border-color: var(--volt-line);
+}
+.card.feature .label { color: var(--volt); }
+.card.feature .label .marker { background: var(--volt); box-shadow: 0 0 6px var(--volt); }
+.card.feature .value { color: var(--ink); }
+
+.fleet-step {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+}
+.fleet-step h4 {
+  font-family: "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 6px;
+  letter-spacing: -0.015em;
+}
+.fleet-step .subtitle {
+  font-size: 12px;
+  color: var(--ink-mute);
+  margin-bottom: 18px;
+  font-family: "Geist Mono", monospace;
+  letter-spacing: 0.01em;
+}
+.step-track { display: flex; gap: 4px; margin-bottom: 12px; }
+.step-cell {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-3);
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+.step-cell.active { background: var(--volt); box-shadow: 0 0 12px rgba(149,165,63,0.45); }
+.step-labels {
+  display: flex;
+  gap: 4px;
+  font-family: "Geist Mono", monospace;
+  font-size: 10px;
+  color: var(--ink-mute);
+}
+.step-labels span { flex: 1; text-align: center; letter-spacing: 0.02em; }
+.step-labels span.active { color: var(--volt); font-weight: 500; }
+.step-description {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 720px) { .chart-grid { grid-template-columns: 1fr; } }
+.chart-card {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px;
+}
+.chart-card h4 {
+  font-family: "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 3px;
+  letter-spacing: -0.01em;
+}
+.chart-card .subtitle {
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-bottom: 18px;
+  font-family: "Geist Mono", monospace;
+  letter-spacing: 0.01em;
+}
+.chart-wrap { position: relative; height: 220px; }
+.chart-wrap.tall { height: 280px; }
+
+.insights {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+}
+.insights h4 {
+  font-family: "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 16px;
+  letter-spacing: -0.015em;
+}
+.insight {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line-soft);
+}
+.insight:first-of-type { border-top: 0; padding-top: 0; }
+.insight-icon {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Geist Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+.insight-icon.ok { background: var(--volt-soft); color: var(--volt); }
+.insight-icon.warn { background: rgba(255,184,77,0.12); color: var(--amber); }
+.insight-icon.info { background: rgba(86,220,255,0.10); color: var(--cyan); }
+.insight-icon.alert { background: rgba(255,107,107,0.12); color: var(--rose); }
+.insight-body { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+.insight-body strong { color: var(--ink); font-weight: 600; }
+
+.assumptions {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 24px;
+  font-size: 12px;
+  color: var(--ink-mute);
+}
+.assumptions h5 {
+  font-family: "Geist Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.assumptions p { line-height: 1.65; }
+.assumptions code {
+  font-family: "Geist Mono", monospace;
+  font-size: 11px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-soft);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.results-panel > * { animation: fadeUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
+.results-panel > *:nth-child(1) { animation-delay: 0.02s; }
+.results-panel > *:nth-child(2) { animation-delay: 0.06s; }
+.results-panel > *:nth-child(3) { animation-delay: 0.10s; }
+.results-panel > *:nth-child(4) { animation-delay: 0.14s; }
+.results-panel > *:nth-child(5) { animation-delay: 0.18s; }
+.results-panel > *:nth-child(6) { animation-delay: 0.22s; }
+
+::selection { background: var(--volt); color: #0a0a0a; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="masthead">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 2L4 14H11L10 22L19 10H12L13 2Z" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <div class="eyebrow">Mechanisation Cost Engine</div>
+      <h1>Tractor Operating Cost Calculator</h1>
+    </div>
+  </div>
+  <div class="masthead-meta">
+    <div class="live">Live · 2025–2026 prices</div>
+    <div style="margin-top: 4px; opacity: 0.6;">v 2.0 · vineyard module</div>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab active" role="tab"><span class="dot"></span>Vineyard</button>
+  <button class="tab disabled" role="tab" disabled>Olive grove <span class="badge">Soon</span></button>
+  <button class="tab disabled" role="tab" disabled>Stone fruit <span class="badge">Soon</span></button>
+  <button class="tab disabled" role="tab" disabled>Citrus <span class="badge">Soon</span></button>
+  <button class="tab disabled" role="tab" disabled>Almond <span class="badge">Soon</span></button>
+  <button class="tab disabled" role="tab" disabled>Cereal <span class="badge">Soon</span></button>
+</nav>
+
+<div class="main-grid">
+
+<aside class="form-panel">
+
+  <div class="form-section">
+    <h3><span class="num">01</span> Plantation</h3>
+    <div class="field">
+      <label>Area planted</label>
+      <select id="area">
+        <option value="5">Under 10 ha · small estate</option>
+        <option value="17" selected>10–25 ha · typical family estate</option>
+        <option value="40">25–60 ha · medium estate</option>
+        <option value="100">60–150 ha · large estate</option>
+        <option value="220">Over 150 ha · industrial</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Region</label>
+      <select id="region">
+        <option value="MC">Coastal Mediterranean · Valencia, Tarragona</option>
+        <option value="MI" selected>Inland Mediterranean · Utiel-Requena, La Mancha east</option>
+        <option value="CN">Centre-north · Rioja, Rueda, Ribera del Duero</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Training</label>
+        <select id="training">
+          <option value="espaldera" selected>Espaldera (trellis)</option>
+          <option value="vaso">Vaso (bush)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Row spacing</label>
+        <select id="rowSpacing">
+          <option value="2.2">2.2 m</option>
+          <option value="2.4">2.4 m</option>
+          <option value="2.6" selected>2.6 m</option>
+          <option value="2.8">2.8 m</option>
+          <option value="3.0">3.0 m · modern</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Production</label>
+        <select id="production">
+          <option value="conventional" selected>Conventional</option>
+          <option value="organic">Organic</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Water</label>
+        <select id="water">
+          <option value="rainfed" selected>Rain-fed</option>
+          <option value="irrigated">Irrigated</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><span class="num">02</span> Plot Structure</h3>
+    <div class="field">
+      <label>Average plot size</label>
+      <select id="plotSize">
+        <option value="0.7">Under 1 ha · very small</option>
+        <option value="2" selected>1–3 ha</option>
+        <option value="4">3–5 ha</option>
+        <option value="7">5–10 ha</option>
+        <option value="12">Over 10 ha · large plots</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Plot fragmentation</label>
+      <select id="fragmentation">
+        <option value="low" selected>Concentrated · 1–3 nearby plots</option>
+        <option value="medium">Moderate · 4–8 plots</option>
+        <option value="high">Fragmented · 9+ plots or distant</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Average slope</label>
+      <select id="slope">
+        <option value="flat" selected>Flat · under 5%</option>
+        <option value="gentle">Gentle · 5–15%</option>
+        <option value="moderate">Moderate · 15–30%</option>
+        <option value="steep">Steep · over 30%</option>
+      </select>
+      <div class="field-warning" id="slopeWarning">Heroic viticulture range — mechanisation is largely impossible; this calculator does not apply.</div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><span class="num">03</span> Operations</h3>
+    <div class="field">
+      <label>Soil management</label>
+      <select id="soilMgmt">
+        <option value="tillage" selected>Tillage · cultivator passes</option>
+        <option value="cover">Cover crop with mowing</option>
+        <option value="mixed">Mixed · tillage + mowing</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Spraying programme</label>
+      <select id="spraying">
+        <option value="full" selected>Conventional · full (12–14 passes)</option>
+        <option value="standard">Conventional · standard (9–11 passes)</option>
+        <option value="reduced">Reduced / minimal (5–7 passes)</option>
+        <option value="organic_full">Organic · full sulfur + copper (10–13)</option>
+        <option value="organic_reduced">Organic · reduced (6–8)</option>
+      </select>
+      <div class="field-warning" id="sprayWarning">Conventional programmes not available in organic production. Switched to organic sulfur + copper.</div>
+    </div>
+    <div class="field">
+      <label>Green operations <span class="hint">espaldera only</span></label>
+      <select id="greenOps">
+        <option value="none">None · all manual</option>
+        <option value="prepruning">Pre-pruning only</option>
+        <option value="full" selected>Full · pre-pruning, topping, leaf removal</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Harvest method</label>
+      <select id="harvest">
+        <option value="manual" selected>Manual · tractor + trailers</option>
+        <option value="mechanical">Mechanical · vendimiadora (own)</option>
+        <option value="contractor_mechanical">Mechanical · vendimiadora contracted</option>
+      </select>
+      <div class="field-warning" id="harvestWarning">Mechanical harvest requires espaldera. Switched to manual.</div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><span class="num">04</span> Fleet</h3>
+    <div class="field-row">
+      <div class="field">
+        <label>Tractor 1 · primary</label>
+        <select id="t1Power">
+          <option value="60">50–70 CV · legacy</option>
+          <option value="80" selected>70–90 CV · vineyard</option>
+          <option value="100">90–110 CV · vineyard</option>
+          <option value="125">110–140 CV · standard</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Age</label>
+        <select id="t1Age">
+          <option value="new">New · under 5 yr</option>
+          <option value="mid" selected>Mid-life · 5–15 yr</option>
+          <option value="old">Old · 15+ yr</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Tractor 2 · secondary</label>
+        <select id="t2Power">
+          <option value="0" selected>None</option>
+          <option value="80">70–90 CV · vineyard</option>
+          <option value="100">90–110 CV · vineyard</option>
+          <option value="125">110–140 CV · standard</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Age</label>
+        <select id="t2Age">
+          <option value="new">New · under 5 yr</option>
+          <option value="mid" selected>Mid-life · 5–15 yr</option>
+          <option value="old">Old · 15+ yr</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><span class="num">05</span> Labour</h3>
+    <div class="field">
+      <label>Operator arrangement</label>
+      <select id="operator">
+        <option value="owner">Owner-operator · no direct cost</option>
+        <option value="salaried" selected>Salaried in-house · 12–18 €/h loaded</option>
+        <option value="contractor">Seasonal contractor · 40–60 €/h all-in</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <button class="advanced-toggle" id="advancedToggle">
+      Advanced assumptions
+      <span class="chevron">›</span>
+    </button>
+    <div class="advanced-content" id="advancedContent">
+      <div class="field">
+        <label>Breakdown allowance</label>
+        <select id="breakdown">
+          <option value="low">Low · modern, well-maintained</option>
+          <option value="standard" selected>Standard · +8% hours</option>
+          <option value="high">High · aging fleet, +15%</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Diesel B price scenario</label>
+        <select id="dieselPrice">
+          <option value="1.30">Low · 1.30 €/L</option>
+          <option value="1.45" selected>Central · 1.45 €/L</option>
+          <option value="1.65">High · 1.65 €/L</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Confidence interval</label>
+        <select id="confidence">
+          <option value="0.10">±10%</option>
+          <option value="0.20" selected>±20%</option>
+          <option value="0.30">±30%</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>General inflation (annual)</label>
+        <select id="generalInflation">
+          <option value="0.020">2.0% · ECB target</option>
+          <option value="0.028" selected>2.8% · recent average</option>
+          <option value="0.035">3.5% · elevated</option>
+          <option value="0.050">5.0% · high-inflation scenario</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Energy inflation (annual)</label>
+        <select id="energyInflation">
+          <option value="0.020">2.0% · stable</option>
+          <option value="0.035" selected>3.5% · base case</option>
+          <option value="0.060">6.0% · elevated</option>
+          <option value="0.100">10.0% · shock scenario</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<section class="results-panel" id="resultsPanel"></section>
+
+</div>
+</div>
+
+<script>
+const SERVICE_LIFE_H = 9000;
+
+function baseHoursPerHa(training, production, region) {
+  let lo, hi;
+  if (training === 'espaldera') {
+    if (production === 'organic') { lo = 35; hi = 55; } else { lo = 25; hi = 45; }
+  } else {
+    if (production === 'organic') { lo = 25; hi = 40; } else { lo = 20; hi = 35; }
+  }
+  if (region === 'CN') { lo += 1; hi += 2; }
+  return { lo, hi, mid: (lo + hi) / 2 };
+}
+
+function tractorPrice(power) {
+  if (power <= 70) return 38000;
+  if (power <= 90) return 55000;
+  if (power <= 110) return 72000;
+  return 95000;
+}
+
+function avgFuelLh(power) {
+  if (power <= 70) return 7.5;
+  if (power <= 90) return 9.5;
+  if (power <= 110) return 12;
+  return 15;
+}
+
+const AGE_MULT = { new: 0.6, mid: 1.0, old: 1.6 };
+const BREAKDOWN_PCT = { low: 0.03, standard: 0.08, high: 0.15 };
+const FRAG_MULT = { low: 1.0, medium: 1.12, high: 1.25 };
+const SLOPE_FUEL = { flat: 1.0, gentle: 1.08, moderate: 1.18, steep: 1.35 };
+
+function monthlyProfile(region, training) {
+  let profile = [0.75, 1.25, 1.25, 2.5, 3.5, 3.5, 2.5, 1.5, 2.0, 1.0, 1.0, 0.75];
+  if (region === 'MC') profile = [0.75, 1.25, 1.25, 2.6, 3.7, 3.7, 2.4, 2.7, 0.8, 0.5, 0.9, 0.75];
+  else if (region === 'CN') profile = [1.0, 1.4, 1.4, 2.2, 3.4, 3.4, 2.4, 0.4, 2.2, 1.5, 1.3, 1.0];
+  if (training === 'vaso') {
+    profile = profile.map((v, i) => {
+      if (i === 4 || i === 5) return v * 0.85;
+      if (i === 7 || i === 8 || i === 9) return v * 0.9;
+      return v;
+    });
+  }
+  return profile;
+}
+
+function taskShares(training, soilMgmt, spraying, harvest, greenOps) {
+  let shares = {
+    'Tillage / cultivator': 0.22,
+    'Mowing / cover crop': 0.06,
+    'Spraying': 0.30,
+    'Fertilising': 0.05,
+    'Cane shredding': 0.10,
+    'Green ops': 0.0,
+    'Harvest transport': 0.12,
+    'Inter-plot / aux': 0.15
+  };
+  if (training === 'espaldera' && greenOps !== 'none') {
+    shares['Green ops'] = greenOps === 'full' ? 0.10 : 0.06;
+    shares['Spraying'] -= 0.04;
+    shares['Inter-plot / aux'] -= 0.02;
+  }
+  if (soilMgmt === 'cover') {
+    const t = shares['Tillage / cultivator'];
+    shares['Tillage / cultivator'] = 0.05;
+    shares['Mowing / cover crop'] = 0.20 + (t - 0.05);
+  } else if (soilMgmt === 'mixed') {
+    shares['Tillage / cultivator'] = 0.14;
+    shares['Mowing / cover crop'] = 0.14;
+  }
+  if (spraying === 'reduced' || spraying === 'organic_reduced') {
+    const s = shares['Spraying'];
+    shares['Spraying'] = s * 0.65;
+    shares['Inter-plot / aux'] += s * 0.35;
+  } else if (spraying === 'organic_full') {
+    shares['Spraying'] *= 1.05;
+  }
+  // Mechanical harvest: tractor only transports grapes — slightly less time than manual,
+  // because pickers don't need trailers positioned along rows. Vendimiadora cost NOT included.
+  if (harvest === 'mechanical' || harvest === 'contractor_mechanical') {
+    shares['Harvest transport'] = 0.09;
+  }
+  const sum = Object.values(shares).reduce((a, b) => a + b, 0);
+  for (const k in shares) shares[k] = shares[k] / sum;
+  return shares;
+}
+
+function calculate() {
+  const area = parseFloat(document.getElementById('area').value);
+  const region = document.getElementById('region').value;
+  const training = document.getElementById('training').value;
+  const rowSpacing = parseFloat(document.getElementById('rowSpacing').value);
+  const production = document.getElementById('production').value;
+  const water = document.getElementById('water').value;
+  const plotSize = parseFloat(document.getElementById('plotSize').value);
+  const fragmentation = document.getElementById('fragmentation').value;
+  const slope = document.getElementById('slope').value;
+  const soilMgmt = document.getElementById('soilMgmt').value;
+  let spraying = document.getElementById('spraying').value;
+  const greenOps = document.getElementById('greenOps').value;
+  let harvest = document.getElementById('harvest').value;
+  const t1Power = parseFloat(document.getElementById('t1Power').value);
+  const t1Age = document.getElementById('t1Age').value;
+  const t2Power = parseFloat(document.getElementById('t2Power').value);
+  const t2Age = document.getElementById('t2Age').value;
+  const operator = document.getElementById('operator').value;
+  const breakdown = document.getElementById('breakdown').value;
+  const dieselPrice = parseFloat(document.getElementById('dieselPrice').value);
+  const confidence = parseFloat(document.getElementById('confidence').value);
+  const generalInflation = parseFloat(document.getElementById('generalInflation').value);
+  const energyInflation = parseFloat(document.getElementById('energyInflation').value);
+
+  document.getElementById('sprayWarning').classList.remove('show');
+  if (production === 'organic' && !spraying.startsWith('organic')) {
+    spraying = 'organic_full';
+    document.getElementById('spraying').value = 'organic_full';
+    document.getElementById('sprayWarning').classList.add('show');
+  }
+  for (const opt of document.getElementById('spraying').options) {
+    opt.disabled = (production === 'organic' && !opt.value.startsWith('organic'));
+  }
+  document.getElementById('harvestWarning').classList.remove('show');
+  if (training === 'vaso' && harvest !== 'manual') {
+    harvest = 'manual';
+    document.getElementById('harvest').value = 'manual';
+    document.getElementById('harvestWarning').classList.add('show');
+  }
+  for (const opt of document.getElementById('harvest').options) {
+    opt.disabled = (training === 'vaso' && opt.value !== 'manual');
+  }
+  for (const opt of document.getElementById('greenOps').options) {
+    opt.disabled = (training === 'vaso' && opt.value !== 'none');
+  }
+  if (training === 'vaso') document.getElementById('greenOps').value = 'none';
+
+  if (slope === 'steep') {
+    document.getElementById('slopeWarning').classList.add('show');
+    renderHeroic();
+    return;
+  } else {
+    document.getElementById('slopeWarning').classList.remove('show');
+  }
+
+  const hba = baseHoursPerHa(training, production, region);
+  let plotAdj = 1.0;
+  if (plotSize < 1) plotAdj = 1.15;
+  else if (plotSize < 3) plotAdj = 1.05;
+  else if (plotSize > 7) plotAdj = 0.93;
+  plotAdj *= FRAG_MULT[fragmentation];
+
+  let soilAdj = 1.0;
+  if (soilMgmt === 'cover') soilAdj = 1.08;
+  if (soilMgmt === 'mixed') soilAdj = 1.04;
+  let sprayAdj = 1.0;
+  if (spraying === 'standard') sprayAdj = 0.92;
+  else if (spraying === 'reduced') sprayAdj = 0.78;
+  else if (spraying === 'organic_full') sprayAdj = 1.02;
+  else if (spraying === 'organic_reduced') sprayAdj = 0.84;
+  let greenAdj = 1.0;
+  if (training === 'espaldera') {
+    if (greenOps === 'none') greenAdj = 0.92;
+    else if (greenOps === 'prepruning') greenAdj = 0.97;
+  } else { greenAdj = 0.95; }
+
+  // ===== HARVEST ADJUSTMENT — REVISED =====
+  // Mechanical harvest means the tractor ONLY transports grapes (less time than manual,
+  // since pickers don't need trailers shuttling along rows). The vendimiadora itself —
+  // whether owned or contracted — is OUT OF SCOPE for this calculator.
+  let harvestAdj = 1.0;
+  if (harvest === 'mechanical' || harvest === 'contractor_mechanical') {
+    harvestAdj = 0.92;
+  }
+
+  const waterAdj = (water === 'irrigated') ? 1.05 : 1.0;
+  const breakdownAdj = 1 + BREAKDOWN_PCT[breakdown];
+
+  const hoursPerHa = hba.mid * plotAdj * soilAdj * sprayAdj * greenAdj * harvestAdj * waterAdj * breakdownAdj;
+  const totalHours = hoursPerHa * area;
+
+  let t1Hours, t2Hours;
+  if (t2Power === 0) { t1Hours = totalHours; t2Hours = 0; }
+  else {
+    const t1IsVineyard = t1Power <= 110;
+    const t2IsStandard = t2Power > 110;
+    if (t1IsVineyard && t2IsStandard) { t1Hours = totalHours * 0.75; t2Hours = totalHours * 0.25; }
+    else if (!t1IsVineyard && t2Power <= 110) { t1Hours = totalHours * 0.25; t2Hours = totalHours * 0.75; }
+    else { t1Hours = totalHours * 0.6; t2Hours = totalHours * 0.4; }
+  }
+
+  function tractorCost(power, hours, age) {
+    if (hours === 0 || power === 0) return { fuel: 0, repairs: 0, depreciation: 0, tyres: 0, lubricants: 0, insurance: 0, total: 0, hourly: 0 };
+    const fuelLh = avgFuelLh(power) * SLOPE_FUEL[slope];
+    const fuel = fuelLh * dieselPrice * hours;
+    const price = tractorPrice(power);
+    const depreciation = (price * 0.85 / SERVICE_LIFE_H) * hours;
+    const repairs = fuel * 0.36 * AGE_MULT[age];
+    const tyres = (price * 0.04 / 4000) * hours;
+    const lubricants = fuel * 0.07;
+    const insurance = price * 0.015 * (hours / Math.max(hours, 400));
+    const total = fuel + repairs + depreciation + tyres + lubricants + insurance;
+    return { fuel, repairs, depreciation, tyres, lubricants, insurance, total, hourly: total / hours };
+  }
+  const c1 = tractorCost(t1Power, t1Hours, t1Age);
+  const c2 = tractorCost(t2Power, t2Hours, t2Age);
+  const machCost = c1.total + c2.total;
+
+  let labourCost = 0, labourPerH = 0, contractorExtra = 0;
+  if (operator === 'salaried') { labourPerH = 15; labourCost = totalHours * labourPerH; }
+  else if (operator === 'contractor') { contractorExtra = totalHours * 0.20 * 50; }
+
+  const totalCost = machCost + labourCost + contractorExtra;
+  const costPerHa = totalCost / area;
+  const confLo = totalCost * (1 - confidence);
+  const confHi = totalCost * (1 + confidence);
+
+  const yieldTha = water === 'irrigated' ? 10 : 5.5;
+  const costPerKg = totalCost / (area * yieldTha * 1000);
+
+  let step, stepDesc, stepIdx;
+  if (area < 10) { step = '<10 ha'; stepIdx = 0; stepDesc = 'Owned tractor heavily under-utilised. At this size, contracting out everything except routine spraying often beats owning. Expect 250–400 €/ha just in tractor depreciation + insurance + interest.'; }
+  else if (area < 25) { step = '10–25 ha'; stepIdx = 1; stepDesc = '"Sweet spot" for a single vineyard tractor. High utilisation, well-amortised fixed costs. Sub-soiling, structural work and possibly mechanical harvest still contracted out.'; }
+  else if (area < 60) { step = '25–60 ha'; stepIdx = 2; stepDesc = 'Threshold where a second standard tractor (transport, sub-soiling, heavy hauls) typically pays off. Expect a brief cost-per-hectare bump when the second tractor is added, then continued decline.'; }
+  else if (area < 150) { step = '60–150 ha'; stepIdx = 3; stepDesc = 'Two specialised tractors plus one standard tractor are typically all well-utilised. Mechanical harvesting becomes economically defensible vs. contractor (break-even typically 70–100 ha for own vendimiadora).'; }
+  else { step = '>150 ha'; stepIdx = 4; stepDesc = 'Industrial-scale economics — multiple tractors of each class, dedicated sprayer tractor, owned harvester, mechanic on staff. Fixed-cost dilution maximised but management overhead grows.'; }
+
+  const monthlyHa = monthlyProfile(region, training);
+  const monthlySum = monthlyHa.reduce((a, b) => a + b, 0);
+  const monthlyScale = hoursPerHa / monthlySum;
+  const monthly = monthlyHa.map(v => v * monthlyScale * area);
+
+  const breakdownObj = {
+    'Fuel': c1.fuel + c2.fuel,
+    'Repairs & maintenance': c1.repairs + c2.repairs,
+    'Depreciation': c1.depreciation + c2.depreciation,
+    'Tyres': c1.tyres + c2.tyres,
+    'Lubricants': c1.lubricants + c2.lubricants,
+    'Insurance': c1.insurance + c2.insurance,
+    'Labour': labourCost,
+    'Contractor': contractorExtra
+  };
+  for (const k in breakdownObj) { if (breakdownObj[k] < 1) delete breakdownObj[k]; }
+
+  const tShares = taskShares(training, soilMgmt, spraying, harvest, greenOps);
+  const taskCost = {};
+  const machineHourlyAvg = (c1.total + c2.total) / Math.max(totalHours, 1);
+  const fullHourly = machineHourlyAvg + labourPerH + (operator === 'contractor' ? 10 : 0);
+  for (const k in tShares) taskCost[k] = tShares[k] * totalHours * fullHourly;
+
+  const variable = (c1.fuel + c2.fuel) + (c1.repairs + c2.repairs) + (c1.tyres + c2.tyres) + (c1.lubricants + c2.lubricants) + labourCost + contractorExtra;
+  const fixed = (c1.depreciation + c2.depreciation) + (c1.insurance + c2.insurance);
+
+  // ===== 6-YEAR PROJECTION WITH EXPLICIT INFLATION =====
+  // Energy-tied: fuel, repairs (parts pricing), lubricants
+  // General-tied: tyres, insurance, labour (general + 0.5pp), contractor
+  // Locked nominal: depreciation (asset purchase price already paid)
+  const years = [];
+  const yearsBreakdown = [];
+  for (let y = 0; y < 6; y++) {
+    const eInfl = Math.pow(1 + energyInflation, y);
+    const gInfl = Math.pow(1 + generalInflation, y);
+    const lInfl = Math.pow(1 + generalInflation + 0.005, y);
+    const ent = {
+      'Fuel': (c1.fuel + c2.fuel) * eInfl,
+      'Repairs & maintenance': (c1.repairs + c2.repairs) * eInfl,
+      'Depreciation': (c1.depreciation + c2.depreciation),
+      'Tyres': (c1.tyres + c2.tyres) * gInfl,
+      'Lubricants': (c1.lubricants + c2.lubricants) * eInfl,
+      'Insurance': (c1.insurance + c2.insurance) * gInfl,
+      'Labour': labourCost * lInfl,
+      'Contractor': contractorExtra * lInfl
+    };
+    for (const k in ent) { if (ent[k] < 1) delete ent[k]; }
+    const tot = Object.values(ent).reduce((a, b) => a + b, 0);
+    years.push(tot);
+    yearsBreakdown.push(ent);
+  }
+
+  const insights = [];
+  const u1 = t1Hours, u2 = t2Hours;
+  if (t2Power === 0 && u1 < 400) {
+    insights.push({ type: 'warn', text: `<strong>Primary tractor under-utilised at ${Math.round(u1)} h/year.</strong> Fixed costs (depreciation, insurance) are spread thin. Consider contracting in for less-frequent operations, or sharing the tractor with a neighbour.` });
+  } else if (t2Power === 0 && u1 > 1100) {
+    insights.push({ type: 'warn', text: `<strong>Primary tractor over-stretched at ${Math.round(u1)} h/year.</strong> Reliability risk rises sharply above ~1,000 h/year. A second tractor or selective contractor use should be evaluated.` });
+  } else if (t2Power === 0) {
+    insights.push({ type: 'ok', text: `Primary tractor utilisation of ${Math.round(u1)} h/year is within the efficient range (400–1,000 h/year), giving good fixed-cost amortisation.` });
+  } else {
+    insights.push({ type: 'ok', text: `Two-tractor fleet: ${Math.round(u1)} h/year on the vineyard tractor and ${Math.round(u2)} h/year on the standard tractor. Both within efficient ranges.` });
+  }
+  insights.push({ type: 'info', text: `<strong>Fleet step: ${step}.</strong> ${stepDesc}` });
+  const fuelShare = ((c1.fuel + c2.fuel) / machCost) * 100;
+  if (fuelShare > 55) {
+    insights.push({ type: 'info', text: `<strong>Fuel-heavy cost structure (${fuelShare.toFixed(0)}% of machine cost).</strong> Driven by current gasoil B prices. Operator training, gear selection and load matching can reduce consumption 10–25% (IDAE).` });
+  }
+  if (fragmentation === 'high') {
+    insights.push({ type: 'warn', text: `<strong>High plot fragmentation increases auxiliary hours by ~25%.</strong> Inter-plot travel and refuelling stops cut functional time. Route planning and operation grouping can recover 40–80 €/ha/year.` });
+  }
+  if (training === 'espaldera' && rowSpacing >= 3.0) {
+    insights.push({ type: 'info', text: `Modern 3.0 m row spacing in espaldera enables larger implements and dual-row sprayers — generally lowers hours per hectare but raises per-vine capital cost.` });
+  }
+  if (training === 'vaso' && rowSpacing >= 3.0) {
+    insights.push({ type: 'alert', text: `<strong>3.0 m row spacing is unusual for traditional vaso (square 2.2–2.6 m is the norm).</strong> Verify that this matches your actual planting; the calculation assumes the row spacing applies in one direction only.` });
+  }
+  if (slope === 'moderate') {
+    insights.push({ type: 'warn', text: `<strong>Moderate slope (15–30%) adds ~18% to fuel consumption</strong> and accelerates tyre and clutch wear. Crawler tractors or low-centre-of-gravity vineyard tractors are recommended above 20%.` });
+  }
+  if (t1Age === 'old' || t2Age === 'old') {
+    insights.push({ type: 'warn', text: `<strong>Aging tractor in the fleet.</strong> Repair and maintenance costs grow non-linearly past ~15 years of service. Budget a contingency above the standard 36% of fuel cost rule of thumb.` });
+  }
+  if (operator === 'owner') {
+    insights.push({ type: 'info', text: `<strong>Owner-operator labour is free in cash terms but not free in opportunity cost.</strong> If the alternative is paid work elsewhere, value the owner's time at the same 12–18 €/h as a salaried operator to get a fully-costed comparison.` });
+  }
+  if (harvest === 'mechanical' || harvest === 'contractor_mechanical') {
+    insights.push({ type: 'info', text: `<strong>Vendimiadora cost not included.</strong> This calculator only accounts for the tractor time used to transport grapes from the field. The vendimiadora itself — whether own machine (capex ~400,000–600,000 € for a self-propelled unit, plus its own operating costs) or contracted service (~250–400 €/ha for mechanical harvesting) — must be budgeted separately.` });
+  }
+  // Multi-year impact insight
+  const inflationImpact = ((years[5] - years[0]) / years[0]) * 100;
+  insights.push({ type: 'info', text: `<strong>Cumulative inflation over 6 years: +${inflationImpact.toFixed(1)}%.</strong> Year-6 annual cost projected at €${Math.round(years[5]/1000)}k vs. €${Math.round(years[0]/1000)}k today — driven mainly by energy (${(energyInflation*100).toFixed(1)}%/yr) and labour. Depreciation on currently owned equipment is locked nominal.` });
+
+  renderResults({
+    area, hoursPerHa, totalHours, totalCost, costPerHa, costPerKg, confLo, confHi,
+    step, stepIdx, stepDesc, u1, u2, t1Power, t2Power,
+    monthly, breakdownObj, taskCost, fixed, variable, years, yearsBreakdown,
+    insights, dieselPrice, yieldTha, generalInflation, energyInflation,
+    confidencePct: confidence * 100
+  });
+}
+
+let charts = {};
+
+function renderHeroic() {
+  const panel = document.getElementById('resultsPanel');
+  panel.innerHTML = `
+    <div class="heroic-warning">
+      <h2>Heroic viticulture — out of scope</h2>
+      <p>Slopes above 30% correspond to <em>viticultura heroica</em> conditions (e.g. Ribeira Sacra, Priorat costers, Canary Islands volcanic plots). Total annual work in these vineyards typically reaches 800–2,000 h/ha, of which the tractor share is negligible. Tractor-based cost calculations do not apply.</p>
+      <p>If your plot is mostly under 30% with isolated steep areas, set the average slope to <strong>moderate</strong> and add a manual-labour line item separately.</p>
+    </div>
+  `;
+}
+
+function renderResults(r) {
+  const panel = document.getElementById('resultsPanel');
+  panel.innerHTML = `
+    <div class="summary-row">
+      <div class="card">
+        <div class="label"><span class="marker"></span>Annual hours</div>
+        <div class="value">${Math.round(r.totalHours).toLocaleString('en-US')}<span class="unit">h</span></div>
+        <div class="range">${(r.hoursPerHa).toFixed(1)} h/ha · ${r.area} ha</div>
+      </div>
+      <div class="card feature">
+        <div class="label"><span class="marker"></span>Annual cost</div>
+        <div class="value">€${Math.round(r.totalCost / 1000).toLocaleString('en-US')}<span class="unit">k</span></div>
+        <div class="range">±${r.confidencePct}% · €${Math.round(r.confLo/1000)}k–${Math.round(r.confHi/1000)}k</div>
+      </div>
+      <div class="card">
+        <div class="label"><span class="marker"></span>Per hectare</div>
+        <div class="value">€${Math.round(r.costPerHa).toLocaleString('en-US')}<span class="unit">/ha</span></div>
+        <div class="range">incl. labour & fuel</div>
+      </div>
+      <div class="card">
+        <div class="label"><span class="marker"></span>Per kg grape</div>
+        <div class="value">€${r.costPerKg.toFixed(3)}<span class="unit">/kg</span></div>
+        <div class="range">assumed ${r.yieldTha} t/ha yield</div>
+      </div>
+    </div>
+
+    <div class="fleet-step">
+      <h4>Fleet sizing · step indicator</h4>
+      <div class="subtitle">Tractor fixed costs scale step-wise with area, not linearly</div>
+      <div class="step-track">
+        <div class="step-cell ${r.stepIdx === 0 ? 'active' : ''}"></div>
+        <div class="step-cell ${r.stepIdx === 1 ? 'active' : ''}"></div>
+        <div class="step-cell ${r.stepIdx === 2 ? 'active' : ''}"></div>
+        <div class="step-cell ${r.stepIdx === 3 ? 'active' : ''}"></div>
+        <div class="step-cell ${r.stepIdx === 4 ? 'active' : ''}"></div>
+      </div>
+      <div class="step-labels">
+        <span class="${r.stepIdx === 0 ? 'active' : ''}">&lt;10 ha</span>
+        <span class="${r.stepIdx === 1 ? 'active' : ''}">10–25</span>
+        <span class="${r.stepIdx === 2 ? 'active' : ''}">25–60</span>
+        <span class="${r.stepIdx === 3 ? 'active' : ''}">60–150</span>
+        <span class="${r.stepIdx === 4 ? 'active' : ''}">&gt;150 ha</span>
+      </div>
+      <div class="step-description">${r.stepDesc}</div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h4>Monthly distribution</h4>
+        <div class="subtitle">tractor hours · severity follows the vineyard calendar</div>
+        <div class="chart-wrap"><canvas id="chartMonthly"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Cost breakdown</h4>
+        <div class="subtitle">by category · annual €</div>
+        <div class="chart-wrap"><canvas id="chartBreakdown"></canvas></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h4>Cost by operation</h4>
+        <div class="subtitle">where the hours and the money go</div>
+        <div class="chart-wrap"><canvas id="chartTasks"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Fixed vs variable</h4>
+        <div class="subtitle">sensitivity to utilisation</div>
+        <div class="chart-wrap"><canvas id="chartFixVar"></canvas></div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h4>6-year cost projection</h4>
+      <div class="subtitle">stacked by category · energy ${(r.energyInflation*100).toFixed(1)}%/yr · general ${(r.generalInflation*100).toFixed(1)}%/yr · depreciation locked at purchase</div>
+      <div class="chart-wrap tall"><canvas id="chartYears"></canvas></div>
+    </div>
+
+    <div class="insights">
+      <h4>Key insights</h4>
+      ${r.insights.map(ins => `
+        <div class="insight">
+          <div class="insight-icon ${ins.type}">${ins.type === 'ok' ? '✓' : ins.type === 'warn' ? '!' : ins.type === 'alert' ? '⚑' : 'i'}</div>
+          <div class="insight-body">${ins.text}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="assumptions">
+      <h5>Methodology · key assumptions</h5>
+      <p>Hours per hectare drawn from IDAE, MAPA and SERIDA literature (<code>20–35 h/ha</code> vaso, <code>25–45 h/ha</code> conventional espaldera, <code>35–55 h/ha</code> organic espaldera), adjusted for plot structure, slope, soil management, spraying programme and breakdown allowance. Hourly machine cost from fuel × <code>${r.dieselPrice} €/L</code>, repairs ≈ 36% of fuel cost (age-adjusted), depreciation over ${SERVICE_LIFE_H.toLocaleString()} service hours, tyres at 4% of price per 4,000 h, lubricants ≈ 7% of fuel. Mechanical harvest cost (vendimiadora capex or contractor fee) is <strong>not included</strong>; only the tractor time for grape transport is accounted for. Yield assumed ${r.yieldTha} t/ha. This is a sizing tool — actual operations should be measured on-site.</p>
+    </div>
+  `;
+
+  for (const k in charts) { if (charts[k]) charts[k].destroy(); }
+  charts = {};
+
+  Chart.defaults.font.family = '"Geist", sans-serif';
+  Chart.defaults.font.size = 11;
+  Chart.defaults.color = '#a3a3a3';
+  Chart.defaults.borderColor = 'rgba(255,255,255,0.04)';
+
+  const monthLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // Earth-tone seasonal palette:
+  // winter dormancy = muted slate-grey (off-season)
+  // spring/summer = sage olive (growing season, treatments)
+  // harvest (Aug-Sep) = copper / terracotta (ripening, harvest)
+  const monthColors = monthLabels.map((_, i) => {
+    if (i === 0 || i === 1 || i === 9 || i === 10 || i === 11) return '#5a5a52';  // winter slate
+    if (i === 7 || i === 8) return '#b87333';                                       // harvest copper
+    return '#8b9d70';                                                                // growing-season olive
+  });
+
+  charts.monthly = new Chart(document.getElementById('chartMonthly'), {
+    type: 'bar',
+    data: { labels: monthLabels, datasets: [{ data: r.monthly.map(v => +v.toFixed(0)), backgroundColor: monthColors, borderRadius: 4, borderSkipped: false }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0a0a0a', borderColor: '#262626', borderWidth: 1, padding: 10, titleFont: { family: 'Geist Mono', size: 11 }, bodyFont: { family: 'Geist', size: 12 }, callbacks: { label: (ctx) => ctx.parsed.y + ' h' } } },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: (v) => v + 'h', font: { family: 'Geist Mono', size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' }, border: { display: false } },
+        x: { grid: { display: false }, border: { display: false }, ticks: { font: { family: 'Geist Mono', size: 10 } } }
+      }
+    }
+  });
+
+  // Earth-tone palette for cost breakdown donut
+  // Order roughly matches the typical category order: fuel, repairs, depreciation, tyres, lubricants, insurance, labour, contractor
+  const breakdownPalette = ['#c8956d','#8b9d70','#d4b483','#a87a5c','#7a8478','#5e6b5e','#b8a888','#9d8366'];
+  charts.breakdown = new Chart(document.getElementById('chartBreakdown'), {
+    type: 'doughnut',
+    data: { labels: Object.keys(r.breakdownObj), datasets: [{ data: Object.values(r.breakdownObj).map(v => Math.round(v)), backgroundColor: breakdownPalette, borderColor: '#111111', borderWidth: 2 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '64%',
+      plugins: {
+        legend: { position: 'right', labels: { boxWidth: 8, boxHeight: 8, padding: 10, font: { family: 'Geist', size: 11 }, color: '#a3a3a3', usePointStyle: true, pointStyle: 'rect' } },
+        tooltip: { backgroundColor: '#0a0a0a', borderColor: '#262626', borderWidth: 1, padding: 10, callbacks: { label: (ctx) => ctx.label + ': €' + ctx.parsed.toLocaleString('en-US') } }
+      }
+    }
+  });
+
+  const taskKeys = Object.keys(r.taskCost).sort((a, b) => r.taskCost[b] - r.taskCost[a]);
+  // Earth-tone palette, ordered from warmest (largest tasks at top) to coolest
+  const taskColors = ['#c8956d','#d4b483','#8b9d70','#a87a5c','#b8a888','#7a8478','#9d8366','#5e6b5e'];
+  charts.tasks = new Chart(document.getElementById('chartTasks'), {
+    type: 'bar',
+    data: { labels: taskKeys, datasets: [{ data: taskKeys.map(k => Math.round(r.taskCost[k])), backgroundColor: taskColors, borderRadius: 3 }] },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0a0a0a', borderColor: '#262626', borderWidth: 1, padding: 10, callbacks: { label: (ctx) => '€' + ctx.parsed.x.toLocaleString('en-US') } } },
+      scales: {
+        x: { ticks: { callback: (v) => '€' + (v/1000).toFixed(0) + 'k', font: { family: 'Geist Mono', size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' }, border: { display: false } },
+        y: { grid: { display: false }, border: { display: false }, ticks: { font: { family: 'Geist', size: 11 } } }
+      }
+    }
+  });
+
+  charts.fixVar = new Chart(document.getElementById('chartFixVar'), {
+    type: 'bar',
+    data: {
+      labels: ['Cost split'],
+      datasets: [
+        { label: 'Variable · fuel, repairs, tyres, lubricants, labour', data: [Math.round(r.variable)], backgroundColor: '#c8956d' },
+        { label: 'Fixed · depreciation, insurance', data: [Math.round(r.fixed)], backgroundColor: '#5e6b5e' }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 8, boxHeight: 8, padding: 12, font: { family: 'Geist', size: 11 }, color: '#a3a3a3', usePointStyle: true, pointStyle: 'rect' } },
+        tooltip: { backgroundColor: '#0a0a0a', borderColor: '#262626', borderWidth: 1, padding: 10, callbacks: { label: (ctx) => ctx.dataset.label + ': €' + ctx.parsed.x.toLocaleString('en-US') } }
+      },
+      scales: {
+        x: { stacked: true, ticks: { callback: (v) => '€' + (v/1000).toFixed(0) + 'k', font: { family: 'Geist Mono', size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' }, border: { display: false } },
+        y: { stacked: true, grid: { display: false }, border: { display: false }, ticks: { display: false } }
+      }
+    }
+  });
+
+  // Stacked 6-year projection
+  const yearLabels = Array.from({length: 6}, (_, i) => 'Y' + (i+1));
+  const allCats = new Set();
+  r.yearsBreakdown.forEach(yb => Object.keys(yb).forEach(k => allCats.add(k)));
+  const catList = Array.from(allCats);
+  const yearlyPalette = {
+    'Fuel': '#c8956d',                  // terracotta — biggest variable cost
+    'Repairs & maintenance': '#8b9d70', // olive
+    'Depreciation': '#d4b483',          // warm sand — highlight, locked nominal
+    'Tyres': '#a87a5c',                 // copper
+    'Lubricants': '#7a8478',            // slate sage
+    'Insurance': '#5e6b5e',             // muted moss
+    'Labour': '#b8a888',                // parchment
+    'Contractor': '#9d8366'             // soft umber
+  };
+  const datasets = catList.map(cat => ({
+    label: cat,
+    data: r.yearsBreakdown.map(yb => Math.round(yb[cat] || 0)),
+    backgroundColor: yearlyPalette[cat] || '#666',
+    borderRadius: 2,
+    borderWidth: 0
+  }));
+  charts.years = new Chart(document.getElementById('chartYears'), {
+    type: 'bar',
+    data: { labels: yearLabels, datasets: datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 8, boxHeight: 8, padding: 10, font: { family: 'Geist', size: 11 }, color: '#a3a3a3', usePointStyle: true, pointStyle: 'rect' } },
+        tooltip: { backgroundColor: '#0a0a0a', borderColor: '#262626', borderWidth: 1, padding: 10, callbacks: {
+          label: (ctx) => ctx.dataset.label + ': €' + ctx.parsed.y.toLocaleString('en-US'),
+          footer: (items) => {
+            const total = items.reduce((s, it) => s + it.parsed.y, 0);
+            return 'Total: €' + Math.round(total).toLocaleString('en-US');
+          }
+        } }
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false }, border: { display: false }, ticks: { font: { family: 'Geist Mono', size: 10 } } },
+        y: { stacked: true, beginAtZero: true, ticks: { callback: (v) => '€' + (v/1000).toFixed(0) + 'k', font: { family: 'Geist Mono', size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' }, border: { display: false } }
+      }
+    }
+  });
+}
+
+document.querySelectorAll('.form-panel select, .form-panel input').forEach(el =>
+  el.addEventListener('change', calculate)
+);
+document.getElementById('advancedToggle').addEventListener('click', function() {
+  this.classList.toggle('open');
+  document.getElementById('advancedContent').classList.toggle('open');
+});
+calculate();
+</script>
+</body>
+</html>

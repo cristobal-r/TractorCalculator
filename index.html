@@ -1121,6 +1121,15 @@ body::before {
         <option value="contractor" data-i18n="o_operator_contractor">Seasonal contractor · 40–60 €/h all-in</option>
       </select>
     </div>
+    <div class="field" id="secondOperatorField">
+      <label data-i18n="f_second_operator">Second-tractor operator overlap <span class="hint" data-i18n="f_second_operator_hint">two-tractor fleets only</span></label>
+      <select id="secondOperator">
+        <option value="0.25" data-i18n="o_second_op_25">25% · mostly sequential, rare peaks</option>
+        <option value="0.50" selected data-i18n="o_second_op_50">50% · default, peak season + off-peak mix</option>
+        <option value="0.75" data-i18n="o_second_op_75">75% · mostly concurrent (long peak window)</option>
+        <option value="1.00" data-i18n="o_second_op_100">100% · always concurrent, full second driver</option>
+      </select>
+    </div>
   </div>
 
   <div class="form-section">
@@ -1410,6 +1419,12 @@ const T_STRINGS = {
     o_operator_owner: 'Owner-operator · no direct cost',
     o_operator_salaried: 'Salaried in-house · 12–18 €/h loaded',
     o_operator_contractor: 'Seasonal contractor · 40–60 €/h all-in',
+    f_second_operator: 'Second-tractor operator overlap',
+    f_second_operator_hint: 'two-tractor fleets only',
+    o_second_op_25: '25% · mostly sequential, rare peaks',
+    o_second_op_50: '50% · default, peak season + off-peak mix',
+    o_second_op_75: '75% · mostly concurrent (long peak window)',
+    o_second_op_100: '100% · always concurrent, full second driver',
 
     o_breakdown_low: 'Low · modern, well-maintained',
     o_breakdown_standard: 'Standard · +8% hours',
@@ -1569,6 +1584,7 @@ const T_STRINGS = {
     i_slope_mod: () => `<strong>Moderate slope (15–30%) adds ~13% to hours and ~18% to fuel consumption.</strong> Forward speed drops noticeably uphill, headland turns lengthen, and more low-gear / corrected passes are needed. Tyre and clutch wear accelerate. Crawler tractors or low-centre-of-gravity vineyard tractors are recommended above 20%.`,
     i_old: () => `<strong>Aging tractor in the fleet.</strong> Repair and maintenance costs grow non-linearly past ~15 years of service. The Spanish used-tractor market averages 23 years old (MAPA 2024). Budget a contingency above the standard 36% of fuel cost rule of thumb.`,
     i_owner: () => `<strong>Owner-operator labour is free in cash terms but not free in opportunity cost.</strong> If the alternative is paid work elsewhere, value the owner's time at the same 12–18 €/h as a salaried operator to get a fully-costed comparison.`,
+    i_second_op: ({pct, h, eur, t2h}) => `<strong>Two-tractor fleet adds ${pct}% second-operator overlap on the second tractor's hours.</strong> The secondary tractor runs ${t2h} h/year; at ${pct}% concurrency that's ${h} h of extra paid labour beyond the single-tractor baseline — peak periods (harvest, spraying campaigns) when both machines must run together. Adds ≈ <code>€${eur.toLocaleString()}/year</code> on top of base labour. Lower this if the second tractor runs mainly in off-peak weeks (sequential), raise it toward 100% if both machines run together through long peaks.`,
     i_vendim: () => `<strong>Vendimiadora cost not included.</strong> This calculator only accounts for the tractor time used to transport grapes from the field. The vendimiadora itself — whether own machine (capex ~400,000–600,000 € for a self-propelled unit, plus its own operating costs) or contracted service (~250–400 €/ha for mechanical harvesting) — must be budgeted separately.`,
     i_inflation: ({pct, y6, y0, eInfl}) => `<strong>Cumulative inflation over 6 years: +${pct}%.</strong> Year-6 annual cost projected at €${y6}k vs. €${y0}k today — driven mainly by energy (${eInfl}%/yr) and labour. Depreciation on currently owned equipment is locked nominal.`,
 
@@ -1647,7 +1663,7 @@ const T_STRINGS = {
     voltrac_insight_units: ({n}) => `<strong>Fleet sizing: ${n} Voltrac unit${n > 1 ? 's' : ''} required</strong> for the annual workload at this farm size (one unit covers ~${P.voltrac.annual_hours_per_unit.toLocaleString()} h/year of effective autonomous operation).`,
     voltrac_insight_electricity: ({kwh, eur}) => `<strong>Annual electricity: ${kwh} MWh ≈ €${eur}/year</strong>. Mechanical power required at the implement is the same as a diesel tractor; the savings come from higher drivetrain efficiency (90% vs 30% well-to-wheel for diesel).`,
     voltrac_insight_solar: () => `<strong>On-farm solar PV reduces operating cost further.</strong> Voltrac's daytime field operation pairs naturally with solar generation — agrivoltaic LCOE around €0.04-0.06/kWh today.`,
-    voltrac_insight_labour: ({h}) => `<strong>Driver labour eliminated: ${h} h/year saved.</strong> The Voltrac runs autonomously under teleoperation supervision (included in the monthly fee). Operator time can be redeployed to higher-value tasks like pruning, canopy management or planning.`,
+    voltrac_insight_labour: ({h, eur}) => `<strong>Driver labour eliminated: ${h} h/year saved${eur && eur !== '0' ? ` ≈ €${eur} in cash labour cost` : ''}.</strong> The Voltrac runs autonomously under teleoperation supervision (included in the monthly fee). Operator time can be redeployed to higher-value tasks like pruning, canopy management or planning.`,
     voltrac_m_energy: ({L, dEff, vEff, kwh, src, eur}) => `<strong>Energy translation.</strong> Diesel fleet burns <code>${L} L/year</code> of fuel. At ${dEff}% engine efficiency that's ${kwh.mech} kWh of useful mechanical work delivered to implements. The Voltrac delivers the same mechanical work at ${vEff}% drivetrain efficiency, drawing <code>${kwh.elec} kWh/year</code> from the ${src} at €${eur}/year.`,
     voltrac_m_capex: ({price, life, dep}) => `<strong>Capex.</strong> Voltrac acquisition price <code>€${price}</code>, amortised over ${life} h service life (same as a diesel tractor of equivalent capability). Annual depreciation at current utilisation: <code>€${dep}/year</code>. Battery degradation is Voltrac's responsibility and is covered by the monthly fee — no battery-replacement contingency required.`,
     voltrac_m_fee: ({yearly}) => `<strong>Monthly service fee: €${P.voltrac.monthly_fee_eur}/month = €${yearly}/year.</strong> Bundles autonomy software, teleoperation supervision, battery rental & lifecycle management, OTA updates, and insurance. Replaces the diesel-fleet insurance line.`,
@@ -1787,6 +1803,12 @@ const T_STRINGS = {
     o_operator_owner: 'Propietario · sin coste directo',
     o_operator_salaried: 'Asalariado interno · 12–18 €/h con cargas',
     o_operator_contractor: 'Contratista temporal · 40–60 €/h con todo',
+    f_second_operator: 'Solape de operario en segundo tractor',
+    f_second_operator_hint: 'sólo flotas de dos tractores',
+    o_second_op_25: '25% · principalmente secuencial, picos ocasionales',
+    o_second_op_50: '50% · por defecto, mezcla pico + fuera de pico',
+    o_second_op_75: '75% · mayormente concurrente (pico largo)',
+    o_second_op_100: '100% · siempre concurrente, segundo conductor a tiempo completo',
 
     o_breakdown_low: 'Bajo · moderno, bien mantenido',
     o_breakdown_standard: 'Estándar · +8% de horas',
@@ -1929,6 +1951,7 @@ const T_STRINGS = {
     i_slope_mod: () => `<strong>La pendiente moderada (15–30%) suma un ~13% a las horas y un ~18% al consumo de combustible.</strong> La velocidad de avance baja claramente cuesta arriba, los giros en cabecera se alargan y se necesitan más pases en marcha corta o pasadas correctoras. El desgaste de neumáticos y embrague se acelera. Por encima del 20% se recomiendan tractores oruga o viñeros de bajo centro de gravedad.`,
     i_old: () => `<strong>Tractor antiguo en la flota.</strong> Los costes de reparación y mantenimiento crecen de forma no lineal a partir de los ~15 años. El mercado español de tractor usado tiene una edad media de 23 años (MAPA 2024). Conviene presupuestar una reserva por encima de la regla habitual del 36% del coste de combustible.`,
     i_owner: () => `<strong>La mano de obra del propietario es gratis en caja pero no en coste de oportunidad.</strong> Si la alternativa es trabajo remunerado en otra parte, valorar las horas del propietario a los mismos 12–18 €/h que un asalariado para tener una comparación de coste completo.`,
+    i_second_op: ({pct, h, eur, t2h}) => `<strong>La flota de dos tractores añade un ${pct}% de solape de segundo operario sobre las horas del segundo tractor.</strong> El tractor secundario opera ${t2h} h/año; con un ${pct}% de concurrencia eso supone ${h} h de mano de obra adicional pagada sobre la línea base de un solo tractor — periodos pico (vendimia, campañas de tratamientos) en los que ambas máquinas deben operar simultáneamente. Añade ≈ <code>${eur.toLocaleString('es-ES')} €/año</code> sobre la mano de obra base. Reducir si el segundo tractor opera principalmente en semanas fuera de pico (secuencial), aumentar hacia el 100% si ambas máquinas operan juntas en picos largos.`,
     i_vendim: () => `<strong>Coste de la vendimiadora no incluido.</strong> Esta calculadora sólo contabiliza el tiempo de tractor para transportar la uva desde la parcela. La vendimiadora en sí — ya sea propia (capex ~400.000–600.000 € para una autopropulsada, más sus propios costes operativos) o contratada (~250–400 €/ha para el servicio de vendimia mecánica) — debe presupuestarse aparte.`,
     i_inflation: ({pct, y6, y0, eInfl}) => `<strong>Inflación acumulada a 6 años: +${pct}%.</strong> Coste anual proyectado en el Año 6: ${y6} k€ frente a ${y0} k€ hoy — impulsada principalmente por energía (${eInfl}%/año) y mano de obra. La amortización sobre equipo ya en propiedad permanece nominal.`,
 
@@ -2086,6 +2109,25 @@ const P = {
     // Labour intensity premium for a contractor operating their own machine
     // (added to labour-equivalent cost when allocating task costs).
     contractor_labour_premium_eur_per_h: 10,
+
+    // ── SECOND-OPERATOR CONCURRENCY ──
+    // The base labour figure assumes one operator can sequentially cover
+    // the full annual workload (totalHours). In a two-tractor fleet,
+    // however, the second tractor is owned PRECISELY because the calendar
+    // demands concurrent operation — harvest, spraying campaigns, time-
+    // sensitive ops in May-Jun. That requires a second operator on payroll
+    // during those peak periods, adding labour cost above the base.
+    //
+    //   labour = (totalHours + t2Hours × overlap) × rate
+    //
+    // overlap = 0:    pure sequential use of t2 (off-peak only), no extra
+    //                 labour cost beyond the single-tractor case.
+    // overlap = 1.0:  t2 always runs concurrently with t1 — labour
+    //                 roughly doubles for fleets where t2H ≈ t1H.
+    // Default 0.50:   second tractor justified mainly by peak concurrency
+    //                 (~4-6 peak months) but also covers some off-peak
+    //                 work where one operator suffices.
+    second_operator_overlap_default: 0.50,
 
     // Yield assumptions for cost-per-kg display (t/ha grape).
     // Conservative central values; rainfed dryland yields are highly variable.
@@ -2757,6 +2799,13 @@ function calculate() {
   const t2Power = parseFloat(document.getElementById('t2Power').value);
   const t2Age = document.getElementById('t2Age').value;
   const operator = document.getElementById('operator').value;
+  // Second-operator concurrency: fraction of t2's hours that need a separate
+  // driver (because t1 is busy at the same time). Default 0.50 — see
+  // P.economic.second_operator_overlap_default for rationale.
+  const secondOpEl = document.getElementById('secondOperator');
+  const secondOpOverlap = secondOpEl
+    ? parseFloat(secondOpEl.value)
+    : P.economic.second_operator_overlap_default;
   const breakdown = document.getElementById('breakdown').value;
   const dieselPrice = parseFloat(document.getElementById('dieselPrice').value);
   const confidence = parseFloat(document.getElementById('confidence').value);
@@ -2811,6 +2860,16 @@ function calculate() {
   }
   const t1PowerEff = t1AdjustedPower;
   const t2PowerEff = t2AdjustedPower;
+
+  // Second-operator field is only meaningful when a second tractor exists.
+  // Visually mute it (disable + dim) when t2 = 0 so the user sees it has no
+  // effect in single-tractor fleets.
+  if (secondOpEl) {
+    secondOpEl.disabled = (t2PowerEff === 0);
+    if (secondOpEl.parentElement) {
+      secondOpEl.parentElement.style.opacity = (t2PowerEff === 0) ? '0.45' : '1';
+    }
+  }
 
   if (fleetMessages.length) {
     fleetWarn.innerHTML = fleetMessages.join('<br>');
@@ -2966,13 +3025,37 @@ function calculate() {
   const c2 = tractorCost(t2PowerEff, t2Hours, t2Age);
   const machCost = c1.total + c2.total;
 
+  // === LABOUR — accounting for second-operator concurrency ===
+  // The base wall-clock workload is totalHours; one operator can in principle
+  // cover it sequentially. But two tractors are typically bought precisely
+  // because peak periods (harvest, spraying campaigns) demand concurrent
+  // operation — meaning a second operator must be on payroll for those hours
+  // even if the engine-hour total is the same.
+  //
+  // Practical interpretation:
+  //   - Base labour: totalHours × rate (one operator covers the full workload)
+  //   - Extra labour: t2Hours × secondOpOverlap × rate
+  //     (extra "second-operator overhead" for the share of t2's hours that
+  //     overlap with t1 — peak weeks where one driver can't handle both
+  //     machines)
+  //
+  // With overlap = 0 (always sequential): no extra labour. Same as one-tractor.
+  // With overlap = 1.0 (always concurrent): labour = (totalHours + t2Hours) × rate
+  // ≈ doubles for very large fleets where t1 ≈ t2.
+  // Default 0.50: "mix of peak concurrency and off-peak sequential work."
+  const baseLabourHours  = totalHours;
+  const extraLabourHours = (t2PowerEff > 0) ? t2Hours * secondOpOverlap : 0;
+  const effectiveLabourHours = baseLabourHours + extraLabourHours;
+
   let labourCost = 0, labourPerH = 0, contractorExtra = 0;
   if (operator === 'salaried') {
     labourPerH = P.economic.salaried_labour_eur_per_h;
-    labourCost = totalHours * labourPerH;
+    labourCost = effectiveLabourHours * labourPerH;
   } else if (operator === 'contractor') {
     // Contractor handles a share of operations at their own all-in rate.
-    contractorExtra = totalHours * P.economic.contractor_operation_share * P.economic.contractor_eur_per_h;
+    // The same concurrency premium applies: contractor brings their own
+    // second driver for concurrent hours.
+    contractorExtra = effectiveLabourHours * P.economic.contractor_operation_share * P.economic.contractor_eur_per_h;
   }
 
   const totalCost = machCost + labourCost + contractorExtra;
@@ -3027,7 +3110,12 @@ function calculate() {
   // tasks more honestly, weighting productive tasks more heavily per hour.
   const MACH_INTENSITY = P.inter_plot.cost_intensity;
   const ipAuxMachineIntensity = MACH_INTENSITY.ipAux;
-  const labourPlus = labourPerH + (operator === 'contractor' ? P.economic.contractor_labour_premium_eur_per_h : 0);
+  // Effective labour per engine-hour, blended across both tractors and the
+  // second-operator overlap. Equal to labourPerH when there's no second tractor.
+  const effectiveLabourPerEngineHour = totalHours > 0
+    ? (labourCost + contractorExtra) / totalHours
+    : 0;
+  const labourPlus = effectiveLabourPerEngineHour + (operator === 'contractor' ? P.economic.contractor_labour_premium_eur_per_h : 0);
 
   // Each task's "cost weight" = hours × (machine_intensity × machineHourlyAvg + labour_intensity × labourPlus)
   // where labour intensity is 1.0 for both — operator paid the same per hour.
@@ -3241,6 +3329,19 @@ function calculate() {
   if (operator === 'owner') {
     insights.push({ type: 'info', text: T('i_owner')() });
   }
+  if (t2PowerEff > 0 && (operator === 'salaried' || operator === 'contractor')) {
+    // Quantify the extra labour from second-tractor concurrency.
+    const extraLabourHours = t2Hours * secondOpOverlap;
+    const extraLabourCost  = extraLabourHours * (operator === 'salaried'
+      ? P.economic.salaried_labour_eur_per_h
+      : P.economic.contractor_operation_share * P.economic.contractor_eur_per_h);
+    insights.push({ type: 'info', text: T('i_second_op')({
+      pct: Math.round(secondOpOverlap * 100),
+      h:   Math.round(extraLabourHours),
+      eur: Math.round(extraLabourCost),
+      t2h: Math.round(t2Hours),
+    })});
+  }
   if (harvest === 'mechanical' || harvest === 'contractor_mechanical') {
     insights.push({ type: 'info', text: T('i_vendim')() });
   }
@@ -3261,6 +3362,7 @@ function calculate() {
     functional, manoeuvre, interplot, auxiliary,
     // Bundle the c1/c2 raw machine cost so Voltrac calc can derive deltas
     machineCost: machCost, labourCost, contractorExtra, c1, c2,
+    effectiveLabourHours, extraLabourHours, secondOpOverlap,
   };
 
   if (compareMode) {
@@ -3789,7 +3891,16 @@ function renderVoltracComparison(d, v) {
     insights.push({ type: 'warn', text: T('voltrac_insight_no_payback')() });
   }
   insights.push({ type: 'info', text: T('voltrac_insight_units')({n: v.unitsNeeded}) });
-  insights.push({ type: 'info', text: T('voltrac_insight_labour')({h: fmt(d.totalHours - v.interplot)}) });
+  // Labour savings: report actual paid driver-hours eliminated in the diesel
+  // scenario (effectiveLabourHours = totalHours + t2Hours × overlap), plus
+  // the cash impact. Voltrac runs autonomously so 100% of driver labour is
+  // eliminated. For owner-operator mode there's no cash labour cost; show
+  // opportunity-cost hours saved instead.
+  const dieselLabourCash = (d.labourCost || 0) + (d.contractorExtra || 0);
+  insights.push({ type: 'info', text: T('voltrac_insight_labour')({
+    h:   fmt(d.effectiveLabourHours || d.totalHours),
+    eur: fmt(dieselLabourCash),
+  })});
   insights.push({ type: 'info', text: T('voltrac_insight_electricity')({kwh: (v.energy.voltracElec_kWh/1000).toFixed(1).replace('.', decSep), eur: fmt(v.energy.voltracElec_eur)}) });
   if (v.elecSource === 'solar') {
     insights.push({ type: 'ok', text: T('voltrac_insight_solar')() });

@@ -246,6 +246,43 @@ body::before {
   filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));
 }
 
+/* ── Reserve-a-demo CTA below the 6-year chart ── */
+.voltrac-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 12px 22px;
+  background: var(--volt);
+  border: 1px solid var(--volt-bright);
+  border-radius: 9px;
+  color: #ffffff;
+  font-family: "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow:
+    0 0 18px 0 rgba(177, 193, 79, 0.25),
+    0 1px 0 0 rgba(255, 255, 255, 0.08) inset;
+}
+.voltrac-cta:hover {
+  background: linear-gradient(135deg, #6a7a2c 0%, var(--volt) 100%);
+  border-color: #ffffff;
+  box-shadow:
+    0 0 26px 0 rgba(177, 193, 79, 0.45),
+    0 1px 0 0 rgba(255, 255, 255, 0.12) inset;
+  transform: translateY(-1px);
+}
+.voltrac-cta:active { transform: translateY(0); }
+.voltrac-cta .vcta-arrow {
+  transition: transform 0.18s ease;
+}
+.voltrac-cta:hover .vcta-arrow { transform: translateX(3px); }
+
 /* Voltrac results layout helpers — added when in compare mode */
 .compare-summary {
   display: grid;
@@ -299,6 +336,77 @@ body::before {
   margin-top: 6px;
   font-family: "Geist Mono", monospace;
 }
+
+/* ── Voltrac units card with stepper & feedback ──
+   The units card lives inside the payback row (.compare-summary 2-col grid).
+   It hosts a +/- stepper around the count plus a short feedback line
+   comparing the chosen count to the workload-derived requirement. */
+.voltrac-units-card .voltrac-units-stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 2px 0 10px;
+}
+.voltrac-units-stepper .vu-count {
+  flex: 1;
+  text-align: center;
+}
+.vu-step {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--ink);
+  font-family: "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+  padding: 0;
+}
+.vu-step:hover:not(:disabled) {
+  border-color: var(--volt-bright);
+  color: var(--volt-bright);
+}
+.vu-step:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.voltrac-units-feedback {
+  font-size: 11px;
+  line-height: 1.45;
+  padding: 8px 10px;
+  border-radius: 7px;
+  border: 1px solid;
+}
+.voltrac-units-feedback.ok   { color: var(--ink-soft); border-color: rgba(177, 193, 79, 0.25); background: rgba(177, 193, 79, 0.05); }
+.voltrac-units-feedback.warn { color: var(--ink-soft); border-color: rgba(255, 184, 77, 0.30); background: rgba(255, 184, 77, 0.06); }
+.voltrac-units-feedback.info { color: var(--ink-soft); border-color: rgba(86, 220, 255, 0.25);  background: rgba(86, 220, 255, 0.05); }
+.voltrac-units-feedback strong { color: var(--ink); font-weight: 600; }
+.vu-reset {
+  display: inline-block;
+  margin-top: 6px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-family: "Geist Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 4px 9px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.vu-reset:hover {
+  color: var(--volt-bright);
+  border-color: var(--volt-line);
+}
+
 .tab {
   background: var(--bg-1);
   border: 1px solid var(--line);
@@ -573,6 +681,38 @@ body::before {
   font-family: "Geist Mono", monospace;
   letter-spacing: -0.005em;
 }
+/* Regime chip on the Annual Hours card — shows which intensity band the
+   actual usage falls into (moderate/typical/intensive or outside). */
+.regime-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  padding: 2px 7px 2px 6px;
+  border-radius: 999px;
+  font-family: "Geist Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: 1px solid;
+}
+.regime-chip::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.regime-chip.ok   { color: var(--volt-bright); border-color: rgba(177, 193, 79, 0.35); background: rgba(177, 193, 79, 0.08); }
+.regime-chip.warn { color: #ffb84d;            border-color: rgba(255, 184, 77, 0.35); background: rgba(255, 184, 77, 0.08); }
+.regime-chip .pos {
+  font-size: 9px;
+  color: var(--ink-mute);
+  font-weight: 400;
+  margin-left: 2px;
+  text-transform: none;
+  letter-spacing: 0;
+}
 .card.feature {
   background: linear-gradient(160deg, var(--volt-soft), transparent 80%), var(--bg-1);
   border-color: var(--volt-line);
@@ -609,7 +749,13 @@ body::before {
   border-radius: 2px;
   transition: background 0.3s ease;
 }
-.step-cell.active { background: var(--volt-bright); box-shadow: 0 0 12px rgba(177,193,79,0.45); }
+/* Active cell — colour depends on fleet-count status vs literature.
+   ok    = olive (within recommended range)
+   few   = blue  (under-provisioned, over-stretched tractors)
+   many  = amber (over-provisioned, fixed costs piling up)             */
+.step-cell.active.status-ok   { background: var(--volt-bright); box-shadow: 0 0 12px rgba(177, 193, 79, 0.45); }
+.step-cell.active.status-few  { background: var(--cyan);        box-shadow: 0 0 12px rgba(86, 220, 255, 0.45); }
+.step-cell.active.status-many { background: var(--amber);       box-shadow: 0 0 12px rgba(255, 184, 77, 0.45); }
 .step-labels {
   display: flex; gap: 4px;
   font-family: "Geist Mono", monospace;
@@ -617,7 +763,10 @@ body::before {
   color: var(--ink-mute);
 }
 .step-labels span { flex: 1; text-align: center; letter-spacing: 0.02em; }
-.step-labels span.active { color: var(--volt-bright); font-weight: 500; }
+.step-labels span.active                { font-weight: 500; }
+.step-labels span.active.status-ok      { color: var(--volt-bright); }
+.step-labels span.active.status-few     { color: var(--cyan); }
+.step-labels span.active.status-many    { color: var(--amber); }
 .step-description {
   font-size: 13px;
   color: var(--ink-soft);
@@ -626,6 +775,31 @@ body::before {
   padding-top: 14px;
   border-top: 1px solid var(--line-soft);
 }
+.fleet-recommendation {
+  font-size: 12px;
+  line-height: 1.55;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.fleet-recommendation::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  margin-top: 6px;
+  box-shadow: 0 0 6px currentColor;
+}
+.fleet-recommendation.status-ok   { color: var(--volt-bright); border-color: rgba(177, 193, 79, 0.30); background: rgba(177, 193, 79, 0.06); }
+.fleet-recommendation.status-few  { color: var(--cyan);        border-color: rgba(86, 220, 255, 0.30); background: rgba(86, 220, 255, 0.06); }
+.fleet-recommendation.status-many { color: var(--amber);       border-color: rgba(255, 184, 77, 0.30); background: rgba(255, 184, 77, 0.06); }
+.fleet-recommendation strong { color: var(--ink); font-weight: 600; }
 
 .filter-banner {
   display: none;
@@ -744,6 +918,32 @@ body::before {
   color: var(--ink);
 }
 .unit-toggle-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── 6-year evolution chart: delta callout below the line chart ── */
+.sixyear-delta {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.sixyear-delta::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  margin-top: 6px;
+  box-shadow: 0 0 6px currentColor;
+}
+.sixyear-delta-savings { color: var(--volt-bright); border-color: rgba(177,193,79,0.30); background: rgba(177,193,79,0.06); }
+.sixyear-delta-extra   { color: #ff6b6b;          border-color: rgba(255,107,107,0.30); background: rgba(255,107,107,0.05); }
+.sixyear-delta strong { color: var(--ink); font-weight: 600; }
 
 .season-legend {
   display: flex;
@@ -992,7 +1192,12 @@ body::before {
         <option value="moderate" data-i18n="o_frequency_moderate">Moderate · lower end of bands</option>
         <option value="typical" selected data-i18n="o_frequency_typical">Typical · midpoint</option>
         <option value="intensive" data-i18n="o_frequency_intensive">Intensive · upper end</option>
+        <option value="custom" data-i18n="o_frequency_custom">Custom · enter total hours/year</option>
       </select>
+      <div class="custom-area-row" id="customFrequencyRow">
+        <input type="number" id="frequencyCustom" min="50" max="50000" step="10" value="600">
+        <span class="unit-label" data-i18n="unit_h_year">h/year</span>
+      </div>
     </div>
   </div>
 
@@ -1072,8 +1277,8 @@ body::before {
     <h3><span class="num">04</span> <span data-i18n="s04">Fleet</span></h3>
     <div class="field-row">
       <div class="field">
-        <label data-i18n="f_t1">Tractor 1 · primary</label>
-        <select id="t1Power">
+        <label data-i18n="f_tractor_power">Power band · all tractors</label>
+        <select id="tractorPower">
           <option value="60" data-i18n="o_t1_60">50–70 CV · legacy</option>
           <option value="80" selected data-i18n="o_t1_80">70–90 CV · vineyard</option>
           <option value="100" data-i18n="o_t1_100">90–110 CV · vineyard</option>
@@ -1081,32 +1286,24 @@ body::before {
         </select>
       </div>
       <div class="field">
-        <label data-i18n="f_t1_age">Age</label>
-        <select id="t1Age">
+        <label data-i18n="f_tractor_age">Age</label>
+        <select id="tractorAge">
           <option value="new" data-i18n="o_age_new">New · under 5 yr</option>
           <option value="mid" selected data-i18n="o_age_mid">Mid-life · 5–15 yr</option>
           <option value="old" data-i18n="o_age_old">Old · 15+ yr</option>
         </select>
       </div>
     </div>
-    <div class="field-row">
-      <div class="field">
-        <label data-i18n="f_t2">Tractor 2 · secondary</label>
-        <select id="t2Power">
-          <option value="0" selected data-i18n="o_t2_none">None</option>
-          <option value="80" data-i18n="o_t1_80">70–90 CV · vineyard</option>
-          <option value="100" data-i18n="o_t1_100">90–110 CV · vineyard</option>
-          <option value="125" data-i18n="o_t1_125">110–140 CV · standard</option>
-        </select>
-      </div>
-      <div class="field">
-        <label data-i18n="f_t2_age">Age</label>
-        <select id="t2Age">
-          <option value="new" data-i18n="o_age_new">New · under 5 yr</option>
-          <option value="mid" selected data-i18n="o_age_mid">Mid-life · 5–15 yr</option>
-          <option value="old" data-i18n="o_age_old">Old · 15+ yr</option>
-        </select>
-      </div>
+    <div class="field">
+      <label data-i18n="f_tractor_count">Number of tractors</label>
+      <select id="tractorCount">
+        <option value="1" selected data-i18n="o_count_1">1 · single tractor</option>
+        <option value="2" data-i18n="o_count_2">2 · primary + backup / peak</option>
+        <option value="3" data-i18n="o_count_3">3 · medium / large estate</option>
+        <option value="4" data-i18n="o_count_4">4 · large estate</option>
+        <option value="5" data-i18n="o_count_5">5 · industrial</option>
+        <option value="6" data-i18n="o_count_6">6 · industrial multi-block</option>
+      </select>
     </div>
     <div class="field-warning" id="fleetWarning"></div>
   </div>
@@ -1116,10 +1313,20 @@ body::before {
     <div class="field">
       <label data-i18n="f_operator">Operator arrangement</label>
       <select id="operator">
-        <option value="owner" data-i18n="o_operator_owner">Owner-operator · no direct cost</option>
-        <option value="salaried" selected data-i18n="o_operator_salaried">Salaried in-house · 12–18 €/h loaded</option>
-        <option value="contractor" data-i18n="o_operator_contractor">Seasonal contractor · 40–60 €/h all-in</option>
+        <option value="owner" data-i18n="o_operator_owner">Owner-operator · own time</option>
+        <option value="salaried" selected data-i18n="o_operator_salaried">Salaried in-house</option>
+        <option value="contractor" data-i18n="o_operator_contractor">Seasonal contractor (peak ops)</option>
       </select>
+    </div>
+    <div class="field">
+      <label>
+        <span data-i18n="f_labour_rate">Labour rate</span>
+        <span class="hint" id="labourRateHint" data-i18n="f_labour_rate_hint_salaried">typical 12–18 €/h fully loaded</span>
+      </label>
+      <div class="custom-area-row show" id="labourRateRow">
+        <input type="number" id="labourRate" min="0" max="200" step="0.5" value="15">
+        <span class="unit-label" data-i18n="unit_eur_h">€/h</span>
+      </div>
     </div>
     <div class="field" id="secondOperatorField">
       <label data-i18n="f_second_operator">Second-tractor operator overlap <span class="hint" data-i18n="f_second_operator_hint">two-tractor fleets only</span></label>
@@ -1224,6 +1431,10 @@ body::before {
             <option value="0.70" data-i18n="o_maint_70">70% · conservative</option>
           </select>
         </div>
+        <!-- Hidden: Voltrac unit count override. Empty = use diesel fleet count
+             as the like-for-like default. Set by +/- buttons in the units
+             card in the comparison view. -->
+        <input type="hidden" id="voltracUnitsOverride" value="">
       </div>
     </div>
   </div>
@@ -1323,6 +1534,15 @@ const T_STRINGS = {
     f_greenOps: 'Green operations',
     f_greenOps_hint: 'espaldera only',
     f_harvest: 'Harvest method',
+    f_tractor_power: 'Power band · all tractors',
+    f_tractor_age: 'Age',
+    f_tractor_count: 'Number of tractors',
+    o_count_1: '1 · single tractor',
+    o_count_2: '2 · primary + backup / peak',
+    o_count_3: '3 · medium / large estate',
+    o_count_4: '4 · large estate',
+    o_count_5: '5 · industrial',
+    o_count_6: '6 · industrial multi-block',
     f_t1: 'Tractor 1 · primary',
     f_t1_age: 'Age',
     f_t2: 'Tractor 2 · secondary',
@@ -1334,8 +1554,7 @@ const T_STRINGS = {
     f_generalInflation: 'General inflation (annual)',
     f_energyInflation: 'Energy inflation (annual)',
     unit_ha: 'ha',
-
-    // Field warnings
+    unit_h_year: 'h/year',
     w_slope: 'Heroic viticulture range — mechanisation is largely impossible; this calculator does not apply.',
     w_spray: 'Conventional programmes not available in organic production. Switched to organic sulfur + copper.',
     w_harvest: 'Mechanical harvest requires espaldera. Switched to manual.',
@@ -1373,6 +1592,14 @@ const T_STRINGS = {
     o_frequency_moderate: 'Moderate · lower end of bands',
     o_frequency_typical: 'Typical · midpoint',
     o_frequency_intensive: 'Intensive · upper end',
+    o_frequency_custom: 'Custom · enter total hours/year',
+    // Regime labels for the Annual Hours card, derived from where the
+    // back-solved frequency position falls relative to the literature band.
+    regime_below: 'below moderate',
+    regime_moderate: 'moderate',
+    regime_typical: 'typical',
+    regime_intensive: 'intensive',
+    regime_above: 'above intensive',
 
     o_plotSize_07: 'Under 1 ha · very small',
     o_plotSize_2: '1–3 ha',
@@ -1416,15 +1643,20 @@ const T_STRINGS = {
     o_age_mid: 'Mid-life · 5–15 yr',
     o_age_old: 'Old · 15+ yr',
 
-    o_operator_owner: 'Owner-operator · no direct cost',
-    o_operator_salaried: 'Salaried in-house · 12–18 €/h loaded',
-    o_operator_contractor: 'Seasonal contractor · 40–60 €/h all-in',
-    f_second_operator: 'Second-tractor operator overlap',
-    f_second_operator_hint: 'two-tractor fleets only',
-    o_second_op_25: '25% · mostly sequential, rare peaks',
-    o_second_op_50: '50% · default, peak season + off-peak mix',
-    o_second_op_75: '75% · mostly concurrent (long peak window)',
-    o_second_op_100: '100% · always concurrent, full second driver',
+    o_operator_owner: 'Owner-operator · own time',
+    o_operator_salaried: 'Salaried in-house',
+    o_operator_contractor: 'Seasonal contractor (peak ops)',
+    f_labour_rate: 'Labour rate',
+    f_labour_rate_hint_owner: 'typical 0 €/h direct (12–18 €/h opportunity cost)',
+    f_labour_rate_hint_salaried: 'typical 12–18 €/h fully loaded',
+    f_labour_rate_hint_contractor: 'typical 40–60 €/h all-in · applied to 20% of hours',
+    unit_eur_h: '€/h',
+    f_second_operator: 'Extra-operator overlap on additional tractors',
+    f_second_operator_hint: 'multi-tractor fleets only',
+    o_second_op_25: '25% · one driver mostly shared across machines',
+    o_second_op_50: '50% · default · half a dedicated driver per extra tractor',
+    o_second_op_75: '75% · mostly dedicated operators',
+    o_second_op_100: '100% · one full-time driver per tractor',
 
     o_breakdown_low: 'Low · modern, well-maintained',
     o_breakdown_standard: 'Standard · +8% hours',
@@ -1471,6 +1703,29 @@ const T_STRINGS = {
     fleet_step_2_desc: 'Threshold where a second standard tractor (transport, sub-soiling, heavy hauls) typically pays off. Expect a brief cost-per-hectare bump when the second tractor is added, then continued decline.',
     fleet_step_3_desc: 'Two specialised tractors plus one standard tractor are typically all well-utilised. Mechanical harvesting becomes economically defensible vs. contractor (break-even typically 70–100 ha for own vendimiadora).',
     fleet_step_4_desc: 'Industrial-scale economics — multiple tractors of each class, dedicated sprayer tractor, owned harvester, mechanic on staff. Fixed-cost dilution maximised but management overhead grows.',
+    // Fleet count recommendation (vs literature §6.4)
+    fleet_recommendation_ok: ({n, min, max, range}) => {
+      const isSingle = (min === max);
+      const subject = n === 1 ? 'your single tractor sits' : `your ${n} tractors sit`;
+      const phrase  = isSingle
+        ? `at the literature value of <strong>${range}</strong> tractor${min > 1 ? 's' : ''}`
+        : `within the recommended range of <strong>${range}</strong> tractors`;
+      return `<span><strong>Fleet size matches the literature recommendation.</strong> For this area band, ${subject} ${phrase} — fixed costs are well-amortised and the calendar can be handled at peak periods.</span>`;
+    },
+    fleet_recommendation_few: ({n, min, max, range}) => {
+      const isSingle = (min === max);
+      const recPhrase = isSingle
+        ? `a minimum of <strong>${range}</strong> tractor${min > 1 ? 's' : ''}`
+        : `<strong>${range}</strong> tractors`;
+      return `<span><strong>Fewer tractors than recommended for this area.</strong> The literature suggests ${recPhrase} for this band; you've selected <strong>${n}</strong>. Each tractor will be over-stretched during peak weeks (spraying campaign, harvest), and any breakdown leaves the calendar exposed. Consider adding tractors or contracting in peak operations.</span>`;
+    },
+    fleet_recommendation_many: ({n, min, max, range}) => {
+      const isSingle = (min === max);
+      const recPhrase = isSingle
+        ? `<strong>${range}</strong> tractor${min > 1 ? 's' : ''}`
+        : `<strong>${range}</strong> tractors`;
+      return `<span><strong>More tractors than the literature recommends.</strong> For this area band the recommended fleet is ${recPhrase}; you've selected <strong>${n}</strong>. Fixed costs (depreciation, insurance, calendar-floor amortisation) pile up without adding peak-handling capacity. Variable costs are unchanged but cost-per-hectare grows.</span>`;
+    },
 
     // Filter banner
     filter_active: 'Filter active',
@@ -1567,6 +1822,7 @@ const T_STRINGS = {
     i_t1_overstretched: ({h}) => `<strong>Primary tractor over-stretched at ${h} h/year.</strong> Reliability risk rises sharply above ~1,000 h/year. A second tractor or selective contractor use should be evaluated.`,
     i_t1_efficient: ({h}) => `Primary tractor utilisation of ${h} h/year is within the efficient range (400–1,000 h/year), giving good fixed-cost amortisation.`,
     i_t2_both: ({h1, h2, tail}) => `Two-tractor fleet: ${h1} h/year on the primary and ${h2} h/year on the secondary. ${tail}`,
+    i_fleet_util_n: ({n, h, tail}) => `<strong>Fleet of ${n} identical tractors, each running ~${h} h/year</strong> (even-split of the total workload). ${tail}`,
     i_t2_tail_underutil: 'One tractor is under-utilised — review whether both are needed.',
     i_t2_tail_both_ok: 'Both within efficient ranges.',
     i_match_severe: ({p, s, hp, fp, m}) => `<strong>Primary tractor (${p} CV) is materially under-powered for ${s} m row spacing.</strong> The wider implements possible at this spacing can't be pulled at full speed — the operator must work slower or do more passes with a narrower tool. Hours rise by about +${hp}% and fuel consumption by ~${fp}%. The matched class is ~${m} CV.`,
@@ -1584,16 +1840,16 @@ const T_STRINGS = {
     i_slope_mod: () => `<strong>Moderate slope (15–30%) adds ~13% to hours and ~18% to fuel consumption.</strong> Forward speed drops noticeably uphill, headland turns lengthen, and more low-gear / corrected passes are needed. Tyre and clutch wear accelerate. Crawler tractors or low-centre-of-gravity vineyard tractors are recommended above 20%.`,
     i_old: () => `<strong>Aging tractor in the fleet.</strong> Repair and maintenance costs grow non-linearly past ~15 years of service. The Spanish used-tractor market averages 23 years old (MAPA 2024). Budget a contingency above the standard 36% of fuel cost rule of thumb.`,
     i_owner: () => `<strong>Owner-operator labour is free in cash terms but not free in opportunity cost.</strong> If the alternative is paid work elsewhere, value the owner's time at the same 12–18 €/h as a salaried operator to get a fully-costed comparison.`,
-    i_second_op: ({pct, h, eur, t2h}) => `<strong>Two-tractor fleet adds ${pct}% second-operator overlap on the second tractor's hours.</strong> The secondary tractor runs ${t2h} h/year; at ${pct}% concurrency that's ${h} h of extra paid labour beyond the single-tractor baseline — peak periods (harvest, spraying campaigns) when both machines must run together. Adds ≈ <code>€${eur.toLocaleString()}/year</code> on top of base labour. Lower this if the second tractor runs mainly in off-peak weeks (sequential), raise it toward 100% if both machines run together through long peaks.`,
+    i_second_op: ({pct, h, eur, n, hPerTractor, mult}) => `<strong>${n}-tractor fleet at ${pct}% overlap → labour cost ×${mult}.</strong> Each tractor runs ~${hPerTractor} h/year of engine time; the dial says each additional tractor needs ${pct}% of a dedicated extra driver, so labour comes out at <code>1 + (${n} − 1) × ${(pct/100).toFixed(2)} = ×${mult}</code> the single-tractor baseline. That's ${h} h of extra paid labour, adding ≈ <code>€${eur.toLocaleString()}/year</code>. Set the overlap to 100% if you staff one full-time operator per tractor (industrial estates), drop toward 0% if a single operator sequences through all machines (small estates with low peak concurrency).`,
     i_vendim: () => `<strong>Vendimiadora cost not included.</strong> This calculator only accounts for the tractor time used to transport grapes from the field. The vendimiadora itself — whether own machine (capex ~400,000–600,000 € for a self-propelled unit, plus its own operating costs) or contracted service (~250–400 €/ha for mechanical harvesting) — must be budgeted separately.`,
-    i_inflation: ({pct, y6, y0, eInfl}) => `<strong>Cumulative inflation over 6 years: +${pct}%.</strong> Year-6 annual cost projected at €${y6}k vs. €${y0}k today — driven mainly by energy (${eInfl}%/yr) and labour. Depreciation on currently owned equipment is locked nominal.`,
+    i_inflation: ({pct, y6, y0, eInfl}) => `<strong>Cumulative inflation over 6 years: +${pct}%.</strong> Year-6 annual cost projected at €${y6}k vs. €${y0}k today — driven mainly by energy (${eInfl}%/yr) and labour. Depreciation rises with general inflation, on the basis that the projection is expressed in year-X € (replacement-cost basis).`,
 
     // Methodology body
     m_hph_body: ({train, region, prod, lo, hi, hph}) => `Base monthly hours anchored to <strong>Report Section 9.2</strong> calendar bands for ${train}/${region}. The <em>Frequency</em> selector picks the position within each band: <code>moderate</code> = lower end, <code>typical</code> = midpoint, <code>intensive</code> = upper end. Report Section 5.2 headline band for ${prod} ${train}: <code>${lo}–${hi} h/ha/year</code>. After all adjustments, calculator returns <strong>${hph} h/ha</strong>.`,
     m_hc_body: ({diesel, life}) => `Built bottom-up per tractor. <strong>Fuel</strong> = consumption × <code>${diesel} €/L</code> × hours, with consumption penalised by power mismatch with row spacing and by slope. <strong>Repairs</strong> ≈ 36% of fuel cost, age-adjusted (MAPA 2012 rule): new tractors at 0.6×, mid-life at 1.0×, old at 1.6×. <strong>Lubricants</strong> ≈ 7% of fuel. <strong>Acquisition price</strong> is age-adjusted: a new tractor pays full list price (~€38k-€95k depending on class), a mid-life (5–15 yr) tractor 55% of list, an old (15+ yr) tractor 32% of list — reflecting the actual Spanish used-tractor market where the fleet averages 23 years old (MAPA 2024) and an old 80 CV vineyard tractor trades for €15–20k. <strong>Depreciation</strong> = max of usage-based amortisation (acq.price × 0.85 / <code>${life} h</code> × hours) and a calendar-life floor (acq.price × 0.85 / 12 yr) — under-utilised tractors pay the floor. <strong>Tyres</strong> use an absolute set cost (4 drive tyres + fitting, €2.8k–€5k depending on class) divided by 3,500 h or 8-yr calendar life — independent of tractor age. <strong>Insurance</strong> at 1.5% of acquisition price per year. Lower depreciation on older tractors is partly offset by higher repair costs — the trade-off is real, not a free lunch.`,
     m_funct_body: ({tot, f, fp, m, mp, ip, ipp, a, ap}) => `Of <strong>${tot} engine hours/year</strong>, IDAE splits suggest roughly <strong>${f} h</strong> functional work (${fp}%), ${m} h manoeuvres (${mp}%), ${ip} h inter-plot travel (${ipp}%) and ${a} h refuel/wait (${ap}%). High fragmentation pushes travel hours up substantially.`,
     m_vend_body: () => `When mechanical harvest is selected, only the tractor time for grape transport is counted. Self-propelled vendimiadora capex (~400,000–600,000 €) or contractor fees (~250–400 €/ha for the mechanical harvest service) must be budgeted separately.`,
-    m_infl_body: ({e, g}) => `<strong>Energy inflation (${e}%/yr)</strong> applies to fuel, repairs and lubricants. <strong>General inflation (${g}%/yr)</strong> applies to tyres and insurance. <strong>General + 0.5 pp</strong> applies to labour and contractor rates. <strong>Depreciation on already-owned equipment is locked nominal</strong>, since the purchase price is sunk.`,
+    m_infl_body: ({e, g}) => `<strong>Energy inflation (${e}%/yr)</strong> applies to fuel, repairs and lubricants. <strong>General inflation (${g}%/yr)</strong> applies to tyres, insurance and depreciation. <strong>General + 0.5 pp</strong> applies to labour and contractor rates. Depreciation inflates with general because the projection expresses each year's cost in year-X € — keeping it nominal would understate the replacement-cost basis as prices rise and contradict the rest of the inflation framework. (This is not a tax/book-value calculation; straight-line depreciation on the originally purchased asset stays flat in year-0 €.)`,
     m_yield_body: ({y}) => `Assumed <code>${y} t/ha</code> grape yield. Cost per kg accounts only for tractor-related costs — vineyard inputs (plant material, fertilisers, plant-protection products), pruning labour and post-harvest processing are out of scope.`,
 
     // ─── VOLTRAC COMPARISON UI ─────────────────────────────────────
@@ -1635,6 +1891,23 @@ const T_STRINGS = {
     chart_task_compare_sub: 'Voltrac slower on tasks with more headland turns',
     chart_task_cost_compare: 'Cost per task · Diesel vs Voltrac',
     chart_task_cost_compare_sub: 'higher hours, lower €/h — net effect by task',
+    // 6-year evolution chart (compare mode)
+    chart_sixyear: '6-year cumulative · Diesel vs Voltrac',
+    chart_sixyear_sub_expenses: 'Cash basis — full purchase price at Y0, then operating costs excluding depreciation',
+    chart_sixyear_sub_cost: 'Accrual basis — starts at zero, includes depreciation as a per-year economic cost',
+    toggle_expenses: 'Expenses',
+    toggle_cost: 'Cost',
+    voltrac_reserve_demo: 'Reserve a demo at voltrac.eu',
+    sixyear_tooltip_delta: ({sign, abs}) => `Δ (Voltrac − Diesel): ${sign}€${abs}`,
+    sixyear_delta_callout: ({mode, delta, dieselY6, voltracY6, voltracCheaper}) => {
+      const loc = 'en-US';
+      const fmt = (n) => n.toLocaleString(loc);
+      const modeLabel = mode === 'expenses' ? 'cumulative outflow' : 'cumulative economic cost';
+      if (voltracCheaper) {
+        return `<strong>After 6 years, Voltrac saves €${fmt(delta)}</strong> in ${modeLabel}. Diesel Y6: €${fmt(dieselY6)} · Voltrac Y6: €${fmt(voltracY6)}.`;
+      }
+      return `<strong>After 6 years, Voltrac costs €${fmt(delta)} more</strong> in ${modeLabel}. Diesel Y6: €${fmt(dieselY6)} · Voltrac Y6: €${fmt(voltracY6)}.`;
+    },
     summary_total_diesel: 'Diesel total',
     summary_total_voltrac: 'Voltrac total',
     summary_savings: 'Net annual savings',
@@ -1643,7 +1916,12 @@ const T_STRINGS = {
     summary_payback_never: 'never breaks even',
     voltrac_assumptions_title: 'Voltrac assumptions',
     voltrac_method_title: 'Voltrac methodology',
-    voltrac_units_used: ({n}) => `${n} Voltrac unit${n > 1 ? 's' : ''} required`,
+    voltrac_units_used: ({n}) => `Voltrac fleet · ${n} unit${n > 1 ? 's' : ''}`,
+    // Like-for-like vs workload-derived count feedback
+    voltrac_units_match: ({n, work}) => `Matches the diesel fleet size and the workload-derived count of ${work}. The like-for-like comparison fits the workload comfortably.`,
+    voltrac_units_undersized: ({n, work, hpu}) => `<strong>Workload would technically need ${work} units</strong> (each would run ~${hpu.toLocaleString()} h/year — above the 2,400 h/year design ceiling). The ${n}-unit comparison reflects a like-for-like replacement of your diesel fleet; you may want to step up to ${work} units to match the actual capacity.`,
+    voltrac_units_oversized: ({n, work, hpu}) => `<strong>Workload would fit in ${work} unit${work > 1 ? 's' : ''}</strong> (~${hpu.toLocaleString()} h/year per Voltrac at the chosen count). The like-for-like comparison shows the same fleet size as your diesel setup; consider stepping down to ${work} unit${work > 1 ? 's' : ''} if you'd actually downsize when switching to autonomous operation.`,
+    voltrac_units_reset: ({fleet}) => `Reset to ${fleet} (diesel fleet size)`,
     waterfall_diesel_start: 'Diesel total',
     waterfall_fuel: 'Remove diesel fuel',
     waterfall_labour: 'Remove driver labour',
@@ -1660,7 +1938,15 @@ const T_STRINGS = {
     voltrac_insight_payback: ({yrs}) => `<strong>Payback ~${yrs} years</strong> on the extra acquisition cost vs a diesel fleet of equivalent capability. Lifetime savings continue past payback (Voltrac has the same service life as a diesel tractor).`,
     voltrac_insight_no_payback: () => `<strong>No payback within the asset life</strong> — annual operating savings don't recover the higher acquisition price + ongoing monthly fee at this scale.`,
     voltrac_insight_road: ({pct}) => `<strong>Road-transport contractor adds ~${pct}% of the diesel cost.</strong> Voltrac cannot drive on public roads, so inter-plot travel must be contracted out for fragmented farms. Consolidating plots or installing a private track network reduces this line.`,
-    voltrac_insight_units: ({n}) => `<strong>Fleet sizing: ${n} Voltrac unit${n > 1 ? 's' : ''} required</strong> for the annual workload at this farm size (one unit covers ~${P.voltrac.annual_hours_per_unit.toLocaleString()} h/year of effective autonomous operation).`,
+    voltrac_insight_units: ({n, work, fleet, hpu}) => {
+      if (n === work) {
+        return `<strong>Fleet sizing: ${n} Voltrac unit${n > 1 ? 's' : ''}</strong> — same as the diesel fleet you compared against, and a comfortable fit for the workload (each Voltrac runs ~${hpu.toLocaleString()} h/year, below the 2,400 h/year design ceiling).`;
+      }
+      if (n < work) {
+        return `<strong>Fleet sizing: ${n} Voltrac unit${n > 1 ? 's' : ''} (under-sized for workload).</strong> Each Voltrac would run ~${hpu.toLocaleString()} h/year — above the 2,400 h/year design ceiling. The workload-derived minimum is ${work} units. The current ${n}-unit comparison reflects the like-for-like replacement of your ${fleet}-tractor diesel fleet; stepping up to ${work} units would be more realistic operationally.`;
+      }
+      return `<strong>Fleet sizing: ${n} Voltrac unit${n > 1 ? 's' : ''} (more than the workload requires).</strong> The workload alone would fit in ${work} unit${work > 1 ? 's' : ''} (each running ~${hpu.toLocaleString()} h/year). The ${n}-unit comparison reflects the same fleet size as your diesel setup — autonomous operation would in principle let you downsize.`;
+    },
     voltrac_insight_electricity: ({kwh, eur}) => `<strong>Annual electricity: ${kwh} MWh ≈ €${eur}/year</strong>. Mechanical power required at the implement is the same as a diesel tractor; the savings come from higher drivetrain efficiency (90% vs 30% well-to-wheel for diesel).`,
     voltrac_insight_solar: () => `<strong>On-farm solar PV reduces operating cost further.</strong> Voltrac's daytime field operation pairs naturally with solar generation — agrivoltaic LCOE around €0.04-0.06/kWh today.`,
     voltrac_insight_labour: ({h, eur}) => `<strong>Driver labour eliminated: ${h} h/year saved${eur && eur !== '0' ? ` ≈ €${eur} in cash labour cost` : ''}.</strong> The Voltrac runs autonomously under teleoperation supervision (included in the monthly fee). Operator time can be redeployed to higher-value tasks like pruning, canopy management or planning.`,
@@ -1709,6 +1995,15 @@ const T_STRINGS = {
     f_greenOps: 'Operaciones en verde',
     f_greenOps_hint: 'sólo espaldera',
     f_harvest: 'Método de vendimia',
+    f_tractor_power: 'Banda de potencia · todos los tractores',
+    f_tractor_age: 'Edad',
+    f_tractor_count: 'Número de tractores',
+    o_count_1: '1 · un único tractor',
+    o_count_2: '2 · principal + apoyo / pico',
+    o_count_3: '3 · explotación mediana/grande',
+    o_count_4: '4 · explotación grande',
+    o_count_5: '5 · industrial',
+    o_count_6: '6 · industrial multi-parcela',
     f_t1: 'Tractor 1 · principal',
     f_t1_age: 'Edad',
     f_t2: 'Tractor 2 · secundario',
@@ -1720,8 +2015,7 @@ const T_STRINGS = {
     f_generalInflation: 'Inflación general (anual)',
     f_energyInflation: 'Inflación energética (anual)',
     unit_ha: 'ha',
-
-    w_slope: 'Rango de viticultura heroica — la mecanización es en gran medida imposible; esta calculadora no aplica.',
+    unit_h_year: 'h/año',
     w_spray: 'Los programas convencionales no están disponibles en producción ecológica. Cambiado a azufre + cobre ecológico.',
     w_harvest: 'La vendimia mecánica requiere espaldera. Cambiado a manual.',
     w_fleet_cap: (cv, slot, spacing) => `${slot} (${cv} CV / anchura estándar) no cabe en calles de ${spacing} m. Limitado a 100 CV equivalente viñero.`,
@@ -1757,6 +2051,12 @@ const T_STRINGS = {
     o_frequency_moderate: 'Moderada · extremo inferior del rango',
     o_frequency_typical: 'Típica · punto medio',
     o_frequency_intensive: 'Intensiva · extremo superior',
+    o_frequency_custom: 'Personalizado · introducir horas/año',
+    regime_below: 'por debajo de moderado',
+    regime_moderate: 'moderado',
+    regime_typical: 'típico',
+    regime_intensive: 'intensivo',
+    regime_above: 'por encima de intensivo',
 
     o_plotSize_07: 'Menos de 1 ha · muy pequeña',
     o_plotSize_2: '1–3 ha',
@@ -1800,15 +2100,20 @@ const T_STRINGS = {
     o_age_mid: 'Intermedio · 5–15 años',
     o_age_old: 'Antiguo · 15+ años',
 
-    o_operator_owner: 'Propietario · sin coste directo',
-    o_operator_salaried: 'Asalariado interno · 12–18 €/h con cargas',
-    o_operator_contractor: 'Contratista temporal · 40–60 €/h con todo',
-    f_second_operator: 'Solape de operario en segundo tractor',
-    f_second_operator_hint: 'sólo flotas de dos tractores',
-    o_second_op_25: '25% · principalmente secuencial, picos ocasionales',
-    o_second_op_50: '50% · por defecto, mezcla pico + fuera de pico',
-    o_second_op_75: '75% · mayormente concurrente (pico largo)',
-    o_second_op_100: '100% · siempre concurrente, segundo conductor a tiempo completo',
+    o_operator_owner: 'Propietario · tiempo propio',
+    o_operator_salaried: 'Asalariado interno',
+    o_operator_contractor: 'Contratista temporal (operaciones pico)',
+    f_labour_rate: 'Tarifa de mano de obra',
+    f_labour_rate_hint_owner: 'típico 0 €/h directo (12–18 €/h coste de oportunidad)',
+    f_labour_rate_hint_salaried: 'típico 12–18 €/h con cargas',
+    f_labour_rate_hint_contractor: 'típico 40–60 €/h con todo · aplicado al 20% de las horas',
+    unit_eur_h: '€/h',
+    f_second_operator: 'Solape de operario extra en tractores adicionales',
+    f_second_operator_hint: 'sólo flotas multi-tractor',
+    o_second_op_25: '25% · un operario compartido entre máquinas',
+    o_second_op_50: '50% · por defecto · medio operario dedicado por tractor extra',
+    o_second_op_75: '75% · mayoría con operarios dedicados',
+    o_second_op_100: '100% · un operario a tiempo completo por tractor',
 
     o_breakdown_low: 'Bajo · moderno, bien mantenido',
     o_breakdown_standard: 'Estándar · +8% de horas',
@@ -1853,6 +2158,28 @@ const T_STRINGS = {
     fleet_step_2_desc: 'Umbral donde un segundo tractor estándar (transporte, subsolado, cargas pesadas) suele compensar. Esperar un repunte breve del coste por hectárea al añadir el segundo tractor, seguido de declive continuado.',
     fleet_step_3_desc: 'Dos tractores especializados más un tractor estándar suelen estar todos bien utilizados. La vendimia mecánica se vuelve económicamente defendible frente a contratación (umbral típico 70–100 ha para vendimiadora propia).',
     fleet_step_4_desc: 'Economía de escala industrial — varios tractores de cada clase, tractor de tratamientos dedicado, vendimiadora propia, mecánico en plantilla. Dilución de costes fijos máxima pero crece el peso de la gestión.',
+    fleet_recommendation_ok: ({n, min, max, range}) => {
+      const isSingle = (min === max);
+      const subject = n === 1 ? 'Su único tractor se sitúa' : `Sus ${n} tractores se sitúan`;
+      const phrase = isSingle
+        ? `en la recomendación de la literatura de <strong>${range}</strong> tractor${min > 1 ? 'es' : ''}`
+        : `en el rango recomendado de <strong>${range}</strong> tractores`;
+      return `<span><strong>El tamaño de flota coincide con lo recomendado por la literatura.</strong> ${subject} ${phrase} para esta banda de superficie — los costes fijos están bien amortizados y el calendario se puede cubrir en los periodos pico.</span>`;
+    },
+    fleet_recommendation_few: ({n, min, max, range}) => {
+      const isSingle = (min === max);
+      const recPhrase = isSingle
+        ? `un mínimo de <strong>${range}</strong> tractor${min > 1 ? 'es' : ''}`
+        : `<strong>${range}</strong> tractores`;
+      return `<span><strong>Menos tractores de los recomendados para esta superficie.</strong> La literatura sugiere ${recPhrase} para esta banda; usted ha seleccionado <strong>${n}</strong>. Cada tractor estará sobreexigido en las semanas pico (campaña de tratamientos, vendimia), y cualquier avería deja el calendario expuesto. Considere añadir tractores o contratar operaciones en pico.</span>`;
+    },
+    fleet_recommendation_many: ({n, min, max, range}) => {
+      const isSingle = (min === max);
+      const recPhrase = isSingle
+        ? `<strong>${range}</strong> tractor${min > 1 ? 'es' : ''}`
+        : `<strong>${range}</strong> tractores`;
+      return `<span><strong>Más tractores de los que recomienda la literatura.</strong> Para esta banda de superficie la flota recomendada es de ${recPhrase}; usted ha seleccionado <strong>${n}</strong>. Los costes fijos (amortización, seguros, suelo calendario) se acumulan sin aportar más capacidad de pico. Los costes variables no cambian pero el coste por hectárea aumenta.</span>`;
+    },
 
     filter_active: 'Filtro activo',
     filter_for_month: (m) => `Mostrando datos para <strong>${m}</strong>`,
@@ -1934,6 +2261,7 @@ const T_STRINGS = {
     i_t1_overstretched: ({h}) => `<strong>Tractor principal sobrecargado con ${h} h/año.</strong> El riesgo de avería crece bruscamente por encima de ~1.000 h/año. Conviene evaluar un segundo tractor o el uso selectivo de contratistas.`,
     i_t1_efficient: ({h}) => `Utilización del tractor principal de ${h} h/año, dentro del rango eficiente (400–1.000 h/año), con buena amortización de costes fijos.`,
     i_t2_both: ({h1, h2, tail}) => `Flota de dos tractores: ${h1} h/año en el principal y ${h2} h/año en el secundario. ${tail}`,
+    i_fleet_util_n: ({n, h, tail}) => `<strong>Flota de ${n} tractores idénticos, cada uno operando ~${h} h/año</strong> (reparto equitativo de la carga total). ${tail}`,
     i_t2_tail_underutil: 'Uno de los tractores está infrautilizado — revisar si ambos son necesarios.',
     i_t2_tail_both_ok: 'Ambos dentro de rangos eficientes.',
     i_match_severe: ({p, s, hp, fp, m}) => `<strong>El tractor principal (${p} CV) está claramente subdimensionado para calles de ${s} m.</strong> Los aperos más anchos que permite esta distancia no pueden tirarse a plena velocidad — el operario debe trabajar más lento o dar más pases con apero estrecho. Las horas suben un +${hp}% aprox. y el consumo de combustible un ~${fp}%. La clase ajustada es de ~${m} CV.`,
@@ -1951,15 +2279,15 @@ const T_STRINGS = {
     i_slope_mod: () => `<strong>La pendiente moderada (15–30%) suma un ~13% a las horas y un ~18% al consumo de combustible.</strong> La velocidad de avance baja claramente cuesta arriba, los giros en cabecera se alargan y se necesitan más pases en marcha corta o pasadas correctoras. El desgaste de neumáticos y embrague se acelera. Por encima del 20% se recomiendan tractores oruga o viñeros de bajo centro de gravedad.`,
     i_old: () => `<strong>Tractor antiguo en la flota.</strong> Los costes de reparación y mantenimiento crecen de forma no lineal a partir de los ~15 años. El mercado español de tractor usado tiene una edad media de 23 años (MAPA 2024). Conviene presupuestar una reserva por encima de la regla habitual del 36% del coste de combustible.`,
     i_owner: () => `<strong>La mano de obra del propietario es gratis en caja pero no en coste de oportunidad.</strong> Si la alternativa es trabajo remunerado en otra parte, valorar las horas del propietario a los mismos 12–18 €/h que un asalariado para tener una comparación de coste completo.`,
-    i_second_op: ({pct, h, eur, t2h}) => `<strong>La flota de dos tractores añade un ${pct}% de solape de segundo operario sobre las horas del segundo tractor.</strong> El tractor secundario opera ${t2h} h/año; con un ${pct}% de concurrencia eso supone ${h} h de mano de obra adicional pagada sobre la línea base de un solo tractor — periodos pico (vendimia, campañas de tratamientos) en los que ambas máquinas deben operar simultáneamente. Añade ≈ <code>${eur.toLocaleString('es-ES')} €/año</code> sobre la mano de obra base. Reducir si el segundo tractor opera principalmente en semanas fuera de pico (secuencial), aumentar hacia el 100% si ambas máquinas operan juntas en picos largos.`,
+    i_second_op: ({pct, h, eur, n, hPerTractor, mult}) => `<strong>Flota de ${n} tractores al ${pct}% de solape → coste de mano de obra ×${mult}.</strong> Cada tractor opera ~${hPerTractor} h/año de tiempo de motor; el control indica que cada tractor adicional necesita un ${pct}% de un conductor extra dedicado, así que la mano de obra resulta <code>1 + (${n} − 1) × ${(pct/100).toFixed(2).replace('.', ',')} = ×${mult}</code> la línea base de un solo tractor. Eso supone ${h} h de mano de obra adicional pagada, añadiendo ≈ <code>${eur.toLocaleString('es-ES')} €/año</code>. Ajuste el solape al 100% si tiene un operario a tiempo completo por tractor (explotaciones industriales), redúzcalo hacia el 0% si un único operario rota por todas las máquinas (explotaciones pequeñas con poca concurrencia en pico).`,
     i_vendim: () => `<strong>Coste de la vendimiadora no incluido.</strong> Esta calculadora sólo contabiliza el tiempo de tractor para transportar la uva desde la parcela. La vendimiadora en sí — ya sea propia (capex ~400.000–600.000 € para una autopropulsada, más sus propios costes operativos) o contratada (~250–400 €/ha para el servicio de vendimia mecánica) — debe presupuestarse aparte.`,
-    i_inflation: ({pct, y6, y0, eInfl}) => `<strong>Inflación acumulada a 6 años: +${pct}%.</strong> Coste anual proyectado en el Año 6: ${y6} k€ frente a ${y0} k€ hoy — impulsada principalmente por energía (${eInfl}%/año) y mano de obra. La amortización sobre equipo ya en propiedad permanece nominal.`,
+    i_inflation: ({pct, y6, y0, eInfl}) => `<strong>Inflación acumulada a 6 años: +${pct}%.</strong> Coste anual proyectado en el Año 6: ${y6} k€ frente a ${y0} k€ hoy — impulsada principalmente por energía (${eInfl}%/año) y mano de obra. La amortización crece con la inflación general, ya que la proyección está expresada en € del año X (base de coste de reposición).`,
 
     m_hph_body: ({train, region, prod, lo, hi, hph}) => `Horas mensuales base ancladas a los rangos del calendario de la <strong>Sección 9.2 del informe</strong> para ${train}/${region}. El selector de <em>Frecuencia</em> escoge la posición dentro de cada rango: <code>moderada</code> = extremo inferior, <code>típica</code> = punto medio, <code>intensiva</code> = extremo superior. Rango destacado de la Sección 5.2 del informe para ${prod} ${train}: <code>${lo}–${hi} h/ha/año</code>. Tras todos los ajustes, la calculadora devuelve <strong>${hph} h/ha</strong>.`,
     m_hc_body: ({diesel, life}) => `Construcción ascendente por tractor. <strong>Combustible</strong> = consumo × <code>${diesel} €/L</code> × horas, con consumo penalizado por desajuste de potencia con la calle y por pendiente. <strong>Reparaciones</strong> ≈ 36% del coste de combustible, ajustado por edad (regla MAPA 2012): tractores nuevos a 0,6×, intermedios 1,0×, antiguos 1,6×. <strong>Lubricantes</strong> ≈ 7% del combustible. <strong>El precio de adquisición</strong> se ajusta por edad: un tractor nuevo paga el precio de catálogo completo (~38k–95k € según clase), uno intermedio (5–15 años) el 55% del catálogo, uno antiguo (15+ años) el 32% — reflejo del mercado español real de tractor usado, donde la flota tiene edad media de 23 años (MAPA 2024) y un viñero antiguo de 80 CV se compra por 15–20k €. <strong>Amortización</strong> = máximo entre amortización por uso (precio adq × 0,85 / <code>${life} h</code> × horas) y un suelo por vida calendaria (precio adq × 0,85 / 12 años) — los tractores infrautilizados pagan el suelo. <strong>Neumáticos</strong>: coste absoluto del juego (4 ruedas motrices + montaje, 2,8k–5k € según clase) dividido por 3.500 h o 8 años calendarios — independiente de la edad del tractor. <strong>Seguros</strong> al 1,5% del precio de adquisición anual. La menor amortización de un tractor antiguo se compensa en parte por mayores costes de reparación — el ahorro existe, pero no es gratis.`,
     m_funct_body: ({tot, f, fp, m, mp, ip, ipp, a, ap}) => `De <strong>${tot} horas de motor/año</strong>, los repartos de IDAE sugieren aproximadamente <strong>${f} h</strong> de trabajo funcional (${fp}%), ${m} h de maniobras (${mp}%), ${ip} h de desplazamiento entre parcelas (${ipp}%) y ${a} h de repostaje/esperas (${ap}%). La fragmentación elevada incrementa sustancialmente las horas de desplazamiento.`,
     m_vend_body: () => `Cuando se selecciona vendimia mecánica, sólo se cuenta el tiempo de tractor para el transporte de uva. El capex de una vendimiadora autopropulsada (~400.000–600.000 €) o las tarifas de contratista (~250–400 €/ha por el servicio de vendimia mecánica) deben presupuestarse aparte.`,
-    m_infl_body: ({e, g}) => `<strong>La inflación energética (${e}%/año)</strong> aplica a combustible, reparaciones y lubricantes. <strong>La inflación general (${g}%/año)</strong> aplica a neumáticos y seguros. <strong>General + 0,5 pp</strong> aplica a la mano de obra y a las tarifas de contratista. <strong>La amortización sobre equipo ya en propiedad queda nominal</strong>, ya que el precio de compra está hundido.`,
+    m_infl_body: ({e, g}) => `<strong>La inflación energética (${e}%/año)</strong> aplica a combustible, reparaciones y lubricantes. <strong>La inflación general (${g}%/año)</strong> aplica a neumáticos, seguros y amortización. <strong>General + 0,5 pp</strong> aplica a la mano de obra y a las tarifas de contratista. La amortización crece con la inflación general porque la proyección expresa cada año en € del año X — dejarla nominal subestimaría la base de coste de reposición a medida que suben los precios y contradiría el resto del marco inflacionario. (Esto no es un cálculo fiscal/contable; la amortización lineal sobre el activo originalmente comprado permanece constante en € del año 0.)`,
     m_yield_body: ({y}) => `Se asume un rendimiento de uva de <code>${y} t/ha</code>. El coste por kg sólo recoge los costes asociados al tractor — insumos del viñedo (material vegetal, fertilizantes, fitosanitarios), mano de obra de poda y procesado post-cosecha quedan fuera de alcance.`,
 
     // ─── COMPARACIÓN VOLTRAC ─────────────────────────────────────
@@ -2001,6 +2329,22 @@ const T_STRINGS = {
     chart_task_cost_compare: 'Coste por operación · Diésel vs Voltrac',
     chart_task_compare_sub: 'Voltrac más lento en operaciones con más giros',
     chart_task_cost_compare_sub: 'más horas, menor €/h — efecto neto por operación',
+    chart_sixyear: 'Acumulado a 6 años · Diésel vs Voltrac',
+    chart_sixyear_sub_expenses: 'Base de caja — precio de compra íntegro en Y0, luego costes operativos excluyendo amortización',
+    chart_sixyear_sub_cost: 'Base contable — empieza en cero, incluye amortización como coste económico anual',
+    toggle_expenses: 'Gastos',
+    toggle_cost: 'Coste',
+    voltrac_reserve_demo: 'Reservar una demo en voltrac.eu',
+    sixyear_tooltip_delta: ({sign, abs}) => `Δ (Voltrac − Diésel): ${sign}${abs} €`,
+    sixyear_delta_callout: ({mode, delta, dieselY6, voltracY6, voltracCheaper}) => {
+      const loc = 'es-ES';
+      const fmt = (n) => n.toLocaleString(loc);
+      const modeLabel = mode === 'expenses' ? 'salida de caja acumulada' : 'coste económico acumulado';
+      if (voltracCheaper) {
+        return `<strong>A los 6 años, Voltrac ahorra ${fmt(delta)} €</strong> en ${modeLabel}. Diésel Y6: ${fmt(dieselY6)} € · Voltrac Y6: ${fmt(voltracY6)} €.`;
+      }
+      return `<strong>A los 6 años, Voltrac cuesta ${fmt(delta)} € más</strong> en ${modeLabel}. Diésel Y6: ${fmt(dieselY6)} € · Voltrac Y6: ${fmt(voltracY6)} €.`;
+    },
     summary_total_diesel: 'Total diésel',
     summary_total_voltrac: 'Total Voltrac',
     summary_savings: 'Ahorro anual neto',
@@ -2009,7 +2353,11 @@ const T_STRINGS = {
     summary_payback_never: 'no se amortiza',
     voltrac_assumptions_title: 'Supuestos Voltrac',
     voltrac_method_title: 'Metodología Voltrac',
-    voltrac_units_used: ({n}) => `${n} ${n > 1 ? 'unidades' : 'unidad'} Voltrac ${n > 1 ? 'necesarias' : 'necesaria'}`,
+    voltrac_units_used: ({n}) => `Flota Voltrac · ${n} ${n > 1 ? 'unidades' : 'unidad'}`,
+    voltrac_units_match: ({n, work}) => `Coincide con el tamaño de la flota diésel y con la cantidad derivada de la carga (${work}). La comparación equivalente cubre el trabajo cómodamente.`,
+    voltrac_units_undersized: ({n, work, hpu}) => `<strong>Técnicamente la carga requiere ${work} unidades</strong> (cada una operaría ~${hpu.toLocaleString('es-ES')} h/año — por encima del techo de diseño de 2.400 h/año). La comparación con ${n} ${n > 1 ? 'unidades' : 'unidad'} refleja el reemplazo equivalente de su flota diésel; considere subir a ${work} unidades para igualar la capacidad real.`,
+    voltrac_units_oversized: ({n, work, hpu}) => `<strong>La carga cabría en ${work} ${work > 1 ? 'unidades' : 'unidad'}</strong> (~${hpu.toLocaleString('es-ES')} h/año por Voltrac al recuento elegido). La comparación equivalente muestra el mismo tamaño de flota que su instalación diésel; considere reducir a ${work} ${work > 1 ? 'unidades' : 'unidad'} si reduciría la flota al pasar a operación autónoma.`,
+    voltrac_units_reset: ({fleet}) => `Restablecer a ${fleet} (flota diésel)`,
     waterfall_diesel_start: 'Total diésel',
     waterfall_fuel: 'Quitar gasóleo',
     waterfall_labour: 'Quitar conductor',
@@ -2026,10 +2374,19 @@ const T_STRINGS = {
     voltrac_insight_payback: ({yrs}) => `<strong>Retorno a ~${yrs} años</strong> sobre el sobrecoste de adquisición frente a una flota diésel equivalente. Los ahorros continúan más allá del retorno (Voltrac tiene la misma vida útil que un tractor diésel).`,
     voltrac_insight_no_payback: () => `<strong>Sin retorno dentro de la vida del activo</strong> — los ahorros operativos anuales no recuperan el mayor precio de adquisición + la cuota mensual a este tamaño.`,
     voltrac_insight_road: ({pct}) => `<strong>El contratista de transporte por carretera añade un ~${pct}% del coste diésel.</strong> Voltrac no puede circular por carreteras públicas, así que los desplazamientos entre parcelas deben contratarse para explotaciones fragmentadas. Consolidar parcelas o instalar una red de pistas privadas reduce esta línea.`,
-    voltrac_insight_units: ({n}) => `<strong>Dimensionado: ${n} ${n > 1 ? 'unidades' : 'unidad'} Voltrac ${n > 1 ? 'necesarias' : 'necesaria'}</strong> para la carga de trabajo anual a este tamaño de explotación (una unidad cubre ~${P.voltrac.annual_hours_per_unit.toLocaleString('es-ES')} h/año de operación autónoma efectiva).`,
+    voltrac_insight_units: ({n, work, fleet, hpu}) => {
+      const hpuStr = hpu.toLocaleString('es-ES');
+      if (n === work) {
+        return `<strong>Dimensionado: ${n} ${n > 1 ? 'unidades' : 'unidad'} Voltrac</strong> — igual que la flota diésel con la que se compara, y holgado para la carga (cada Voltrac opera ~${hpuStr} h/año, por debajo del techo de diseño de 2.400 h/año).`;
+      }
+      if (n < work) {
+        return `<strong>Dimensionado: ${n} ${n > 1 ? 'unidades' : 'unidad'} Voltrac (insuficiente para la carga).</strong> Cada Voltrac operaría ~${hpuStr} h/año — por encima del techo de diseño de 2.400 h/año. El mínimo derivado de la carga es de ${work} unidades. La comparación actual con ${n} ${n > 1 ? 'unidades' : 'unidad'} refleja el reemplazo equivalente de su flota diésel de ${fleet} tractor${fleet > 1 ? 'es' : ''}; subir a ${work} unidades sería más realista operativamente.`;
+      }
+      return `<strong>Dimensionado: ${n} ${n > 1 ? 'unidades' : 'unidad'} Voltrac (más que lo necesario para la carga).</strong> La carga sola cabría en ${work} ${work > 1 ? 'unidades' : 'unidad'} (cada uno operaría ~${hpuStr} h/año). La comparación con ${n} ${n > 1 ? 'unidades' : 'unidad'} refleja el mismo tamaño de flota que su instalación diésel — la operación autónoma permitiría en principio reducir el tamaño.`;
+    },
     voltrac_insight_electricity: ({kwh, eur}) => `<strong>Electricidad anual: ${kwh} MWh ≈ ${eur} €/año</strong>. La potencia mecánica requerida en el apero es la misma que con un tractor diésel; el ahorro viene de la mayor eficiencia de transmisión (90% vs 30% del pozo al apero para el diésel).`,
     voltrac_insight_solar: () => `<strong>El solar fotovoltaico en la explotación reduce más el coste operativo.</strong> La operación diurna de Voltrac casa de manera natural con la generación solar — LCOE agrovoltaico actual de 0,04-0,06 €/kWh.`,
-    voltrac_insight_labour: ({h}) => `<strong>Mano de obra de conductor eliminada: ${h} h/año ahorradas.</strong> El Voltrac opera de forma autónoma bajo supervisión de teleoperación (incluida en la cuota mensual). El tiempo del operario puede redirigirse a labores de mayor valor como poda, gestión del dosel o planificación.`,
+    voltrac_insight_labour: ({h, eur}) => `<strong>Mano de obra de conductor eliminada: ${h} h/año ahorradas${eur && eur !== '0' ? ` ≈ ${eur} € en coste de mano de obra` : ''}.</strong> El Voltrac opera de forma autónoma bajo supervisión de teleoperación (incluida en la cuota mensual). El tiempo del operario puede redirigirse a labores de mayor valor como poda, gestión del dosel o planificación.`,
     voltrac_m_energy: ({L, dEff, vEff, kwh, src, eur}) => `<strong>Traducción energética.</strong> La flota diésel quema <code>${L} L/año</code> de combustible. Con ${dEff}% de eficiencia del motor son ${kwh.mech} kWh de trabajo mecánico útil entregado a los aperos. El Voltrac entrega el mismo trabajo mecánico con ${vEff}% de eficiencia de transmisión, consumiendo <code>${kwh.elec} kWh/año</code> de ${src} a ${eur} €/año.`,
     voltrac_m_capex: ({price, life, dep}) => `<strong>Capex.</strong> Precio de adquisición Voltrac <code>${price} €</code>, amortizado en ${life} h de vida útil (igual que un tractor diésel equivalente). Amortización anual a la utilización actual: <code>${dep} €/año</code>. La degradación de batería es responsabilidad de Voltrac y queda cubierta por la cuota mensual — no hace falta provisión para sustitución de baterías.`,
     voltrac_m_fee: ({yearly}) => `<strong>Cuota mensual de servicio: ${P.voltrac.monthly_fee_eur} €/mes = ${yearly} €/año.</strong> Agrupa el software de autonomía, la supervisión por teleoperación, alquiler y gestión del ciclo de vida de baterías, actualizaciones OTA y seguros. Sustituye la línea de seguros de la flota diésel.`,
@@ -2110,23 +2467,30 @@ const P = {
     // (added to labour-equivalent cost when allocating task costs).
     contractor_labour_premium_eur_per_h: 10,
 
-    // ── SECOND-OPERATOR CONCURRENCY ──
-    // The base labour figure assumes one operator can sequentially cover
-    // the full annual workload (totalHours). In a two-tractor fleet,
-    // however, the second tractor is owned PRECISELY because the calendar
-    // demands concurrent operation — harvest, spraying campaigns, time-
-    // sensitive ops in May-Jun. That requires a second operator on payroll
-    // during those peak periods, adding labour cost above the base.
+    // ── EXTRA-OPERATOR CONCURRENCY ──
+    // Engine-hours (totalHours) are determined by what fieldwork needs
+    // doing and are invariant to fleet size — they're just split among N
+    // tractors. LABOUR scales differently from engine-hours because the
+    // staffing model matters: a single operator who sequences through
+    // multiple machines costs less than dedicated operators per tractor.
     //
-    //   labour = (totalHours + t2Hours × overlap) × rate
+    // The "overlap" parameter is a per-additional-tractor multiplier
+    // capturing how much of a dedicated extra driver each extra tractor
+    // needs:
     //
-    // overlap = 0:    pure sequential use of t2 (off-peak only), no extra
-    //                 labour cost beyond the single-tractor case.
-    // overlap = 1.0:  t2 always runs concurrently with t1 — labour
-    //                 roughly doubles for fleets where t2H ≈ t1H.
-    // Default 0.50:   second tractor justified mainly by peak concurrency
-    //                 (~4-6 peak months) but also covers some off-peak
-    //                 work where one operator suffices.
+    //   labour_cost = totalHours × rate × [1 + (N − 1) × overlap]
+    //
+    // overlap = 0:    one operator covers everything sequentially; cost
+    //                 is the single-tractor baseline regardless of N
+    // overlap = 0.5:  each extra tractor needs half a dedicated driver
+    //                 (N=2 → 1.5×, N=3 → 2×, …)
+    // overlap = 1.0:  each tractor has its own full-time operator
+    //                 (N=2 → 2×, N=3 → 3×, …)
+    //
+    // Default 0.50: mixed staffing — fleet has some dedicated drivers and
+    // some shared coverage. Industrial estates with year-round salaried
+    // tractoristas should set this closer to 1.0; small estates where
+    // peak concurrency is rare should set it closer to 0.
     second_operator_overlap_default: 0.50,
 
     // Yield assumptions for cost-per-kg display (t/ha grape).
@@ -2459,9 +2823,29 @@ const P = {
     green_ops_prepruning_share:  0.06,
     green_ops_spray_offset:      -0.04,  // spraying reduces by this amount
 
-    // Cover-crop regime: tillage drops sharply, mowing rises:
-    cover_crop_tillage_share: 0.05,
-    cover_crop_mowing_base:   0.20,
+    // ── COVER-CROP REGIME — tillage and mowing shares ──
+    // Under cover crop, inter-row mowing replaces inter-row tillage as the
+    // dominant soil operation. But the "Tillage / cultivator" task bucket
+    // also covers UNDER-VINE mechanical work, which differs sharply by
+    // production system:
+    //
+    //   CONVENTIONAL + COVER: under-vine strip kept clean with herbicide,
+    //     so cultivator hours collapse to occasional inter-row refreshing
+    //     every 2-3 years. Share ≈ 3%.
+    //
+    //   ORGANIC + COVER: no herbicide allowed → under-vine work is fully
+    //     mechanical (intercep / hoeing, 4-6 passes per growing season).
+    //     Under-vine cultivation becomes a major operation in its own right.
+    //     Share ≈ 12% — consistent with §5.2's note that organic systems
+    //     involve "more mechanical weed control" and the +10 h/ha jump
+    //     from conv to organic espaldera ranges.
+    //
+    // Mowing share is calibrated so total soil-work share is roughly
+    // similar in both cases (~38-42%); the difference is what tool does
+    // what, not the total time spent.
+    cover_crop_tillage_share_conv:    0.03,
+    cover_crop_tillage_share_organic: 0.12,
+    cover_crop_mowing_base:           0.20,
 
     // Mixed regime: tillage and mowing roughly equal:
     mixed_tillage_share: 0.14,
@@ -2476,24 +2860,54 @@ const P = {
   },
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 10. FLEET SIZING THRESHOLDS
+  // 10. FLEET SIZING — area thresholds and count recommendations
   //     Source: Report §6.4 (fleet-size scaling, step-wise vs linear).
-  //     Used only for the "fleet step indicator" display.
+  //     The report describes heterogenous fleets (vineyard + standard); for
+  //     this calculator's unified-fleet model (all tractors same power band),
+  //     the recommended count is the total minimum that can handle peak
+  //     concurrency for the given area, plus a "comfortable" upper end past
+  //     which fixed costs grow without further calendar relief.
   // ─────────────────────────────────────────────────────────────────────────
-  fleet_steps_ha: [10, 25, 60, 150],  // thresholds → 5 buckets
+  fleet_steps_ha: [10, 25, 60, 150],  // 4 thresholds → 5 buckets
+
+  // For each of the 5 area buckets (indexed 0..4), the recommended tractor
+  // count range. The minimum is what the literature (§6.4) implies you need
+  // to handle peak concurrency; the maximum is where adding more tractors
+  // stops earning back its fixed cost.
+  //
+  //   < 10 ha   → 1                  (one tractor is plenty; even that is
+  //                                    likely under-utilised — contractor
+  //                                    use often beats owning a second one)
+  //   10-25 ha  → 1   (sweet spot)   (single-tractor "sweet spot")
+  //   25-60 ha  → 2                  (second tractor pays off; report calls
+  //                                    this the "step-up" threshold)
+  //   60-150 ha → 2-3                (mechanical harvest defensible;
+  //                                    industrial transition zone)
+  //   > 150 ha  → 3-5                (industrial-scale fleet; report cites
+  //                                    "multiple tractors of each class")
+  fleet_recommended_count: [
+    { min: 1, max: 1 },  // <10 ha
+    { min: 1, max: 1 },  // 10-25 ha
+    { min: 2, max: 2 },  // 25-60 ha
+    { min: 2, max: 3 },  // 60-150 ha
+    { min: 3, max: 5 },  // >150 ha
+  ],
 
   // ─────────────────────────────────────────────────────────────────────────
   // 11. INFLATION FRAMEWORK (6-year projection)
   //     Each cost component grows at a different rate. Labour gets a small
   //     premium over general inflation (real wage growth historically ~0.5 pp).
-  //     Depreciation on already-owned equipment is locked nominal — purchase
-  //     price is sunk.
+  //     Depreciation inflates with general inflation because the projection
+  //     is expressed in year-X € — locking it nominal would understate the
+  //     replacement-cost basis and contradict the rest of the framework.
+  //     (Not a tax/book-value calc; straight-line dep on the original asset
+  //     stays flat in year-0 €. See projection loop in calculate() for the
+  //     full explanation.)
   // ─────────────────────────────────────────────────────────────────────────
   inflation: {
     labour_premium_over_general_pp: 0.005,  // labour grows at general + 0.5 pp
     // Energy inflation applies to: Fuel, Repairs (parts pricing), Lubricants
-    // General inflation applies to: Tyres, Insurance
-    // Locked nominal:                Depreciation
+    // General inflation applies to: Tyres, Insurance, Depreciation
   },
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -2656,7 +3070,58 @@ function monthlyBase(training, region, frequency) {
   return bands.map(([lo, hi]) => lo + pos * (hi - lo));
 }
 
-function taskShares(training, soilMgmt, spraying, harvest, greenOps) {
+// Build the monthly base-hours/ha profile from an explicit position value.
+// Piecewise definition to keep months non-negative for any pos:
+//   pos ≥ 0:        monthly[m] = lo[m] + pos × (hi[m] - lo[m])
+//                   — linear extrapolation above the "moderate" lo profile.
+//                   Months naturally grow at their own per-month rate.
+//   −1 < pos < 0:   monthly[m] = lo[m] × (1 + pos)
+//                   — UNIFORM SCALE-DOWN of the lo profile. Preserves the
+//                   calendar shape (same operations in the same months,
+//                   just less of everything). At pos = −1 the profile
+//                   collapses to zero across all months.
+//   pos ≤ −1:       monthly[m] = 0 (degenerate; below this the
+//                   calculator can't say anything meaningful).
+//
+// The pos ≥ 0 branch is symmetric/well-behaved for any value (every band
+// has hi > lo > 0, so extrapolating up stays positive). The pos < 0 branch
+// uses scaling rather than extrapolation specifically to avoid individual
+// months going negative when wide bands (e.g. May, June with hi - lo ≈ 1)
+// dominate while narrow bands (winter dormancy) stay slightly positive.
+function monthlyBaseFromPos(training, region, pos) {
+  const bands = (MONTHLY_BANDS[training] && MONTHLY_BANDS[training][region]) || MONTHLY_BANDS.espaldera.MI;
+  if (pos >= 0) {
+    return bands.map(([lo, hi]) => lo + pos * (hi - lo));
+  } else if (pos > -1) {
+    return bands.map(([lo, _]) => lo * (1 + pos));
+  } else {
+    return bands.map(() => 0);
+  }
+}
+
+// Sums for the literature band of a (training, region). Used for back-solve
+// and for regime classification.
+function bandSums(training, region) {
+  const bands = (MONTHLY_BANDS[training] && MONTHLY_BANDS[training][region]) || MONTHLY_BANDS.espaldera.MI;
+  let sumLo = 0, sumHi = 0;
+  for (const [lo, hi] of bands) { sumLo += lo; sumHi += hi; }
+  return { sumLo, sumHi };
+}
+
+// Classify a frequency position into one of five named regimes for the
+// Annual Hours card. The ±0.15 padding around each band lets minor
+// overshoots stay in the adjacent regime (small modelling noise shouldn't
+// flip the label). Positions far outside the literature band are flagged
+// honestly as "above intensive" / "below moderate".
+function classifyRegime(pos) {
+  if (pos < -0.15) return { key: 'below',     style: 'warn' };
+  if (pos <  0.25) return { key: 'moderate',  style: 'ok'   };
+  if (pos <  0.75) return { key: 'typical',   style: 'ok'   };
+  if (pos <  1.15) return { key: 'intensive', style: 'ok'   };
+  return                  { key: 'above',     style: 'warn' };
+}
+
+function taskShares(training, soilMgmt, spraying, harvest, greenOps, production) {
   // Productive task shares only — Inter-plot / aux is computed separately
   // as a function of plot size and fragmentation, and gets a different
   // per-hour cost intensity. See P.inter_plot.cost_intensity.
@@ -2667,9 +3132,18 @@ function taskShares(training, soilMgmt, spraying, harvest, greenOps) {
     shares['Spraying'] += T.green_ops_spray_offset;
   }
   if (soilMgmt === 'cover') {
+    // Tillage/cultivator share under cover crop depends on production system:
+    // conventional uses herbicide under the vine → tillage collapses to ~3%.
+    // Organic relies on mechanical inter-vine weed control → ~12% (no
+    // herbicide allowed; matches §5.2 "more mechanical weed control" note).
     const t = shares['Tillage / cultivator'];
-    shares['Tillage / cultivator'] = T.cover_crop_tillage_share;
-    shares['Mowing / cover crop']  = T.cover_crop_mowing_base + (t - T.cover_crop_tillage_share);
+    const newTillage = (production === 'organic')
+      ? T.cover_crop_tillage_share_organic
+      : T.cover_crop_tillage_share_conv;
+    shares['Tillage / cultivator'] = newTillage;
+    // The hours displaced from baseline tillage flow into mowing, plus a
+    // base mowing share for cover-crop maintenance (4-6 passes/year).
+    shares['Mowing / cover crop']  = T.cover_crop_mowing_base + (t - newTillage);
   } else if (soilMgmt === 'mixed') {
     shares['Tillage / cultivator'] = T.mixed_tillage_share;
     shares['Mowing / cover crop']  = T.mixed_mowing_share;
@@ -2794,14 +3268,42 @@ function calculate() {
   let spraying = document.getElementById('spraying').value;
   const greenOps = document.getElementById('greenOps').value;
   let harvest = document.getElementById('harvest').value;
-  const t1Power = parseFloat(document.getElementById('t1Power').value);
-  const t1Age = document.getElementById('t1Age').value;
-  const t2Power = parseFloat(document.getElementById('t2Power').value);
-  const t2Age = document.getElementById('t2Age').value;
+  // ── Fleet inputs (unified model) ──
+  // All tractors in the fleet share the same power band and age. Total
+  // workload is split evenly among them. See the long comment in the
+  // labour section below for why this even-split simplification is fine.
+  const tractorPower = parseFloat(document.getElementById('tractorPower').value);
+  const tractorAge   = document.getElementById('tractorAge').value;
+  const tractorCount = parseInt(document.getElementById('tractorCount').value, 10) || 1;
   const operator = document.getElementById('operator').value;
-  // Second-operator concurrency: fraction of t2's hours that need a separate
-  // driver (because t1 is busy at the same time). Default 0.50 — see
-  // P.economic.second_operator_overlap_default for rationale.
+
+  // Labour rate — user-overridable, with mode-specific defaults from P.economic.
+  //
+  //   Owner mode:      rate is the OPPORTUNITY cost (default 0; user can enter
+  //                    e.g. 15 €/h if their alternative is paid work elsewhere).
+  //   Salaried mode:   rate is the FULLY-LOADED hourly cost (default 15 €/h,
+  //                    inside the 12–18 €/h Spanish ag-collective-agreement band).
+  //   Contractor mode: rate is the CONTRACTOR'S ALL-IN HOURLY RATE (default 50
+  //                    €/h, inside the 40–60 €/h band). It applies to a share
+  //                    of total hours (P.economic.contractor_operation_share,
+  //                    default 0.20), reflecting that contractors typically
+  //                    cover peak operations rather than replacing the full
+  //                    operator function.
+  //
+  // If the input is missing or non-numeric, fall back to the mode default —
+  // this keeps the model robust to weird DOM states.
+  const rawLabourRate = parseFloat(document.getElementById('labourRate').value);
+  const defaultRateByMode = {
+    owner:      0,
+    salaried:   P.economic.salaried_labour_eur_per_h,
+    contractor: P.economic.contractor_eur_per_h,
+  };
+  const labourRate = (isFinite(rawLabourRate) && rawLabourRate >= 0)
+    ? rawLabourRate
+    : (defaultRateByMode[operator] !== undefined ? defaultRateByMode[operator] : 0);
+  // Extra-operator concurrency: fraction of the ADDITIONAL tractors' hours
+  // that need extra drivers on payroll (peak weeks, time-sensitive ops).
+  // See P.economic.second_operator_overlap_default for rationale.
   const secondOpEl = document.getElementById('secondOperator');
   const secondOpOverlap = secondOpEl
     ? parseFloat(secondOpEl.value)
@@ -2836,38 +3338,29 @@ function calculate() {
   }
   if (training === 'vaso') document.getElementById('greenOps').value = 'none';
 
-  // Row spacing × fleet width compatibility
+  // Row spacing × tractor width compatibility — single check for the
+  // shared fleet power. Narrow rows (≤ 2.4 m) can't accommodate standard
+  // tractors (>110 CV) because of outer-width clearance to the canopy.
   const fleetWarn = document.getElementById('fleetWarning');
   const fleetMessages = [];
-  let t1AdjustedPower = t1Power, t2AdjustedPower = t2Power;
-  if (rowSpacing <= 2.4 && t1Power > 110) {
+  let tractorPowerAdjusted = tractorPower;
+  if (rowSpacing <= 2.4 && tractorPower > 110) {
     const rsW = String(rowSpacing).replace('.', CURRENT_LANG === 'es' ? ',' : '.');
-    fleetMessages.push(T('w_fleet_cap')(t1Power, T('fleet_slot_primary'), rsW));
-    t1AdjustedPower = 100;
-    document.getElementById('t1Power').value = '100';
+    fleetMessages.push(T('w_fleet_cap')(tractorPower, T('fleet_slot_primary'), rsW));
+    tractorPowerAdjusted = 100;
+    document.getElementById('tractorPower').value = '100';
   }
-  if (rowSpacing <= 2.4 && t2Power > 110) {
-    const rsW = String(rowSpacing).replace('.', CURRENT_LANG === 'es' ? ',' : '.');
-    fleetMessages.push(T('w_fleet_cap')(t2Power, T('fleet_slot_secondary'), rsW));
-    t2AdjustedPower = 100;
-    document.getElementById('t2Power').value = '100';
-  }
-  for (const opt of document.getElementById('t1Power').options) {
+  for (const opt of document.getElementById('tractorPower').options) {
     opt.disabled = (rowSpacing <= 2.4 && parseFloat(opt.value) > 110);
   }
-  for (const opt of document.getElementById('t2Power').options) {
-    opt.disabled = (rowSpacing <= 2.4 && parseFloat(opt.value) > 110);
-  }
-  const t1PowerEff = t1AdjustedPower;
-  const t2PowerEff = t2AdjustedPower;
+  const tractorPowerEff = tractorPowerAdjusted;
 
-  // Second-operator field is only meaningful when a second tractor exists.
-  // Visually mute it (disable + dim) when t2 = 0 so the user sees it has no
-  // effect in single-tractor fleets.
+  // The extra-operator overlap field is only meaningful with N > 1. Dim it
+  // visually for single-tractor fleets.
   if (secondOpEl) {
-    secondOpEl.disabled = (t2PowerEff === 0);
+    secondOpEl.disabled = (tractorCount <= 1);
     if (secondOpEl.parentElement) {
-      secondOpEl.parentElement.style.opacity = (t2PowerEff === 0) ? '0.45' : '1';
+      secondOpEl.parentElement.style.opacity = (tractorCount <= 1) ? '0.45' : '1';
     }
   }
 
@@ -2887,13 +3380,20 @@ function calculate() {
   }
 
   // ============================================================
-  // Base hours per ha from Section 9.2 monthly bands
+  // Hours pipeline — Section 9.2 monthly bands + adjustments
   // ============================================================
-  const monthlyBaseHpha = monthlyBase(training, region, frequency);
-  const baseHoursPerHa = monthlyBaseHpha.reduce((a, b) => a + b, 0);
-
-  // Adjustment factors — all values come from the P.hours_adjustments block.
-  // Edit them in the PARAMETERS section at the top of this script, not here.
+  //
+  // The monthly bands give [lo, hi] h/ha for each month, with the "Frequency"
+  // selector picking a position within the band (moderate=0, typical=0.5,
+  // intensive=1.0). If the user instead selected "Custom · enter total
+  // hours/year", we back-solve the frequency position that, combined with
+  // all the other adjustments below, reproduces the user's exact h/year.
+  //
+  // Adjustments are computed FIRST so the back-solve can account for them.
+  // The position can extrapolate outside [0, 1]; in that case the regime
+  // label honestly flags "above intensive" / "below moderate".
+  //
+  // ── 1. Compute adjustment multipliers and ipShare ──
   const PA = P.hours_adjustments;
 
   // Plot size effect on productive hours
@@ -2905,9 +3405,7 @@ function calculate() {
   else                     plotAdj = PA.plot_size_mult.over_10_ha;
 
   const soilAdj = PA.soil_mgmt_mult[soilMgmt] || 1.0;
-
   const sprayAdj = PA.spraying_mult[spraying] !== undefined ? PA.spraying_mult[spraying] : 1.0;
-
   let greenAdj;
   if (training === 'espaldera') {
     greenAdj = PA.green_ops_mult_espaldera[greenOps] !== undefined
@@ -2915,19 +3413,17 @@ function calculate() {
   } else {
     greenAdj = PA.green_ops_mult_vaso;
   }
-
   const productionAdj = (production === 'organic') ? PA.organic_mult : 1.0;
-
   const harvestAdj = (harvest === 'mechanical' || harvest === 'contractor_mechanical')
     ? PA.harvest_mult_mechanical : PA.harvest_mult_manual;
-
   const waterAdj      = PA.water_mult[water] || 1.0;
   const breakdownAdj  = 1 + PA.breakdown_pct[breakdown];
   const slopeTimeAdj  = PA.slope_time_mult[slope];
 
-  // Row spacing × power coupling (see P.spacing)
+  // Row spacing × power coupling (see P.spacing). All tractors share the
+  // same power, so just one match calculation.
   const SP = P.spacing;
-  const primaryPower = t1PowerEff;
+  const primaryPower = tractorPowerEff;
   const matchedPower = SP.matched_power_cv[rowSpacing] || 90;
   const widthAdj = 1.0 - ((rowSpacing - SP.width_anchor_m) * SP.width_slope_per_m);
   let matchAdj = 1.0;
@@ -2944,18 +3440,53 @@ function calculate() {
                        * productionAdj * harvestAdj * waterAdj
                        * spacingAdj * slopeTimeAdj * breakdownAdj;
 
-  // Productive hours (in-field work, before adding inter-plot/aux on top)
-  const productiveHoursPerHa = baseHoursPerHa * adjustmentMult;
-  const productiveHours = productiveHoursPerHa * area;
-
-  // Inter-plot/aux hours come from plot structure (size + fragmentation), not
-  // from the global adjustment multiplier. Defined as a share of TOTAL engine
-  // hours; we back out the addition needed to hit that share.
   const ipShare = interPlotShare(plotSize, fragmentation);
-  const ipHours = productiveHours * (ipShare / (1 - ipShare));
 
-  const totalHours = productiveHours + ipHours;
-  const hoursPerHa = totalHours / Math.max(area, 0.001);
+  // ── 2. Resolve frequency position (preset OR custom back-solve) ──
+  //
+  // The back-solve must mirror monthlyBaseFromPos's piecewise definition:
+  //
+  //   pos ≥ 0:        Σ_monthly = Σlo + pos × (Σhi − Σlo)
+  //                   ⇒ pos = (target_base − Σlo) / (Σhi − Σlo)
+  //
+  //   −1 < pos < 0:   Σ_monthly = Σlo × (1 + pos)
+  //                   ⇒ pos = target_base / Σlo − 1
+  //
+  // We solve the pos ≥ 0 branch first. If the resulting target is below
+  // Σlo (which would force pos < 0), we switch to the scaled-down branch.
+  // For target ≤ 0 we floor at pos = −1.
+  let resolvedPos;
+  let customHoursRequested = null;
+  if (frequency === 'custom') {
+    const v = parseFloat(document.getElementById('frequencyCustom').value);
+    customHoursRequested = (isFinite(v) && v > 0) ? v : 600;
+    const sums = bandSums(training, region);
+    const target_base = (customHoursRequested * (1 - ipShare))
+                      / (adjustmentMult * Math.max(area, 0.001));
+    if (target_base >= sums.sumLo) {
+      const denomBand = sums.sumHi - sums.sumLo;
+      resolvedPos = denomBand > 0 ? (target_base - sums.sumLo) / denomBand : 0.5;
+    } else if (target_base > 0 && sums.sumLo > 0) {
+      // Below the literature minimum — scale lo down uniformly.
+      resolvedPos = (target_base / sums.sumLo) - 1;     // ∈ (−1, 0)
+    } else {
+      resolvedPos = -1;  // degenerate floor (essentially no operations)
+    }
+  } else {
+    resolvedPos = FREQUENCY_POS[frequency] !== undefined ? FREQUENCY_POS[frequency] : 0.5;
+  }
+  const regime = classifyRegime(resolvedPos);
+
+  // ── 3. Build the monthly base from the resolved position ──
+  const monthlyBaseHpha = monthlyBaseFromPos(training, region, resolvedPos);
+  const baseHoursPerHa  = monthlyBaseHpha.reduce((a, b) => a + b, 0);
+
+  // ── 4. Final hour totals ──
+  const productiveHoursPerHa = baseHoursPerHa * adjustmentMult;
+  const productiveHours      = productiveHoursPerHa * area;
+  const ipHours              = productiveHours * (ipShare / (1 - ipShare));
+  const totalHours           = productiveHours + ipHours;
+  const hoursPerHa           = totalHours / Math.max(area, 0.001);
 
   // Monthly hours: scale the report-anchored base shape to match total hours
   // (so both productive and inter-plot/aux time are spread across the calendar).
@@ -2964,17 +3495,33 @@ function calculate() {
   const monthlyHpha = monthlyBaseHpha.map(v => v * monthlyScale);
   const monthly = monthlyHpha.map(v => v * area);
 
-  // Allocate hours between tractors
-  let t1Hours, t2Hours;
-  if (t2PowerEff === 0) { t1Hours = totalHours; t2Hours = 0; }
-  else {
-    const t1IsVineyard = t1PowerEff <= 110;
-    const t2IsStandard = t2PowerEff > 110;
-    if (t1IsVineyard && t2IsStandard) { t1Hours = totalHours * 0.75; t2Hours = totalHours * 0.25; }
-    else if (!t1IsVineyard && t2PowerEff <= 110) { t1Hours = totalHours * 0.25; t2Hours = totalHours * 0.75; }
-    else { t1Hours = totalHours * 0.6; t2Hours = totalHours * 0.4; }
-  }
-
+  // ============================================================
+  // FLEET COSTS — N identical tractors, even split of workload
+  // ============================================================
+  //
+  // All tractors share the same power band and age. Workload is split
+  // evenly: each tractor runs totalHours / N hours per year.
+  //
+  // Why even split is sufficient (rather than modelling specialisation):
+  //
+  //   For VARIABLE costs (fuel, repairs, lubricants, wear-based depreciation),
+  //   the per-tractor cost is linear in hours. Summed over the fleet, the
+  //   total depends ONLY on totalHours — not on how those hours are split.
+  //
+  //   For FIXED costs (insurance, calendar-floor depreciation, calendar-floor
+  //   tyre ageing), each tractor contributes the same per-unit amount
+  //   regardless of hours. Summed, they scale with N — again independent
+  //   of split.
+  //
+  //   The ONE wrinkle is the per-tractor max() between wear-based and calendar
+  //   floor for depreciation/tyres. If a tractor falls below the crossover
+  //   (~833 h/yr for depreciation, ~437 h/yr for tyres given current params),
+  //   it pays the floor instead. Uneven splits CAN push individual tractors
+  //   below their crossover, slightly raising fleet cost. The even-split
+  //   assumption gives the most favourable (lowest) cost for any given N,
+  //   which is the right diagnostic: if even-split shows the fleet over-
+  //   provisioned (lots of calendar-floor depreciation), that's a real
+  //   signal that N is too high for this workload.
   function tractorCost(power, hours, age) {
     if (power === 0) return { fuel: 0, repairs: 0, depreciation: 0, tyres: 0, lubricants: 0, insurance: 0, total: 0, hourly: 0 };
     // Fuel — base consumption × slope penalty × power-mismatch penalty.
@@ -2987,75 +3534,106 @@ function calculate() {
 
     const fuel = fuelLh * dieselPrice * hours;
 
-    // === ACQUISITION PRICE (age-adjusted) ===
-    // Depreciation and insurance scale with what the user actually paid for
-    // the tractor (P.fleet.acquisition_factor_by_age), not the new list price.
+    // Acquisition price (age-adjusted): depreciation and insurance scale
+    // with what the user actually paid (P.fleet.acquisition_factor_by_age).
     const acqPrice = tractorAcquisitionPrice(power, age);
     const depreciable = acqPrice * (1 - P.fleet.salvage_fraction);
 
-    // === FIXED COSTS — owning the asset, not using it ===
-    // Depreciation: MAX of wear-based (over P.fleet.service_life_h) and a
-    // calendar-life floor (over P.fleet.calendar_life_yr). Under-utilised
-    // tractors pay the floor; heavily-used ones pay the wear-based rate.
+    // Depreciation: MAX of wear-based and calendar-life floor.
     const depreciationByHours = (depreciable / P.fleet.service_life_h) * hours;
     const depreciationByYears = depreciable / P.fleet.calendar_life_yr;
     const depreciation = Math.max(depreciationByHours, depreciationByYears);
 
-    // Tyres: absolute set cost / life-h OR / life-yr (rubber ages even unused).
-    // Independent of tractor age — a new tyre set costs the same regardless.
+    // Tyres: MAX of wear and calendar (rubber ages on UV/ozone even unused).
     const tyreSet = tyreSetCost(power);
     const tyresByHours = (tyreSet / P.fleet.tyre_life_h) * hours;
     const tyresByYears = tyreSet / P.fleet.tyre_life_yr;
     const tyres = Math.max(tyresByHours, tyresByYears);
 
-    // Insurance: rate × acquisition price (you insure what the tractor is worth)
+    // Insurance: rate × acquisition price (insure at current value).
     const insurance = acqPrice * P.fleet.insurance_rate_per_yr;
 
-    // === VARIABLE COSTS — use-driven ===
-    // Repairs follow the MAPA 2012 rule (P.cost_formula.repairs_as_frac_of_fuel),
-    // age-adjusted (P.cost_formula.repairs_age_mult). For an old (15+yr) tractor
-    // the age multiplier of 1.6× offsets the lower depreciation.
+    // Repairs (MAPA 2012 rule, age-adjusted) and lubricants (frac of fuel).
     const repairs = fuel * P.cost_formula.repairs_as_frac_of_fuel * P.cost_formula.repairs_age_mult[age];
     const lubricants = fuel * P.cost_formula.lubricants_as_frac_of_fuel;
 
     const total = fuel + repairs + depreciation + tyres + lubricants + insurance;
     return { fuel, repairs, depreciation, tyres, lubricants, insurance, total, hourly: hours > 0 ? total / hours : 0 };
   }
-  const c1 = tractorCost(t1PowerEff, t1Hours, t1Age);
-  const c2 = tractorCost(t2PowerEff, t2Hours, t2Age);
-  const machCost = c1.total + c2.total;
 
-  // === LABOUR — accounting for second-operator concurrency ===
-  // The base wall-clock workload is totalHours; one operator can in principle
-  // cover it sequentially. But two tractors are typically bought precisely
-  // because peak periods (harvest, spraying campaigns) demand concurrent
-  // operation — meaning a second operator must be on payroll for those hours
-  // even if the engine-hour total is the same.
+  // Run the cost calc once on the per-tractor share, then multiply by N.
+  // This is mathematically identical to looping N times because all
+  // tractors are identical — and faster.
+  const perTractorHours = totalHours / tractorCount;
+  const perTractor = tractorCost(tractorPowerEff, perTractorHours, tractorAge);
+  // Fleet totals = N × per-tractor figures.
+  const fleetCost = {
+    fuel:         perTractor.fuel         * tractorCount,
+    repairs:      perTractor.repairs      * tractorCount,
+    depreciation: perTractor.depreciation * tractorCount,
+    tyres:        perTractor.tyres        * tractorCount,
+    lubricants:   perTractor.lubricants   * tractorCount,
+    insurance:    perTractor.insurance    * tractorCount,
+    total:        perTractor.total        * tractorCount,
+    hourly:       perTractor.hourly,
+  };
+  // Compatibility shim: downstream code (insights, charts, Voltrac comparison)
+  // still expects `c1` / `c2` objects. Map them: c1 carries the FULL fleet
+  // cost (so c1.fuel + c2.fuel etc. continues to work), c2 is zeros.
+  const c1 = fleetCost;
+  const c2 = { fuel: 0, repairs: 0, depreciation: 0, tyres: 0, lubricants: 0, insurance: 0, total: 0, hourly: 0 };
+  const machCost = fleetCost.total;
+
+  // === LABOUR — accounting for multi-tractor concurrency ===
   //
-  // Practical interpretation:
-  //   - Base labour: totalHours × rate (one operator covers the full workload)
-  //   - Extra labour: t2Hours × secondOpOverlap × rate
-  //     (extra "second-operator overhead" for the share of t2's hours that
-  //     overlap with t1 — peak weeks where one driver can't handle both
-  //     machines)
+  // Engine-hour total (totalHours) is invariant to N — the fieldwork that
+  // needs doing depends on area and operations, not on how many tractors
+  // do it. Only the LABOUR side scales with N, and how it scales depends
+  // on the staffing model the user runs.
   //
-  // With overlap = 0 (always sequential): no extra labour. Same as one-tractor.
-  // With overlap = 1.0 (always concurrent): labour = (totalHours + t2Hours) × rate
-  // ≈ doubles for very large fleets where t1 ≈ t2.
-  // Default 0.50: "mix of peak concurrency and off-peak sequential work."
+  // The dial we expose is "extra-operator overlap", which captures how
+  // much of an additional full-time driver each extra tractor costs:
+  //
+  //   labour_multiplier = 1 + (N − 1) × overlap
+  //
+  //   N=1:                  1× (baseline, one operator)
+  //   N=2, overlap = 0%:    1× (one driver shared sequentially)
+  //   N=2, overlap = 50%:   1.5× (one full driver + half a driver extra)
+  //   N=2, overlap = 100%:  2× (two full drivers — both dedicated)
+  //   N=3, overlap = 50%:   2× (one full + two halves)
+  //   N=3, overlap = 100%:  3× (three full drivers)
+  //   N tractors, o=100%:   N× (every tractor has its own dedicated driver)
+  //
+  // Interpretation: overlap = 100% means each tractor needs its own
+  // full-time operator on payroll (typical for industrial estates with
+  // year-round salaried staff). overlap = 0% means a single operator
+  // can sequence through all the tractors (typical for small estates
+  // where peak overlap is rare). The 50% default lands between.
+  //
+  // Total hours (and therefore fuel, repairs, depreciation, etc.) are
+  // unchanged by overlap — only labour scales.
+  const labourMultiplier = 1 + Math.max(0, tractorCount - 1) * secondOpOverlap;
   const baseLabourHours  = totalHours;
-  const extraLabourHours = (t2PowerEff > 0) ? t2Hours * secondOpOverlap : 0;
-  const effectiveLabourHours = baseLabourHours + extraLabourHours;
+  const extraLabourHours = totalHours * (labourMultiplier - 1);
+  const effectiveLabourHours = totalHours * labourMultiplier;
 
   let labourCost = 0, labourPerH = 0, contractorExtra = 0;
   if (operator === 'salaried') {
-    labourPerH = P.economic.salaried_labour_eur_per_h;
+    labourPerH = labourRate;
     labourCost = effectiveLabourHours * labourPerH;
   } else if (operator === 'contractor') {
     // Contractor handles a share of operations at their own all-in rate.
     // The same concurrency premium applies: contractor brings their own
     // second driver for concurrent hours.
-    contractorExtra = effectiveLabourHours * P.economic.contractor_operation_share * P.economic.contractor_eur_per_h;
+    contractorExtra = effectiveLabourHours * P.economic.contractor_operation_share * labourRate;
+  } else if (operator === 'owner' && labourRate > 0) {
+    // Owner-operator with explicit opportunity cost.
+    // Default rate is 0 (cash basis); user may set this to reflect what the
+    // owner's hour would earn in alternative employment. When non-zero we
+    // route it through labourCost (not contractor), since it represents the
+    // owner's own time at full coverage rather than a contractor's slice.
+    labourPerH = labourRate;
+    labourCost = effectiveLabourHours * labourPerH;
   }
 
   const totalCost = machCost + labourCost + contractorExtra;
@@ -3074,6 +3652,20 @@ function calculate() {
   step = T('fleet_step_' + stepIdx + '_label');
   stepDesc = T('fleet_step_' + stepIdx + '_desc');
 
+  // Classify the user's tractor count vs the literature recommendation for
+  // their area band. Three statuses:
+  //   'few'  — fewer tractors than the literature minimum → over-stretched fleet
+  //   'ok'   — count within the recommended [min, max] range
+  //   'many' — more tractors than the recommended max → fixed costs piling up
+  // Each status drives both the area-step indicator colour and a textual
+  // recommendation line in the fleet card.
+  const rec = P.fleet_recommended_count[stepIdx] || { min: 1, max: 1 };
+  let fleetCountStatus;
+  if (tractorCount < rec.min)      fleetCountStatus = 'few';
+  else if (tractorCount > rec.max) fleetCountStatus = 'many';
+  else                              fleetCountStatus = 'ok';
+  const fleetRec = { min: rec.min, max: rec.max, status: fleetCountStatus, userN: tractorCount };
+
   // Cost breakdown
   const breakdownObj = {
     'Fuel': c1.fuel + c2.fuel,
@@ -3088,7 +3680,7 @@ function calculate() {
   for (const k in breakdownObj) { if (breakdownObj[k] < 1) delete breakdownObj[k]; }
 
   // Task cost
-  const tProductiveShares = taskShares(training, soilMgmt, spraying, harvest, greenOps);
+  const tProductiveShares = taskShares(training, soilMgmt, spraying, harvest, greenOps, production);
   const taskMonthlyWeights = buildTaskMonthlyWeights(region, training, soilMgmt, greenOps);
 
   // Build TOTAL task hours: productive tasks split by tProductiveShares over
@@ -3226,7 +3818,29 @@ function calculate() {
     categoryTaskCost[cat] = obj;
   }
 
-  // 6-year projection
+  // ── 6-year cost projection ──
+  //
+  // Each cost component grows at a category-specific inflation rate:
+  //   ENERGY rate:  Fuel, Repairs & maintenance (parts pricing), Lubricants
+  //   GENERAL rate: Tyres, Insurance, Depreciation
+  //   LABOUR rate:  Labour, Contractor  (general + 0.5 pp historical real-wage premium)
+  //
+  // Why depreciation inflates with general inflation in this projection:
+  //
+  //   The projection answers "what would year-X annual cost look like running
+  //   THIS fleet at year-X prices?" — not "what's left to allocate of the
+  //   already-paid year-0 price?". Every other cost line is in year-X €, so
+  //   depreciation must be too. Concretely: if you needed to maintain the
+  //   same fleet capability in year 6, the replacement-cost basis for the
+  //   asset has risen with general inflation, and so has its annual
+  //   amortisation. Locking depreciation nominal would understate the real
+  //   cost of ownership over the horizon and contradict the rest of the
+  //   inflation framework.
+  //
+  //   (Note: this is NOT a tax/book-value calculation. Straight-line
+  //   depreciation on the originally purchased asset stays constant in
+  //   year-0 €, but inflates in year-X € — which is the relevant currency
+  //   for projecting future operating cost.)
   const years = [];
   const yearsBreakdown = [];
   for (let y = 0; y < 6; y++) {
@@ -3236,7 +3850,7 @@ function calculate() {
     const ent = {
       'Fuel': (c1.fuel + c2.fuel) * eInfl,
       'Repairs & maintenance': (c1.repairs + c2.repairs) * eInfl,
-      'Depreciation': (c1.depreciation + c2.depreciation),
+      'Depreciation': (c1.depreciation + c2.depreciation) * gInfl,
       'Tyres': (c1.tyres + c2.tyres) * gInfl,
       'Lubricants': (c1.lubricants + c2.lubricants) * eInfl,
       'Insurance': (c1.insurance + c2.insurance) * gInfl,
@@ -3265,32 +3879,38 @@ function calculate() {
   // INSIGHTS
   // ============================================================
   const insights = [];
-  const u1 = t1Hours, u2 = t2Hours;
-  if (t2PowerEff === 0 && u1 < 400) {
-    insights.push({ type: 'warn', text: T('i_t1_underutil')({h: Math.round(u1)}) });
-  } else if (t2PowerEff === 0 && u1 > 1100) {
-    insights.push({ type: 'warn', text: T('i_t1_overstretched')({h: Math.round(u1)}) });
-  } else if (t2PowerEff === 0) {
-    insights.push({ type: 'ok', text: T('i_t1_efficient')({h: Math.round(u1)}) });
+  // Per-tractor utilisation = totalHours / N
+  const hoursPerTractor = perTractorHours;
+  if (tractorCount === 1) {
+    if (hoursPerTractor < 400) {
+      insights.push({ type: 'warn', text: T('i_t1_underutil')({h: Math.round(hoursPerTractor)}) });
+    } else if (hoursPerTractor > 1100) {
+      insights.push({ type: 'warn', text: T('i_t1_overstretched')({h: Math.round(hoursPerTractor)}) });
+    } else {
+      insights.push({ type: 'ok', text: T('i_t1_efficient')({h: Math.round(hoursPerTractor)}) });
+    }
   } else {
-    const tail = (u1 < 400 || u2 < 400) ? T('i_t2_tail_underutil') : T('i_t2_tail_both_ok');
-    insights.push({ type: 'ok', text: T('i_t2_both')({h1: Math.round(u1), h2: Math.round(u2), tail}) });
+    // Multi-tractor: highlight if individual tractors are under-utilised
+    // (a sign of over-provisioning) or over-stretched.
+    const tail = (hoursPerTractor < 400) ? T('i_t2_tail_underutil') : T('i_t2_tail_both_ok');
+    insights.push({ type: hoursPerTractor < 400 ? 'warn' : 'ok',
+                    text: T('i_fleet_util_n')({n: tractorCount, h: Math.round(hoursPerTractor), tail}) });
   }
 
-  // Row spacing × power match
-  const primaryRatio = t1PowerEff / matchedPower;
+  // Row spacing × power match (single shared fleet power)
+  const primaryRatio = tractorPowerEff / matchedPower;
   const hoursPenalty = Math.round((matchAdj - 1) * 100);
   const rsDisp = String(rowSpacing).replace('.', CURRENT_LANG === 'es' ? ',' : '.');
   if (primaryRatio < 0.7) {
     const fuelPenaltyPct = Math.round((0.8 - primaryRatio) * 40);
-    insights.push({ type: 'warn', text: T('i_match_severe')({p: t1PowerEff, s: rsDisp, hp: hoursPenalty, fp: fuelPenaltyPct, m: matchedPower}) });
+    insights.push({ type: 'warn', text: T('i_match_severe')({p: tractorPowerEff, s: rsDisp, hp: hoursPenalty, fp: fuelPenaltyPct, m: matchedPower}) });
   } else if (primaryRatio < 0.9) {
-    insights.push({ type: 'info', text: T('i_match_mild')({p: t1PowerEff, s: rsDisp, hp: hoursPenalty, m: matchedPower}) });
+    insights.push({ type: 'info', text: T('i_match_mild')({p: tractorPowerEff, s: rsDisp, hp: hoursPenalty, m: matchedPower}) });
   } else if (primaryRatio > 1.5) {
     const fuelExcess = Math.round((primaryRatio - 1.3) * 80);
-    insights.push({ type: 'info', text: T('i_match_over')({p: t1PowerEff, s: rsDisp, fe: fuelExcess, m: matchedPower}) });
+    insights.push({ type: 'info', text: T('i_match_over')({p: tractorPowerEff, s: rsDisp, fe: fuelExcess, m: matchedPower}) });
   } else {
-    insights.push({ type: 'ok', text: T('i_match_ok')({p: t1PowerEff, s: rsDisp}) });
+    insights.push({ type: 'ok', text: T('i_match_ok')({p: tractorPowerEff, s: rsDisp}) });
   }
 
   insights.push({ type: 'info', text: T('i_fleet')({step, desc: stepDesc}) });
@@ -3323,23 +3943,29 @@ function calculate() {
   if (slope === 'moderate') {
     insights.push({ type: 'warn', text: T('i_slope_mod')() });
   }
-  if (t1Age === 'old' || t2Age === 'old') {
+  if (tractorAge === 'old') {
     insights.push({ type: 'warn', text: T('i_old')() });
   }
   if (operator === 'owner') {
     insights.push({ type: 'info', text: T('i_owner')() });
   }
-  if (t2PowerEff > 0 && (operator === 'salaried' || operator === 'contractor')) {
-    // Quantify the extra labour from second-tractor concurrency.
-    const extraLabourHours = t2Hours * secondOpOverlap;
-    const extraLabourCost  = extraLabourHours * (operator === 'salaried'
-      ? P.economic.salaried_labour_eur_per_h
-      : P.economic.contractor_operation_share * P.economic.contractor_eur_per_h);
+  if (tractorCount > 1 && (operator === 'salaried' || operator === 'contractor' || (operator === 'owner' && labourRate > 0))) {
+    // Quantify the extra labour from multi-tractor concurrency.
+    // extraLabourHours has already been computed above as
+    //   (N − 1) × (totalHours / N) × overlap
+    // The rate applied here mirrors the cost-side branch: salaried/owner use
+    // the full rate, contractor uses rate × operation_share since only a
+    // fraction of contractor hours are billed.
+    const extraLabourCost = extraLabourHours * (operator === 'contractor'
+      ? P.economic.contractor_operation_share * labourRate
+      : labourRate);
     insights.push({ type: 'info', text: T('i_second_op')({
       pct: Math.round(secondOpOverlap * 100),
       h:   Math.round(extraLabourHours),
       eur: Math.round(extraLabourCost),
-      t2h: Math.round(t2Hours),
+      n:   tractorCount,
+      hPerTractor: Math.round(perTractorHours),
+      mult: labourMultiplier.toFixed(2),
     })});
   }
   if (harvest === 'mechanical' || harvest === 'contractor_mechanical') {
@@ -3350,12 +3976,21 @@ function calculate() {
 
   const dieselResult = {
     area, hoursPerHa, totalHours, totalCost, costPerHa, costPerKg, confLo, confHi,
-    step, stepIdx, stepDesc, u1, u2, t1Power: t1PowerEff, t2Power: t2PowerEff,
+    step, stepIdx, stepDesc, fleetRec,
+    // Fleet identity for Voltrac comparison and labelling
+    tractorPower: tractorPowerEff, tractorAge, tractorCount, perTractorHours,
+    // Legacy aliases kept for downstream readers (Voltrac comparison etc.)
+    // — for an N-tractor fleet, "primary" carries the shared power and
+    // "secondary" is treated as N=1 fleet variant (no slot 2 to add).
+    u1: perTractorHours, u2: 0, t1Power: tractorPowerEff, t2Power: 0,
     monthly, monthlyHpha, breakdownObj, taskCost, taskHours,
     fixed, variable, years, yearsBreakdown, insights, dieselPrice, yieldTha,
     generalInflation, energyInflation, confidencePct: confidence * 100,
     frequency, training, region, production, fragmentation, slope, matchedPower,
     bandLo, bandHi,
+    // Frequency regime: which intensity band the actual usage falls into
+    // (back-solved when frequency = 'custom', else equals the dropdown choice).
+    resolvedPos, regime, customHoursRequested,
     monthlyBreakdown, monthlyTaskCost, monthlyFixVar,
     taskMonthlyCost, taskMonthlyHours, taskCostBreakdown, taskFixVar,
     categoryMonthly, categoryTaskCost,
@@ -3414,10 +4049,27 @@ function computeVoltracComparison(d) {
   const voltracElec_eur = voltracElec_kWh * elecPrice;
 
   // ── CAPEX / FLEET SIZING ──
-  // Number of Voltrac units needed for the workload. One unit covers
-  // ~2,400 h/year of operating time (field-only hours, since charging happens
-  // in dead time). Round up.
-  const v_unitsNeeded = Math.max(1, Math.ceil(v_field_only_hours / V.annual_hours_per_unit));
+  //
+  // Like-for-like principle: by default we use the SAME number of Voltrac
+  // units as the diesel fleet has tractors (d.tractorCount). The user is
+  // comparing two specific fleet decisions, not "diesel reality vs
+  // Voltrac-optimised reality", so the comparison basis should match.
+  //
+  // For context, we ALSO compute the workload-derived number — the minimum
+  // Voltrac count that could in principle cover the annual hours given the
+  // 2,400 h/year per-unit ceiling. This shows up as feedback in the units
+  // box: it may be higher (Voltrac fleet under-sized for the work), lower
+  // (Voltrac could downsize relative to the diesel fleet), or equal.
+  //
+  // The user can override the count via the +/- buttons in the units box.
+  // Override is stored in a hidden #voltracUnitsOverride input; empty means
+  // "use the diesel count as default".
+  const dieselFleetCount = d.tractorCount || 1;
+  const v_unitsNeeded_workload = Math.max(1, Math.ceil(v_field_only_hours / V.annual_hours_per_unit));
+  const _overrideEl = document.getElementById('voltracUnitsOverride');
+  const _overrideRaw = _overrideEl ? parseInt(_overrideEl.value, 10) : NaN;
+  const _hasOverride = isFinite(_overrideRaw) && _overrideRaw >= 1 && _overrideRaw <= 10;
+  const v_unitsNeeded = _hasOverride ? _overrideRaw : dieselFleetCount;
   const voltracCapex_total = V.price_eur * v_unitsNeeded;
 
   // Depreciation: uses Voltrac-specific lifecycle params (longer life, lower
@@ -3475,39 +4127,24 @@ function computeVoltracComparison(d) {
   // Otherwise we'd be comparing "buy a new Voltrac" against "keep using a
   // 15-year-old tractor", which isn't a real decision.
   //
-  // We rebuild diesel depreciation and insurance at new-equivalent prices,
-  // leaving fuel/repairs/labour/tyres unchanged (those are use-driven, not
-  // price-driven).
-  let dieselFleetCapex = 0;
-  if (d.t1Power > 0) dieselFleetCapex += tractorPrice(d.t1Power);
-  if (d.t2Power > 0) dieselFleetCapex += tractorPrice(d.t2Power);
+  // For the unified N-tractor fleet, this is simpler: capex = N × new price,
+  // and the new-basis dep/ins are computed once per tractor and × N.
+  const N = d.tractorCount || 1;
+  const dieselFleetCapex = tractorPrice(d.tractorPower) * N;
 
-  // Adjusted diesel total: same operating costs, but depreciation and
-  // insurance scaled to new-equivalent prices.
   const dieselDep_userBasis = (d.c1.depreciation || 0) + (d.c2.depreciation || 0);
-  const dieselIns_userBasis = (d.c1.insurance || 0) + (d.c2.insurance || 0);
-  let dieselDep_newBasis = 0, dieselIns_newBasis = 0;
-  function newBasisFor(power, hours) {
-    if (power <= 0) return { dep: 0, ins: 0 };
-    const price = tractorPrice(power);
-    const dep = Math.max(
-      (price * (1 - P.fleet.salvage_fraction) / P.fleet.service_life_h) * hours,
-      (price * (1 - P.fleet.salvage_fraction) / P.fleet.calendar_life_yr)
-    );
-    const ins = price * P.fleet.insurance_rate_per_yr;
-    return { dep, ins };
-  }
-  // We don't have t1Hours / t2Hours directly here; derive from d.c1 / d.c2:
-  const t1H = d.c1.fuel > 0 && d.dieselPrice > 0
-              ? d.c1.fuel / (d.dieselPrice * avgFuelLh(d.t1Power) * P.slope_fuel_mult[d.slope])
-              : 0;
-  const t2H = d.c2.fuel > 0 && d.dieselPrice > 0
-              ? d.c2.fuel / (d.dieselPrice * avgFuelLh(d.t2Power) * P.slope_fuel_mult[d.slope])
-              : 0;
-  const n1 = newBasisFor(d.t1Power, t1H);
-  const n2 = newBasisFor(d.t2Power, t2H);
-  dieselDep_newBasis = n1.dep + n2.dep;
-  dieselIns_newBasis = n1.ins + n2.ins;
+  const dieselIns_userBasis = (d.c1.insurance    || 0) + (d.c2.insurance    || 0);
+
+  // Per-tractor new-basis dep/ins, then × N
+  const _price = tractorPrice(d.tractorPower);
+  const _perTractorH = d.perTractorHours || (d.totalHours / N);
+  const _depPerTractor = Math.max(
+    (_price * (1 - P.fleet.salvage_fraction) / P.fleet.service_life_h) * _perTractorH,
+    (_price * (1 - P.fleet.salvage_fraction) / P.fleet.calendar_life_yr)
+  );
+  const _insPerTractor = _price * P.fleet.insurance_rate_per_yr;
+  const dieselDep_newBasis = _depPerTractor * N;
+  const dieselIns_newBasis = _insPerTractor * N;
 
   const dieselTotal_newBasis = d.totalCost
     - dieselDep_userBasis - dieselIns_userBasis
@@ -3529,6 +4166,125 @@ function computeVoltracComparison(d) {
   } else if (annualSavings_newBasis > 0 && extraCapex <= 0) {
     paybackYears = 0;  // Voltrac is cheaper upfront AND cheaper to operate
   }
+
+  // ── 6-YEAR CUMULATIVE — diesel vs Voltrac (NEW-vs-NEW) ──
+  //
+  // Both fleets assumed bought new at year 0. Two views:
+  //
+  //   "expenses" (cash basis):   y0 = full purchase price (capex)
+  //                              y1..y6 = previous + operating cost EXCLUDING
+  //                              depreciation (depreciation is the accounting
+  //                              allocation of capex you already paid).
+  //
+  //   "cost" (accrual basis):    y0 = 0
+  //                              y1..y6 = previous + operating cost INCLUDING
+  //                              depreciation (the per-year economic cost of
+  //                              owning and using the fleet).
+  //
+  // Diesel operating costs are re-based to NEW-EQUIVALENT throughout, so the
+  // comparison is truly "new diesel vs new Voltrac" — not "user's 15-yr-old
+  // diesel vs new Voltrac". Only the repairs line needs explicit rebasing
+  // (uses age_mult.new = 0.6 instead of the user's age). Fuel, tyres,
+  // lubricants are use-based and age-independent. Labour is age-independent.
+  // Depreciation and insurance are already computed at new-basis above.
+  //
+  // Each cost component inflates at the framework rate (energy / general /
+  // labour-tied) — same as the main 6-year projection in the report panel.
+  const ageMultUser = P.cost_formula.repairs_age_mult[d.tractorAge] || 1.0;
+  const ageMultNew  = P.cost_formula.repairs_age_mult.new;
+  const dieselRepairsNew = ((d.c1.repairs || 0) + (d.c2.repairs || 0)) * (ageMultNew / ageMultUser);
+
+  // Diesel year-1 operating components (new-basis, year-0 €)
+  const dy1 = {
+    fuel:        (d.c1.fuel        || 0) + (d.c2.fuel        || 0),
+    repairs:     dieselRepairsNew,
+    depreciation: dieselDep_newBasis,
+    tyres:       (d.c1.tyres       || 0) + (d.c2.tyres       || 0),
+    lubricants:  (d.c1.lubricants  || 0) + (d.c2.lubricants  || 0),
+    insurance:   dieselIns_newBasis,
+    labour:      d.labourCost      || 0,
+    contractor:  d.contractorExtra || 0,
+  };
+  // Voltrac year-1 operating components (already new, since Voltrac is new
+  // by definition in our model)
+  const vy1 = {
+    electricity: voltracElec_eur,
+    repairs:     voltracRepairs,
+    depreciation: voltracDepreciation,
+    tyres:       voltracTyres,
+    fee:         voltracFee,
+    road:        voltracRoadTransport,
+    // labour/lubricants/insurance are all zero for Voltrac
+  };
+
+  // Inflation rates (read from the diesel result — they originated in
+  // calculate() from the form inputs).
+  const _gInflRate = d.generalInflation;
+  const _eInflRate = d.energyInflation;
+  const _lInflRate = d.generalInflation + P.inflation.labour_premium_over_general_pp;
+
+  // Inflate a component by its category-specific rate. y is the year index
+  // (1..6), where y=1 means "first full year of operation after purchase".
+  function _inf(category, y) {
+    const r = (category === 'energy') ? _eInflRate
+            : (category === 'labour') ? _lInflRate
+            :                            _gInflRate;
+    return Math.pow(1 + r, y - 1);  // y=1 → 1.0× (current prices), y=6 → 5 years of inflation
+  }
+
+  // Build year-by-year operating totals (excluding depreciation) and
+  // depreciation alone, separately — so we can include or exclude as the
+  // user toggles between "expenses" and "cost" modes.
+  const dieselOpExclDep = [];
+  const dieselDepOnly   = [];
+  const voltracOpExclDep = [];
+  const voltracDepOnly   = [];
+  for (let y = 1; y <= 6; y++) {
+    dieselOpExclDep.push(
+        dy1.fuel        * _inf('energy', y)
+      + dy1.repairs     * _inf('energy', y)
+      + dy1.tyres       * _inf('general', y)
+      + dy1.lubricants  * _inf('energy', y)
+      + dy1.insurance   * _inf('general', y)
+      + dy1.labour      * _inf('labour', y)
+      + dy1.contractor  * _inf('labour', y)
+    );
+    dieselDepOnly.push(dy1.depreciation * _inf('general', y));
+    voltracOpExclDep.push(
+        vy1.electricity * _inf('energy', y)
+      + vy1.repairs     * _inf('energy', y)
+      + vy1.tyres       * _inf('general', y)
+      + vy1.fee         * _inf('general', y)
+      + vy1.road        * _inf('labour', y)
+    );
+    voltracDepOnly.push(vy1.depreciation * _inf('general', y));
+  }
+
+  // Cumulative series, both modes. Length 7 (year 0 through year 6).
+  const dieselCum_expenses = [dieselFleetCapex];  // y0 = full capex
+  const voltracCum_expenses = [voltracCapex_total];
+  const dieselCum_cost     = [0];                  // y0 = 0 (no economic cost yet)
+  const voltracCum_cost    = [0];
+  for (let y = 1; y <= 6; y++) {
+    // Expenses mode: capex up-front, then operating costs ex-depreciation
+    dieselCum_expenses.push(dieselCum_expenses[y-1] + dieselOpExclDep[y-1]);
+    voltracCum_expenses.push(voltracCum_expenses[y-1] + voltracOpExclDep[y-1]);
+    // Cost mode: zero up-front, then operating costs including depreciation
+    dieselCum_cost.push(dieselCum_cost[y-1] + dieselOpExclDep[y-1] + dieselDepOnly[y-1]);
+    voltracCum_cost.push(voltracCum_cost[y-1] + voltracOpExclDep[y-1] + voltracDepOnly[y-1]);
+  }
+  const sixYear = {
+    expenses: {
+      diesel:  dieselCum_expenses,
+      voltrac: voltracCum_expenses,
+      delta_y6: voltracCum_expenses[6] - dieselCum_expenses[6],
+    },
+    cost: {
+      diesel:  dieselCum_cost,
+      voltrac: voltracCum_cost,
+      delta_y6: voltracCum_cost[6] - dieselCum_cost[6],
+    },
+  };
 
   // ── COST BREAKDOWN (for the comparison chart) ──
   const v_breakdown = {
@@ -3591,6 +4347,9 @@ function computeVoltracComparison(d) {
     costPerHa: voltracCostPerHa,
     costPerKg: voltracCostPerKg,
     unitsNeeded: v_unitsNeeded,
+    unitsWorkloadDerived: v_unitsNeeded_workload,
+    dieselFleetCount,
+    unitsIsOverride: _hasOverride,
     fieldOnlyHours: v_field_only_hours,
     annualSavings,
     annualSavings_newBasis,
@@ -3605,6 +4364,7 @@ function computeVoltracComparison(d) {
     breakdown: v_breakdown,
     taskHours: v_taskHours,
     taskCost: v_taskCost,
+    sixYear,
     components: {
       depreciation: voltracDepreciation,
       repairs:      voltracRepairs,
@@ -3623,6 +4383,7 @@ let charts = {};
 let lastResults = null;
 let activeFilter = null; // { kind: 'month'|'category'|'task'|'fixvar', key }
 let monthlyUnitChoice = 'h'; // 'h' or 'cost' — user toggle for the monthly chart
+let sixYearMode = 'expenses'; // 'expenses' (cash basis, starts at capex) or 'cost' (accrual basis, starts at 0) — for the 6-year evolution chart in compare mode
 let compareMode = false; // true when "Compare to Voltrac" is active
 let lastDieselResult = null;
 let lastVoltracResult = null;
@@ -3693,6 +4454,7 @@ function renderResults(r) {
         <div class="label"><span class="marker"></span>${T('card_annualHours')}</div>
         <div class="value">${fmt(r.totalHours)}<span class="unit">${T('h_unit')}</span></div>
         <div class="range">${formatHph(r.hoursPerHa)} h/ha · ${r.area.toLocaleString(loc)} ha</div>
+        <div class="regime-chip ${r.regime.style}">${T('regime_' + r.regime.key)}<span class="pos">pos ${r.resolvedPos.toFixed(2).replace('.', decSep)}</span></div>
       </div>
       <div class="card feature">
         <div class="label"><span class="marker"></span>${T('card_annualCost')}</div>
@@ -3715,20 +4477,30 @@ function renderResults(r) {
       <h4>${T('fleet_title')}</h4>
       <div class="subtitle">${T('fleet_subtitle')}</div>
       <div class="step-track">
-        <div class="step-cell ${r.stepIdx === 0 ? 'active' : ''}"></div>
-        <div class="step-cell ${r.stepIdx === 1 ? 'active' : ''}"></div>
-        <div class="step-cell ${r.stepIdx === 2 ? 'active' : ''}"></div>
-        <div class="step-cell ${r.stepIdx === 3 ? 'active' : ''}"></div>
-        <div class="step-cell ${r.stepIdx === 4 ? 'active' : ''}"></div>
+        <div class="step-cell ${r.stepIdx === 0 ? 'active status-' + r.fleetRec.status : ''}"></div>
+        <div class="step-cell ${r.stepIdx === 1 ? 'active status-' + r.fleetRec.status : ''}"></div>
+        <div class="step-cell ${r.stepIdx === 2 ? 'active status-' + r.fleetRec.status : ''}"></div>
+        <div class="step-cell ${r.stepIdx === 3 ? 'active status-' + r.fleetRec.status : ''}"></div>
+        <div class="step-cell ${r.stepIdx === 4 ? 'active status-' + r.fleetRec.status : ''}"></div>
       </div>
       <div class="step-labels">
-        <span class="${r.stepIdx === 0 ? 'active' : ''}">${T('fleet_step_0_label').replace('<', '&lt;').replace('>', '&gt;')}</span>
-        <span class="${r.stepIdx === 1 ? 'active' : ''}">${T('fleet_step_1_label')}</span>
-        <span class="${r.stepIdx === 2 ? 'active' : ''}">${T('fleet_step_2_label')}</span>
-        <span class="${r.stepIdx === 3 ? 'active' : ''}">${T('fleet_step_3_label')}</span>
-        <span class="${r.stepIdx === 4 ? 'active' : ''}">${T('fleet_step_4_label').replace('<', '&lt;').replace('>', '&gt;')}</span>
+        <span class="${r.stepIdx === 0 ? 'active status-' + r.fleetRec.status : ''}">${T('fleet_step_0_label').replace('<', '&lt;').replace('>', '&gt;')}</span>
+        <span class="${r.stepIdx === 1 ? 'active status-' + r.fleetRec.status : ''}">${T('fleet_step_1_label')}</span>
+        <span class="${r.stepIdx === 2 ? 'active status-' + r.fleetRec.status : ''}">${T('fleet_step_2_label')}</span>
+        <span class="${r.stepIdx === 3 ? 'active status-' + r.fleetRec.status : ''}">${T('fleet_step_3_label')}</span>
+        <span class="${r.stepIdx === 4 ? 'active status-' + r.fleetRec.status : ''}">${T('fleet_step_4_label').replace('<', '&lt;').replace('>', '&gt;')}</span>
       </div>
       <div class="step-description">${r.stepDesc}</div>
+      <div class="fleet-recommendation status-${r.fleetRec.status}">
+        ${T('fleet_recommendation_' + r.fleetRec.status)({
+          n: r.fleetRec.userN,
+          min: r.fleetRec.min,
+          max: r.fleetRec.max,
+          range: r.fleetRec.min === r.fleetRec.max
+            ? String(r.fleetRec.min)
+            : (r.fleetRec.min + '–' + r.fleetRec.max)
+        })}
+      </div>
     </div>
 
     <div class="filter-banner" id="filterBanner">
@@ -3890,7 +4662,12 @@ function renderVoltracComparison(d, v) {
   } else if (v.paybackYears === null && v.extraCapex > 0) {
     insights.push({ type: 'warn', text: T('voltrac_insight_no_payback')() });
   }
-  insights.push({ type: 'info', text: T('voltrac_insight_units')({n: v.unitsNeeded}) });
+  insights.push({ type: 'info', text: T('voltrac_insight_units')({
+    n:     v.unitsNeeded,
+    work:  v.unitsWorkloadDerived,
+    fleet: v.dieselFleetCount,
+    hpu:   Math.round(v.fieldOnlyHours / v.unitsNeeded),
+  }) });
   // Labour savings: report actual paid driver-hours eliminated in the diesel
   // scenario (effectiveLabourHours = totalHours + t2Hours × overlap), plus
   // the cash impact. Voltrac runs autonomously so 100% of driver labour is
@@ -3933,10 +4710,23 @@ function renderVoltracComparison(d, v) {
         <div class="value">${paybackTxt}</div>
         <div class="range">${CURRENT_LANG === 'es' ? 'sobre el sobrecoste de adquisición €' : 'on extra capex €'}${fmt(v.extraCapex)}</div>
       </div>
-      <div class="card">
+      <div class="card voltrac-units-card">
         <div class="label"><span class="marker"></span>${T('voltrac_units_used')({n: v.unitsNeeded})}</div>
-        <div class="value">${v.unitsNeeded}<span class="unit">${CURRENT_LANG === 'es' ? '× Voltrac' : '× Voltrac'}</span></div>
-        <div class="range">${fmt(v.fieldOnlyHours)} h ${CURRENT_LANG === 'es' ? 'de operación autónoma' : 'autonomous operation'}</div>
+        <div class="voltrac-units-stepper">
+          <button type="button" class="vu-step" data-vu-action="dec" aria-label="-" ${v.unitsNeeded <= 1 ? 'disabled' : ''}>−</button>
+          <div class="value vu-count">${v.unitsNeeded}<span class="unit">× Voltrac</span></div>
+          <button type="button" class="vu-step" data-vu-action="inc" aria-label="+" ${v.unitsNeeded >= 10 ? 'disabled' : ''}>+</button>
+        </div>
+        <div class="voltrac-units-feedback ${v.unitsNeeded === v.unitsWorkloadDerived ? 'ok' : (v.unitsNeeded < v.unitsWorkloadDerived ? 'warn' : 'info')}">
+          ${
+            v.unitsNeeded === v.unitsWorkloadDerived
+              ? T('voltrac_units_match')({n: v.unitsNeeded, fleet: v.dieselFleetCount, work: v.unitsWorkloadDerived})
+              : v.unitsNeeded < v.unitsWorkloadDerived
+                ? T('voltrac_units_undersized')({n: v.unitsNeeded, work: v.unitsWorkloadDerived, hpu: Math.round(v.fieldOnlyHours / v.unitsNeeded)})
+                : T('voltrac_units_oversized')({n: v.unitsNeeded, work: v.unitsWorkloadDerived, hpu: Math.round(v.fieldOnlyHours / v.unitsNeeded)})
+          }
+          ${v.unitsIsOverride ? `<button type="button" class="vu-reset" data-vu-action="reset">${T('voltrac_units_reset')({fleet: v.dieselFleetCount})}</button>` : ''}
+        </div>
       </div>
     </div>
 
@@ -3962,6 +4752,34 @@ function renderVoltracComparison(d, v) {
       <h4>${T('chart_task_cost_compare')}</h4>
       <div class="subtitle">${T('chart_task_cost_compare_sub')}</div>
       <div class="chart-wrap tall"><canvas id="chartTaskCostCompare"></canvas></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="card-header-row">
+        <h4>${T('chart_sixyear')}</h4>
+        <div class="unit-toggle" id="sixyearModeToggle">
+          <button class="unit-toggle-btn ${sixYearMode === 'expenses' ? 'active' : ''}" data-mode="expenses" type="button">${T('toggle_expenses')}</button>
+          <button class="unit-toggle-btn ${sixYearMode === 'cost' ? 'active' : ''}" data-mode="cost" type="button">${T('toggle_cost')}</button>
+        </div>
+      </div>
+      <div class="subtitle">${sixYearMode === 'expenses' ? T('chart_sixyear_sub_expenses') : T('chart_sixyear_sub_cost')}</div>
+      <div class="chart-wrap tall"><canvas id="chartSixYear"></canvas></div>
+      <div class="sixyear-delta sixyear-delta-${(v.sixYear[sixYearMode].delta_y6 < 0) ? 'savings' : 'extra'}">
+        ${T('sixyear_delta_callout')({
+          mode: sixYearMode,
+          delta: Math.abs(Math.round(v.sixYear[sixYearMode].delta_y6)),
+          dieselY6: Math.round(v.sixYear[sixYearMode].diesel[6]),
+          voltracY6: Math.round(v.sixYear[sixYearMode].voltrac[6]),
+          voltracCheaper: v.sixYear[sixYearMode].delta_y6 < 0,
+        })}
+      </div>
+      <a href="https://voltrac.eu/" target="_blank" rel="noopener noreferrer" class="voltrac-cta">
+        <span class="vcta-label">${T('voltrac_reserve_demo')}</span>
+        <svg class="vcta-arrow" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="2" y1="8" x2="13" y2="8"></line>
+          <polyline points="8,3 13,8 8,13"></polyline>
+        </svg>
+      </a>
     </div>
 
     <div class="insights-section">
@@ -4244,6 +5062,92 @@ function renderVoltracCharts(d, v) {
         y: { grid: { display: false }, border: { display: false }, ticks: { font: { family: 'Geist', size: 11 } } }
       }
     }
+  });
+
+  // ─── 6-YEAR CUMULATIVE EVOLUTION: Diesel vs Voltrac ───
+  // Two display modes (user toggle):
+  //   "expenses" (cash basis):  capex at year 0, then operating costs sans
+  //                             depreciation (already paid via capex)
+  //   "cost" (accrual basis):   zero at year 0, then operating costs
+  //                             including depreciation (per-year economic cost)
+  // Year-6 delta is highlighted in the callout below the chart.
+  const sy = v.sixYear[sixYearMode];
+  const yearLabels = ['Y0', 'Y1', 'Y2', 'Y3', 'Y4', 'Y5', 'Y6'];
+  charts.sixYear = new Chart(document.getElementById('chartSixYear'), {
+    type: 'line',
+    data: {
+      labels: yearLabels,
+      datasets: [
+        {
+          label: T('voltrac_label_diesel'),
+          data: sy.diesel.map(v => Math.round(v)),
+          borderColor: TERRA,
+          backgroundColor: 'rgba(200, 149, 109, 0.10)',
+          borderWidth: 2.5,
+          fill: false,
+          tension: 0.15,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: TERRA,
+          pointBorderColor: '#111',
+          pointBorderWidth: 1.5,
+        },
+        {
+          label: T('voltrac_label_voltrac'),
+          data: sy.voltrac.map(v => Math.round(v)),
+          borderColor: VOLT,
+          backgroundColor: 'rgba(177, 193, 79, 0.10)',
+          borderWidth: 2.5,
+          fill: false,
+          tension: 0.15,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: VOLT,
+          pointBorderColor: '#111',
+          pointBorderWidth: 1.5,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { boxWidth: 8, boxHeight: 8, padding: 12, font: { family: 'Geist', size: 11 }, color: '#a3a3a3', usePointStyle: true, pointStyle: 'rect' },
+        },
+        tooltip: {
+          backgroundColor: '#0a0a0a', borderColor: '#262626', borderWidth: 1, padding: 10,
+          titleFont: { family: 'Geist Mono', size: 11 },
+          bodyFont: { family: 'Geist', size: 12 },
+          callbacks: {
+            label: (ctx) => ctx.dataset.label + ': €' + ctx.parsed.y.toLocaleString(loc),
+            footer: (items) => {
+              if (items.length < 2) return '';
+              const dieselV = items.find(i => i.datasetIndex === 0)?.parsed.y || 0;
+              const voltracV = items.find(i => i.datasetIndex === 1)?.parsed.y || 0;
+              const delta = voltracV - dieselV;
+              const sign = delta < 0 ? '−' : '+';
+              return T('sixyear_tooltip_delta')({sign, abs: Math.abs(Math.round(delta)).toLocaleString(loc)});
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: { font: { family: 'Geist Mono', size: 10 } },
+        },
+        y: {
+          beginAtZero: sixYearMode === 'cost',
+          ticks: { callback: (val) => '€' + (val/1000).toFixed(0) + 'k', font: { family: 'Geist Mono', size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          border: { display: false },
+        },
+      },
+    },
   });
 }
 
@@ -4628,6 +5532,34 @@ document.getElementById('area').addEventListener('change', () => {
   const isCustom = document.getElementById('area').value === 'custom';
   document.getElementById('customAreaRow').classList.toggle('show', isCustom);
 });
+document.getElementById('frequencyCustom').addEventListener('input', () => {
+  if (document.getElementById('frequency').value === 'custom') calculate();
+});
+document.getElementById('frequency').addEventListener('change', () => {
+  const isCustom = document.getElementById('frequency').value === 'custom';
+  document.getElementById('customFrequencyRow').classList.toggle('show', isCustom);
+});
+
+// Operator dropdown changes the labour rate's default. Reset the rate input
+// to the mode default and refresh the hint string. Don't preserve previous
+// override — modes have different semantic meanings (salaried 15 vs
+// contractor 50 mean different things), so a forced reset is the safer UX.
+function applyLabourModeDefaults() {
+  const mode = document.getElementById('operator').value;
+  const defaults = { owner: 0, salaried: 15, contractor: 50 };
+  const rateEl = document.getElementById('labourRate');
+  const hintEl = document.getElementById('labourRateHint');
+  rateEl.value = String(defaults[mode] !== undefined ? defaults[mode] : 0);
+  if (hintEl) {
+    const hintKey = 'f_labour_rate_hint_' + mode;
+    hintEl.setAttribute('data-i18n', hintKey);
+    hintEl.textContent = T(hintKey);
+  }
+}
+document.getElementById('operator').addEventListener('change', () => {
+  applyLabourModeDefaults();
+  // calculate() will fire from the generic change listener above.
+});
 document.getElementById('advancedToggle').addEventListener('click', function() {
   this.classList.toggle('open');
   document.getElementById('advancedContent').classList.toggle('open');
@@ -4641,6 +5573,57 @@ document.addEventListener('click', (e) => {
   if (newUnit === monthlyUnitChoice) return;
   monthlyUnitChoice = newUnit;
   if (lastResults) renderCharts(lastResults);
+});
+
+// 6-year evolution chart mode toggle (compare view only). Switches between
+// expenses (cash basis) and cost (accrual basis). Re-renders the compare
+// panel since the chart subtitle, delta callout colour and the chart's
+// y-axis baseline all depend on the active mode.
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('#sixyearModeToggle .unit-toggle-btn');
+  if (!btn || btn.disabled) return;
+  const newMode = btn.dataset.mode; // 'expenses' or 'cost'
+  if (newMode === sixYearMode) return;
+  sixYearMode = newMode;
+  if (lastDieselResult && lastVoltracResult) {
+    renderVoltracComparison(lastDieselResult, lastVoltracResult);
+  }
+});
+
+// Voltrac unit count stepper — delegated since the compare panel re-renders.
+// The default count is the diesel fleet size (dieselFleetCount); the user
+// can step it up or down (1..10) to explore alternative configurations.
+// Empty override means "use the diesel count" — see computeVoltracComparison.
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.vu-step, .vu-reset');
+  if (!btn || btn.disabled) return;
+  const action = btn.dataset.vuAction;
+  const overrideEl = document.getElementById('voltracUnitsOverride');
+  if (!overrideEl) return;
+  // Read the count currently displayed (the value visible in .vu-count).
+  // We can't rely on overrideEl.value alone because the empty-string case
+  // means "use diesel count", and we need to compute the new value from
+  // whatever is currently on screen.
+  const countEl = document.querySelector('.voltrac-units-card .vu-count');
+  const currentCount = countEl ? parseInt(countEl.textContent, 10) : NaN;
+  if (action === 'reset') {
+    overrideEl.value = '';
+  } else if (action === 'inc' && isFinite(currentCount) && currentCount < 10) {
+    overrideEl.value = String(currentCount + 1);
+  } else if (action === 'dec' && isFinite(currentCount) && currentCount > 1) {
+    overrideEl.value = String(currentCount - 1);
+  } else {
+    return;
+  }
+  calculate();
+});
+
+// Whenever the diesel tractor count changes, reset the Voltrac override so
+// the like-for-like default re-anchors to the new fleet size. The next
+// calculate() will pick up the cleared override naturally.
+document.getElementById('tractorCount').addEventListener('change', () => {
+  const overrideEl = document.getElementById('voltracUnitsOverride');
+  if (overrideEl) overrideEl.value = '';
 });
 
 // ============================================================

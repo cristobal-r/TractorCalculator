@@ -466,6 +466,11 @@ body::before {
 .form-panel::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
 .form-panel::-webkit-scrollbar-thumb:hover { background: #383838; }
 
+/* Crop-module form containers — toggled via switchCrop().
+   Inline display:none on .crop-form-container[data-crop="olive"] hides
+   the olive form initially; switchCrop() swaps which one is hidden. */
+.crop-form-container[data-crop] { /* selector exists for symmetry; no rule needed */ }
+
 .form-section {
   border-bottom: 1px solid var(--line-soft);
   padding-bottom: 16px;
@@ -1102,8 +1107,8 @@ body::before {
 
 <div class="tabs-row">
   <nav class="tabs" role="tablist">
-    <button class="tab active" role="tab"><span class="dot"></span><span data-i18n="tab_vineyard">Vineyard</span></button>
-    <button class="tab disabled" role="tab" disabled><span data-i18n="tab_olive">Olive grove</span> <span class="badge" data-i18n="badge_soon">Soon</span></button>
+    <button class="tab active" role="tab" data-crop="vineyard"><span class="dot"></span><span data-i18n="tab_vineyard">Vineyard</span></button>
+    <button class="tab" role="tab" data-crop="olive"><span class="dot"></span><span data-i18n="tab_olive">Olive grove</span></button>
     <button class="tab disabled" role="tab" disabled><span data-i18n="tab_stone">Stone fruit</span> <span class="badge" data-i18n="badge_soon">Soon</span></button>
     <button class="tab disabled" role="tab" disabled><span data-i18n="tab_citrus">Citrus</span> <span class="badge" data-i18n="badge_soon">Soon</span></button>
     <button class="tab disabled" role="tab" disabled><span data-i18n="tab_almond">Almond</span> <span class="badge" data-i18n="badge_soon">Soon</span></button>
@@ -1125,6 +1130,9 @@ body::before {
 <div class="main-grid">
 
 <aside class="form-panel">
+
+  <!-- ════════════ VINEYARD MODULE form fields ════════════ -->
+  <div data-crop="vineyard" class="crop-form-container">
 
   <div class="form-section">
     <h3><span class="num">01</span> <span data-i18n="s01">Plantation</span></h3>
@@ -1246,11 +1254,11 @@ body::before {
     <div class="field">
       <label data-i18n="f_spraying">Spraying programme</label>
       <select id="spraying">
-        <option value="full" selected data-i18n="o_spray_full">Conventional · full (12–14 passes)</option>
-        <option value="standard" data-i18n="o_spray_standard">Conventional · standard (9–11 passes)</option>
-        <option value="reduced" data-i18n="o_spray_reduced">Reduced / minimal (5–7 passes)</option>
-        <option value="organic_full" data-i18n="o_spray_organic_full">Organic · full sulfur + copper (10–13)</option>
-        <option value="organic_reduced" data-i18n="o_spray_organic_reduced">Organic · reduced (6–8)</option>
+        <option value="full" selected data-i18n="o_spray_full">Conventional · full (9–12 passes)</option>
+        <option value="standard" data-i18n="o_spray_standard">Conventional · standard (6–9 passes)</option>
+        <option value="reduced" data-i18n="o_spray_reduced">Reduced / minimal (3–5 passes)</option>
+        <option value="organic_full" data-i18n="o_spray_organic_full">Organic · full sulfur + copper (8–12)</option>
+        <option value="organic_reduced" data-i18n="o_spray_organic_reduced">Organic · reduced (5–8)</option>
       </select>
       <div class="field-warning" id="sprayWarning" data-i18n="w_spray">Conventional programmes not available in organic production. Switched to organic sulfur + copper.</div>
     </div>
@@ -1338,6 +1346,242 @@ body::before {
       </select>
     </div>
   </div>
+
+  </div><!-- /data-crop="vineyard" -->
+
+  <!-- ════════════ OLIVE MODULE form fields ════════════
+       Independent set of fields with `_ol` suffix IDs. Toggled vs vineyard
+       via display:none on the parent container. Five-section structure
+       mirrors the vineyard layout so users moving between tabs see a
+       consistent skeleton. Defaults reflect the typical Spanish OTM
+       rain-fed estate in inland Mediterranean campiña (the AEMO reference
+       case): 20 ha, IM region, OTM system, rain-fed, 80 trees/ha frame,
+       conventional, typical frequency, low fragmentation, flat slope,
+       conventional minimum tillage, conventional standard spraying (3-4),
+       biennial tractor+picadora, vibrador de tronco con mantos ayudados,
+       80-100 CV mid-life single tractor, salaried operator at 14 €/h.
+  -->
+  <div data-crop="olive" class="crop-form-container" style="display:none">
+
+  <div class="form-section">
+    <h3><span class="num">01</span> <span data-i18n="s01">Plantation</span></h3>
+    <div class="field">
+      <label data-i18n="f_area">Area planted</label>
+      <select id="area_ol">
+        <option value="6" data-i18n="o_area_ol_6">Under 10 ha · small estate</option>
+        <option value="20" selected data-i18n="o_area_ol_20">10–30 ha · typical family estate</option>
+        <option value="50" data-i18n="o_area_ol_50">30–80 ha · medium estate</option>
+        <option value="130" data-i18n="o_area_ol_130">80–200 ha · large estate</option>
+        <option value="300" data-i18n="o_area_ol_300">Over 200 ha · industrial</option>
+        <option value="custom" data-i18n="o_area_custom">Custom · enter value</option>
+      </select>
+    </div>
+    <div class="custom-area-row" id="customAreaRow_ol">
+      <input type="number" id="areaCustom_ol" min="0.1" max="10000" step="0.1" value="20">
+      <span class="unit-label" data-i18n="unit_ha">ha</span>
+    </div>
+    <div class="field">
+      <label data-i18n="f_region">Region</label>
+      <select id="region_ol">
+        <option value="CM" data-i18n="o_region_ol_CM">Coastal Mediterranean · Andalucía littoral, C. Valenciana, Murcia</option>
+        <option value="IM" selected data-i18n="o_region_ol_IM">Inland Mediterranean · Jaén, Córdoba, Sevilla, Extremadura</option>
+        <option value="CN" data-i18n="o_region_ol_CN">Centre-north · Bajo Aragón, Les Garrigues, La Rioja</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label data-i18n="f_system">System</label>
+        <select id="system_ol">
+          <option value="otnm" data-i18n="o_system_otnm">OTNM · Tradicional non-mechanisable</option>
+          <option value="otm" selected data-i18n="o_system_otm">OTM · Tradicional mechanisable</option>
+          <option value="oi" data-i18n="o_system_oi">OI · Intensivo</option>
+          <option value="os" data-i18n="o_system_os">OS · Superintensivo / seto</option>
+        </select>
+      </div>
+      <div class="field">
+        <label data-i18n="f_density">Density</label>
+        <select id="density_ol">
+          <!-- options filtered live by system in calculateOlive() -->
+          <option value="80" selected data-i18n="o_density_80">80 trees/ha · wide frame</option>
+          <option value="100" data-i18n="o_density_100">100 trees/ha</option>
+          <option value="120" data-i18n="o_density_120">120 trees/ha</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label data-i18n="f_production">Production</label>
+        <select id="production_ol">
+          <option value="conventional" selected data-i18n="o_prod_conv">Conventional</option>
+          <option value="organic" data-i18n="o_prod_organic">Organic</option>
+        </select>
+      </div>
+      <div class="field">
+        <label data-i18n="f_water">Water</label>
+        <select id="water_ol">
+          <option value="rainfed" selected data-i18n="o_water_rainfed">Rain-fed</option>
+          <option value="irrigated" data-i18n="o_water_irrigated">Irrigated</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-warning" id="waterWarning_ol"></div>
+    <div class="field">
+      <label data-i18n="f_frequency">Frequency of tractor usage</label>
+      <select id="frequency_ol">
+        <option value="moderate" data-i18n="o_freq_mod">Moderate · lower end of the range</option>
+        <option value="typical" selected data-i18n="o_freq_typ">Typical · midpoint</option>
+        <option value="intensive" data-i18n="o_freq_int">Intensive · upper end of the range</option>
+        <option value="custom" data-i18n="o_freq_custom">Custom · enter total h/year</option>
+      </select>
+    </div>
+    <div class="custom-area-row" id="customFrequencyRow_ol">
+      <input type="number" id="frequencyCustom_ol" min="10" max="3000" step="10" value="560">
+      <span class="unit-label" data-i18n="unit_h_yr">h/year</span>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><span class="num">02</span> <span data-i18n="s02">Plot Structure</span></h3>
+    <div class="field">
+      <label data-i18n="f_plotSize">Average plot size</label>
+      <select id="plotSize_ol">
+        <option value="0.7" data-i18n="o_plot_07">Under 1 ha · very small</option>
+        <option value="2" selected data-i18n="o_plot_2">1–3 ha</option>
+        <option value="4" data-i18n="o_plot_4">3–5 ha</option>
+        <option value="7" data-i18n="o_plot_7">5–10 ha</option>
+        <option value="15" data-i18n="o_plot_15">Over 10 ha · large plots</option>
+      </select>
+    </div>
+    <div class="field">
+      <label data-i18n="f_fragmentation">Plot fragmentation</label>
+      <select id="fragmentation_ol">
+        <option value="low" selected data-i18n="o_frag_low">Concentrated · 1–3 nearby plots</option>
+        <option value="medium" data-i18n="o_frag_med">Moderate · 4–8 plots</option>
+        <option value="high" data-i18n="o_frag_high_ol">Highly fragmented · 9+ plots, typical Jaén</option>
+      </select>
+    </div>
+    <div class="field">
+      <label data-i18n="f_slope">Average slope</label>
+      <select id="slope_ol">
+        <option value="flat" selected data-i18n="o_slope_flat">Flat · under 5%</option>
+        <option value="gentle" data-i18n="o_slope_gentle">Gentle · 5–15%</option>
+        <option value="moderate" data-i18n="o_slope_moderate">Moderate · 15–30%</option>
+        <option value="steep" data-i18n="o_slope_steep">Steep · over 30%</option>
+      </select>
+      <div class="field-warning" id="slopeWarning_ol"></div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><span class="num">03</span> <span data-i18n="s03">Operations</span></h3>
+    <div class="field">
+      <label data-i18n="f_soilMgmt">Soil management</label>
+      <select id="soilMgmt_ol">
+        <option value="tillage_min" selected data-i18n="o_soil_ol_tillage_min">Minimum tillage · cultivador (1–2 passes) + herbicide</option>
+        <option value="tillage_trad" data-i18n="o_soil_ol_tillage_trad">Traditional tillage · cultivador (3–4+ passes/yr)</option>
+        <option value="cover" data-i18n="o_soil_ol_cover">Cover crop with mowing · desbrozadora + spot herbicide</option>
+        <option value="bare" data-i18n="o_soil_ol_bare">Bare soil with herbicide only</option>
+      </select>
+    </div>
+    <div class="field">
+      <label data-i18n="f_spraying">Spraying programme</label>
+      <select id="spraying_ol">
+        <option value="conv_otnm" data-i18n="o_spray_ol_otnm">Conventional · OTNM pulverizador (2 passes)</option>
+        <option value="conv_standard" selected data-i18n="o_spray_ol_standard">Conventional · standard (3–4 passes)</option>
+        <option value="conv_intensive" data-i18n="o_spray_ol_intensive">Conventional · intensive (5–6 passes)</option>
+        <option value="organic_reduced" data-i18n="o_spray_ol_organic_red">Organic · reduced (3–4 passes)</option>
+        <option value="organic_standard" data-i18n="o_spray_ol_organic_std">Organic · standard (5–6 passes)</option>
+      </select>
+      <div class="field-warning" id="sprayWarning_ol"></div>
+    </div>
+    <div class="field">
+      <label data-i18n="f_residue_mgmt">Pruning residue management</label>
+      <select id="residueMgmt_ol">
+        <option value="manual_burn" data-i18n="o_residue_manual">Manual collection + burn</option>
+        <option value="tractor_biennial" selected data-i18n="o_residue_biennial">Tractor + picadora · biennial</option>
+        <option value="tractor_annual" data-i18n="o_residue_annual">Tractor + picadora · annual</option>
+      </select>
+    </div>
+    <div class="field">
+      <label data-i18n="f_harvest_ol">Harvest method</label>
+      <select id="harvest_ol">
+        <option value="manual_otnm" data-i18n="o_harvest_manual">Manual · vibrador de rama + vareo + lonas</option>
+        <option value="vibrador_mantos" selected data-i18n="o_harvest_mantos">Vibrador de tronco · mantos ayudados</option>
+        <option value="vibrador_paraguas" data-i18n="o_harvest_paraguas">Vibrador de tronco · paraguas invertido</option>
+        <option value="cabalgante_own" data-i18n="o_harvest_cabal_own">Cabalgante · own machine</option>
+        <option value="cabalgante_contr" data-i18n="o_harvest_cabal_contr">Cabalgante · contracted</option>
+      </select>
+      <div class="field-warning" id="harvestWarning_ol"></div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3><span class="num">04</span> <span data-i18n="s04">Fleet</span></h3>
+    <div class="field-row">
+      <div class="field">
+        <label data-i18n="f_tractorPower">Power band · all tractors</label>
+        <select id="tractorPower_ol">
+          <option value="70" data-i18n="o_power_ol_70">60–80 CV · narrow / orchard</option>
+          <option value="90" selected data-i18n="o_power_ol_90">80–100 CV · standard mid (AEMO 95 CV ref.)</option>
+          <option value="110" data-i18n="o_power_ol_110">100–120 CV · standard heavy</option>
+          <option value="130" data-i18n="o_power_ol_130">120+ CV · industrial / OS support</option>
+        </select>
+      </div>
+      <div class="field">
+        <label data-i18n="f_tractorAge">Age</label>
+        <select id="tractorAge_ol">
+          <option value="new" data-i18n="o_age_new">New · under 5 yr</option>
+          <option value="mid" selected data-i18n="o_age_mid">Mid-life · 5–15 yr</option>
+          <option value="old" data-i18n="o_age_old">Old · 15+ yr</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label data-i18n="f_tractorCount">Number of tractors</label>
+      <select id="tractorCount_ol">
+        <option value="1" selected data-i18n="o_count_1">1 · single tractor</option>
+        <option value="2" data-i18n="o_count_2">2 · standard + narrow / two-shift</option>
+        <option value="3" data-i18n="o_count_3">3 · medium fleet</option>
+        <option value="4" data-i18n="o_count_4">4 · large estate fleet</option>
+        <option value="5" data-i18n="o_count_5">5 · industrial fleet</option>
+        <option value="6" data-i18n="o_count_6">6 · industrial multi-block</option>
+      </select>
+    </div>
+    <div class="field-warning" id="fleetWarning_ol"></div>
+  </div>
+
+  <div class="form-section">
+    <h3><span class="num">05</span> <span data-i18n="s05">Labour</span></h3>
+    <div class="field">
+      <label data-i18n="f_operator">Operator arrangement</label>
+      <select id="operator_ol">
+        <option value="owner" data-i18n="o_operator_owner">Owner-operator · own time</option>
+        <option value="salaried" selected data-i18n="o_operator_salaried">Salaried in-house</option>
+        <option value="contractor" data-i18n="o_operator_contractor">Seasonal contractor (peak ops)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>
+        <span data-i18n="f_labour_rate">Labour rate</span>
+        <span class="hint" id="labourRateHint_ol" data-i18n="f_labour_rate_hint_salaried_ol">typical 12–18 €/h fully loaded (olive default 14)</span>
+      </label>
+      <div class="custom-area-row show" id="labourRateRow_ol">
+        <input type="number" id="labourRate_ol" min="0" max="200" step="0.5" value="14">
+        <span class="unit-label" data-i18n="unit_eur_h">€/h</span>
+      </div>
+    </div>
+    <div class="field" id="secondOperatorField_ol">
+      <label data-i18n="f_second_operator">Second-tractor operator overlap <span class="hint" data-i18n="f_second_operator_hint">two-tractor fleets only</span></label>
+      <select id="secondOperator_ol">
+        <option value="0.25" data-i18n="o_second_op_25">25% · mostly sequential, rare peaks</option>
+        <option value="0.50" selected data-i18n="o_second_op_50">50% · default, peak season + off-peak mix</option>
+        <option value="0.75" data-i18n="o_second_op_75">75% · mostly concurrent (long peak window)</option>
+        <option value="1.00" data-i18n="o_second_op_100">100% · always concurrent, full second driver</option>
+      </select>
+    </div>
+  </div>
+
+  </div><!-- /data-crop="olive" -->
 
   <div class="form-section">
     <button class="advanced-toggle" id="advancedToggle">
@@ -1611,6 +1855,23 @@ const T_STRINGS = {
     o_frag_medium: 'Moderate · 4–8 plots',
     o_frag_high: 'Fragmented · 9+ plots or distant',
 
+    // Olive-form-specific shorthand keys (the olive Section 01 + 02 uses
+    // a slightly different naming convention than the vineyard section).
+    // These intentionally duplicate strings rather than reuse keys, so
+    // each form section can be re-worded independently.
+    o_prod_conv:    'Conventional',
+    o_prod_organic: 'Organic',
+    o_freq_mod:     'Moderate · lower end of the range',
+    o_freq_typ:     'Typical · midpoint',
+    o_freq_int:     'Intensive · upper end of the range',
+    o_freq_custom:  'Custom · enter total h/year',
+    o_plot_07:      'Under 1 ha · very small',
+    o_plot_2:       '1–3 ha',
+    o_plot_4:       '3–5 ha',
+    o_plot_7:       '5–10 ha',
+    o_plot_15:      'Over 10 ha · large plots',
+    o_frag_med:     'Moderate · 4–8 plots',
+
     o_slope_flat: 'Flat · under 5%',
     o_slope_gentle: 'Gentle · 5–15%',
     o_slope_moderate: 'Moderate · 15–30%',
@@ -1620,11 +1881,11 @@ const T_STRINGS = {
     o_soil_cover: 'Cover crop with mowing',
     o_soil_mixed: 'Mixed · tillage + mowing',
 
-    o_spray_full: 'Conventional · full (12–14 passes)',
-    o_spray_standard: 'Conventional · standard (9–11 passes)',
-    o_spray_reduced: 'Reduced / minimal (5–7 passes)',
-    o_spray_organic_full: 'Organic · full sulfur + copper (10–13)',
-    o_spray_organic_reduced: 'Organic · reduced (6–8)',
+    o_spray_full: 'Conventional · full (9–12 passes)',
+    o_spray_standard: 'Conventional · standard (6–9 passes)',
+    o_spray_reduced: 'Reduced / minimal (3–5 passes)',
+    o_spray_organic_full: 'Organic · full sulfur + copper (8–12)',
+    o_spray_organic_reduced: 'Organic · reduced (5–8)',
 
     o_green_none: 'None · all manual',
     o_green_prepruning: 'Pre-pruning only',
@@ -1684,9 +1945,9 @@ const T_STRINGS = {
     card_annualHours: 'Annual hours',
     card_annualCost: 'Annual cost',
     card_perHectare: 'Per hectare',
-    card_perKg: 'Per kg grape',
+    card_perKg: (unit) => `Per kg ${unit === 'oil' ? 'oil' : 'grape'}`,
     card_perHa_subtitle: 'incl. labour & fuel',
-    card_perKg_subtitle: (y) => `assumed ${y} t/ha yield`,
+    card_perKg_subtitle: (y, unit) => unit === 'oil' ? `assumed ${y} t/ha oil yield` : `assumed ${y} t/ha yield`,
     card_hours_subtitle: (hph, area) => `${hph.toFixed(1)} h/ha · ${area.toLocaleString('en-US')} ha`,
     card_cost_subtitle: (pct, lo, hi) => `±${pct}% · €${lo}k–${hi}k`,
 
@@ -1768,6 +2029,7 @@ const T_STRINGS = {
     cat_Insurance: 'Insurance',
     cat_Labour: 'Labour',
     cat_Contractor: 'Contractor',
+    cat_Cabalgante: 'Cabalgante',
 
     // Task / operation labels
     op_Tillage: 'Tillage / cultivator',
@@ -1816,6 +2078,10 @@ const T_STRINGS = {
     prod_organic: 'organic',
     train_espaldera: 'espaldera',
     train_vaso: 'vaso',
+    train_otnm: 'OTNM (tradicional non-mechanisable)',
+    train_otm:  'OTM (tradicional mechanisable)',
+    train_oi:   'OI (intensivo)',
+    train_os:   'OS (superintensivo / seto)',
 
     // Insights — all functions take a context object
     i_t1_underutil: ({h}) => `<strong>Primary tractor under-utilised at ${h} h/year.</strong> Fixed costs (depreciation, insurance) are spread thin. Consider contracting in for less-frequent operations, or sharing the tractor with a neighbour.`,
@@ -1850,7 +2116,9 @@ const T_STRINGS = {
     m_funct_body: ({tot, f, fp, m, mp, ip, ipp, a, ap}) => `Of <strong>${tot} engine hours/year</strong>, IDAE splits suggest roughly <strong>${f} h</strong> functional work (${fp}%), ${m} h manoeuvres (${mp}%), ${ip} h inter-plot travel (${ipp}%) and ${a} h refuel/wait (${ap}%). High fragmentation pushes travel hours up substantially.`,
     m_vend_body: () => `When mechanical harvest is selected, only the tractor time for grape transport is counted. Self-propelled vendimiadora capex (~400,000–600,000 €) or contractor fees (~250–400 €/ha for the mechanical harvest service) must be budgeted separately.`,
     m_infl_body: ({e, g}) => `<strong>Energy inflation (${e}%/yr)</strong> applies to fuel, repairs and lubricants. <strong>General inflation (${g}%/yr)</strong> applies to tyres, insurance and depreciation. <strong>General + 0.5 pp</strong> applies to labour and contractor rates. Depreciation inflates with general because the projection expresses each year's cost in year-X € — keeping it nominal would understate the replacement-cost basis as prices rise and contradict the rest of the inflation framework. (This is not a tax/book-value calculation; straight-line depreciation on the originally purchased asset stays flat in year-0 €.)`,
-    m_yield_body: ({y}) => `Assumed <code>${y} t/ha</code> grape yield. Cost per kg accounts only for tractor-related costs — vineyard inputs (plant material, fertilisers, plant-protection products), pruning labour and post-harvest processing are out of scope.`,
+    m_yield_body: ({y, unit}) => unit === 'oil'
+      ? `Assumed <code>${y} t/ha</code> of olive oil yield (AEMO 2023 reference per system × water). Cost per kg accounts only for tractor-related costs — orchard inputs (fertilisers, plant-protection products, irrigation infrastructure), pruning labour, harvesting labour and milling are out of scope.`
+      : `Assumed <code>${y} t/ha</code> grape yield. Cost per kg accounts only for tractor-related costs — vineyard inputs (plant material, fertilisers, plant-protection products), pruning labour and post-harvest processing are out of scope.`,
 
     // ─── VOLTRAC COMPARISON UI ─────────────────────────────────────
     voltrac_button: 'Compare to Voltrac',
@@ -1955,6 +2223,108 @@ const T_STRINGS = {
     voltrac_m_fee: ({yearly}) => `<strong>Monthly service fee: €${P.voltrac.monthly_fee_eur}/month = €${yearly}/year.</strong> Bundles autonomy software, teleoperation supervision, battery rental & lifecycle management, OTA updates, and insurance. Replaces the diesel-fleet insurance line.`,
     voltrac_m_road: ({h, eur, frag}) => `<strong>Road transport.</strong> Voltrac is not road-legal, so inter-plot travel time (${h} h/year) is contracted out at €${P.voltrac.road_transport_eur_per_h}/h. Total: <code>€${eur}/year</code>. At ${frag} fragmentation this is ${frag === 'low' ? 'a minor line' : frag === 'medium' ? 'noticeable' : 'a major line'} — consolidating plots or installing a private farm track would eliminate it.`,
     voltrac_m_headturn: ({mult, pct}) => `<strong>Headturn penalty: ${mult}× (${pct}% slower).</strong> The autopilot rotates more cautiously at row ends than an experienced human driver. Only manoeuvre time (MH share, ~18% of productive hours) is affected — forward speed during active fieldwork is identical to a human-driven tractor.`,
+
+    // ═══════════════════════════════════════════════════════════════════
+    // OLIVE MODULE — translations
+    //
+    // Keys for the olive grove calculator. Spanish-agronomy terms (vibrador,
+    // cabalgante, picadora, desbrozadora, sierra, campiña, loma, seto) are
+    // used in both languages as the convention; italicised on first
+    // introduction in the English UI.
+    // ═══════════════════════════════════════════════════════════════════
+    version_olive: 'v 2.1 · olive module',
+    // Area bands
+    o_area_ol_6:    'Under 10 ha · small estate',
+    o_area_ol_20:   '10–30 ha · typical family estate',
+    o_area_ol_50:   '30–80 ha · medium estate',
+    o_area_ol_130:  '80–200 ha · large estate',
+    o_area_ol_300:  'Over 200 ha · industrial',
+    // Region (olive zones)
+    o_region_ol_CM: 'Coastal Mediterranean · Andalucía littoral, C. Valenciana, Murcia',
+    o_region_ol_IM: 'Inland Mediterranean · Jaén, Córdoba, Sevilla, Extremadura',
+    o_region_ol_CN: 'Centre-north · Bajo Aragón, Les Garrigues, La Rioja',
+    // System (AEMO typology)
+    f_system: 'System',
+    o_system_otnm: 'OTNM · Tradicional non-mechanisable',
+    o_system_otm:  'OTM · Tradicional mechanisable',
+    o_system_oi:   'OI · Intensivo',
+    o_system_os:   'OS · Superintensivo / seto',
+    // Density (filtered by system at runtime)
+    f_density:    'Density',
+    o_density_80:   '80 trees/ha · wide frame',
+    o_density_100:  '100 trees/ha',
+    o_density_120:  '120 trees/ha',
+    o_density_200:  '200 trees/ha · OI low',
+    o_density_400:  '400 trees/ha · OI typical',
+    o_density_600:  '600 trees/ha · OI dense',
+    o_density_1500: '1,500 trees/ha · OS typical',
+    o_density_1800: '1,800 trees/ha · OS dense',
+    o_density_2000: '2,000 trees/ha · OS max',
+    // Plot structure (olive labels)
+    o_frag_high_ol: 'Highly fragmented · 9+ plots, typical Jaén',
+    // Operations — soil
+    o_soil_ol_tillage_min:  'Minimum tillage · cultivador (1–2 passes) + herbicide',
+    o_soil_ol_tillage_trad: 'Traditional tillage · cultivador (3–4+ passes/yr)',
+    o_soil_ol_cover:        'Cover crop with mowing · desbrozadora + spot herbicide',
+    o_soil_ol_bare:         'Bare soil with herbicide only',
+    // Spraying programmes (AEMO pass counts)
+    o_spray_ol_otnm:         'Conventional · OTNM pulverizador (2 passes)',
+    o_spray_ol_standard:     'Conventional · standard (3–4 passes)',
+    o_spray_ol_intensive:    'Conventional · intensive (5–6 passes)',
+    o_spray_ol_organic_red:  'Organic · reduced (3–4 passes)',
+    o_spray_ol_organic_std:  'Organic · standard (5–6 passes)',
+    // Pruning residue management
+    f_residue_mgmt: 'Pruning residue management',
+    o_residue_manual:    'Manual collection + burn',
+    o_residue_biennial:  'Tractor + picadora · biennial',
+    o_residue_annual:    'Tractor + picadora · annual',
+    // Harvest methods
+    f_harvest_ol: 'Harvest method',
+    o_harvest_manual:        'Manual · vibrador de rama + vareo + lonas',
+    o_harvest_mantos:        'Vibrador de tronco · mantos ayudados',
+    o_harvest_paraguas:      'Vibrador de tronco · paraguas invertido',
+    o_harvest_cabal_own:     'Cabalgante · own machine',
+    o_harvest_cabal_contr:   'Cabalgante · contracted',
+    // Power bands (olive — AEMO 95 CV reference at the mid band)
+    o_power_ol_70:  '60–80 CV · narrow / orchard',
+    o_power_ol_90:  '80–100 CV · standard mid (AEMO 95 CV ref.)',
+    o_power_ol_110: '100–120 CV · standard heavy',
+    o_power_ol_130: '120+ CV · industrial / OS support',
+    // Labour rate hint (olive default 14 €/h)
+    f_labour_rate_hint_salaried_ol: 'typical 12–18 €/h fully loaded (olive default 14)',
+    // Warning chips (olive-specific)
+    w_os_irrigation:   'Superintensivo (<em>seto</em>) is, by definition, irrigated — switched to <em>Irrigated</em>.',
+    w_otnm_irrigation: 'OTNM is, by convention, rain-fed (sierra slopes, no irrigation infrastructure) — switched to <em>Rain-fed</em>.',
+    w_otnm_slope:      'OTNM is defined as slope &gt;20% — gentler slopes typically classify as OTM.',
+    w_steep_slope_ol:  'Steep slope (&gt;30%) — System set to OTNM. Mechanisation is limited; the model still applies, but expect 10–20 h/ha with a heavy manual-labour share outside the tractor budget.',
+    w_organic_spray:   'Conventional spray programmes are not available under organic production — switched to <em>Organic · standard</em>.',
+    w_cabal_otnm:      '<em>Cabalgante</em> requires hedgerow (OS) — switched to manual.',
+    w_cabal_below_breakeven: 'Owning a <em>cabalgante</em> is typically break-even at ~100–150 ha of OS. Below this threshold, contracting is usually cheaper — switched to <em>contracted</em>.',
+    w_density_system_mismatch: 'Density adjusted to match the selected System.',
+    // Insights — olive-specific templates
+    i_olive_fleet_sweet_spot: ({n, h}) => `<strong>Sweet spot for a single tractor.</strong> ${n} tractor running ~${h} h/year is well-amortised — typical for OTM in this area band per AEMO 2023.`,
+    i_olive_frag_high: () => `<strong>Highly fragmented plots — AEMO studies on Jaén report a 0.3–0.4 €/kg oil cost penalty</strong> vs. concentrated farms. Route planning and operation grouping can recover part of this.`,
+    i_olive_cabal_below_breakeven: ({ha}) => `<strong>Cabalgante ownership break-even is ~100–150 ha of OS.</strong> Your area (${ha} ha) is below the threshold — contracting is typically cheaper. The calculator assumes contracted cabalgante hours.`,
+    i_olive_spray_upper: () => `<strong>Spray pass count is at the upper bound of the AEMO range.</strong> Consider reviewing programme intensity vs. disease pressure, especially in low-disease years.`,
+    i_olive_oi_manual: () => `<strong>Manual harvest in OI is unusual.</strong> Most OI farms use <em>vibrador de tronco con paraguas invertido</em> at 0.5–1.5 h/ha; manual is typically reserved for OTNM.`,
+    i_olive_otnm_low_slope: () => `<strong>OTNM is defined as slope &gt;20%.</strong> Lower-slope fincas typically classify as OTM and benefit from full mechanisation.`,
+    i_olive_tillage_trad: () => `<strong>Traditional tillage in rain-fed olive groves is more expensive but does not improve water retention.</strong> A long-standing belief is that frequent cultivator passes keep the soil "open" for rain infiltration in dry zones. The Spanish olive literature (Junta de Andalucía 2007; Pastor & Castro / IFAPA; Univ. Jaén Liétor & García Ruiz / Sustainolive; AEMO 2023) instead reports the opposite: laboreo creates surface crusts and a compact "labour pan" that <em>reduce</em> infiltration, while spontaneous cover crops mown 1–2× per year (the <em>cubierta vegetal espontánea</em> option) improve infiltration, reduce evaporation, and cost less in tractor hours. The calculator does honour the traditional-tillage choice since it remains a real practice in Jaén and Córdoba, but the cost penalty visible here is a fair representation of the literature.`,
+    i_olive_voltrac_cabal_out_of_scope: () => `<strong>Voltrac does not replace the <em>cabalgante</em></strong> (self-propelled specialised harvester). The comparison covers tractor-driven operations only — cabalgante hours and cost are unchanged across both diesel and Voltrac scenarios.`,
+    // Olive operation labels (used in task charts; same shape as vineyard's `op_*` keys)
+    'op_Soil management':                  'Soil management',
+    'op_Spraying_ol':                      'Spraying',
+    'op_Fertilising_ol':                   'Fertilising',
+    'op_Pruning residue shredding':        'Pruning residue shredding',
+    'op_Harvest — vibrador / cabalgante':  'Harvest — vibrador / cabalgante',
+    'op_Harvest transport_ol':             'Harvest transport',
+    'op_Cabalgante':                       'Cabalgante (out of Voltrac scope)',
+    'op_Inter-plot / aux_ol':              'Inter-plot / aux',
+    // Methodology block — olive-specific body
+    m_olive_hph_body: ({system, water, lo, hi, position, hph}) =>
+      `Per the AEMO-anchored band for ${system} ${water} (range ${lo}–${hi} h/ha), positioned at ${position}, the calculator returns ${hph} h/ha after the multiplicative adjustments for plot size, fragmentation, slope, soil management and spray programme.`,
+    m_olive_cabal_note: ({rate}) =>
+      `Cabalgante hours are reported separately at the contractor/own-machine hourly rate (typically ${rate} €/h, AEMO §7.2 range €120–200/h). In OI and OTM, vibrador hours are part of the tractor's own operating hours.`,
+    m_cabal_label: 'Harvest machinery scope',
 
   },
 
@@ -2068,6 +2438,19 @@ const T_STRINGS = {
     o_frag_medium: 'Moderada · 4–8 parcelas',
     o_frag_high: 'Fragmentada · 9+ parcelas o alejadas',
 
+    o_prod_conv:    'Convencional',
+    o_prod_organic: 'Ecológica',
+    o_freq_mod:     'Moderada · extremo inferior del rango',
+    o_freq_typ:     'Típica · punto medio',
+    o_freq_int:     'Intensiva · extremo superior del rango',
+    o_freq_custom:  'Personalizado · introducir h/año totales',
+    o_plot_07:      'Menos de 1 ha · muy pequeña',
+    o_plot_2:       '1–3 ha',
+    o_plot_4:       '3–5 ha',
+    o_plot_7:       '5–10 ha',
+    o_plot_15:      'Más de 10 ha · parcelas grandes',
+    o_frag_med:     'Moderada · 4–8 parcelas',
+
     o_slope_flat: 'Llano · menos de 5%',
     o_slope_gentle: 'Suave · 5–15%',
     o_slope_moderate: 'Moderada · 15–30%',
@@ -2077,11 +2460,11 @@ const T_STRINGS = {
     o_soil_cover: 'Cubierta vegetal con siega',
     o_soil_mixed: 'Mixto · laboreo + siega',
 
-    o_spray_full: 'Convencional · completo (12–14 pases)',
-    o_spray_standard: 'Convencional · estándar (9–11 pases)',
-    o_spray_reduced: 'Reducido / mínimo (5–7 pases)',
-    o_spray_organic_full: 'Ecológico · azufre + cobre completo (10–13)',
-    o_spray_organic_reduced: 'Ecológico · reducido (6–8)',
+    o_spray_full: 'Convencional · completo (9–12 pases)',
+    o_spray_standard: 'Convencional · estándar (6–9 pases)',
+    o_spray_reduced: 'Reducido / mínimo (3–5 pases)',
+    o_spray_organic_full: 'Ecológico · azufre + cobre completo (8–12)',
+    o_spray_organic_reduced: 'Ecológico · reducido (5–8)',
 
     o_green_none: 'Ninguna · todo manual',
     o_green_prepruning: 'Sólo prepoda',
@@ -2140,9 +2523,9 @@ const T_STRINGS = {
     card_annualHours: 'Horas anuales',
     card_annualCost: 'Coste anual',
     card_perHectare: 'Por hectárea',
-    card_perKg: 'Por kg de uva',
+    card_perKg: (unit) => `Por kg de ${unit === 'oil' ? 'aceite' : 'uva'}`,
     card_perHa_subtitle: 'incl. mano de obra y combustible',
-    card_perKg_subtitle: (y) => `rendimiento asumido ${String(y).replace('.', ',')} t/ha`,
+    card_perKg_subtitle: (y, unit) => unit === 'oil' ? `rendimiento asumido ${String(y).replace('.', ',')} t/ha de aceite` : `rendimiento asumido ${String(y).replace('.', ',')} t/ha`,
     card_hours_subtitle: (hph, area) => `${hph.toFixed(1).replace('.', ',')} h/ha · ${area.toLocaleString('es-ES')} ha`,
     card_cost_subtitle: (pct, lo, hi) => `±${pct}% · ${lo} k€–${hi} k€`,
 
@@ -2216,6 +2599,7 @@ const T_STRINGS = {
     cat_Insurance: 'Seguros',
     cat_Labour: 'Mano de obra',
     cat_Contractor: 'Contratista',
+    cat_Cabalgante: 'Cabalgante',
 
     op_Tillage: 'Laboreo / cultivador',
     op_Mowing: 'Siega / cubierta vegetal',
@@ -2256,6 +2640,10 @@ const T_STRINGS = {
     prod_organic: 'ecológica',
     train_espaldera: 'espaldera',
     train_vaso: 'vaso',
+    train_otnm: 'OTNM (tradicional no mecanizable)',
+    train_otm:  'OTM (tradicional mecanizable)',
+    train_oi:   'OI (intensivo)',
+    train_os:   'OS (superintensivo / seto)',
 
     i_t1_underutil: ({h}) => `<strong>Tractor principal infrautilizado con ${h} h/año.</strong> Los costes fijos (amortización, seguros) se reparten en muy pocas horas. Considera contratar para labores menos frecuentes o compartir el tractor con un vecino.`,
     i_t1_overstretched: ({h}) => `<strong>Tractor principal sobrecargado con ${h} h/año.</strong> El riesgo de avería crece bruscamente por encima de ~1.000 h/año. Conviene evaluar un segundo tractor o el uso selectivo de contratistas.`,
@@ -2288,7 +2676,9 @@ const T_STRINGS = {
     m_funct_body: ({tot, f, fp, m, mp, ip, ipp, a, ap}) => `De <strong>${tot} horas de motor/año</strong>, los repartos de IDAE sugieren aproximadamente <strong>${f} h</strong> de trabajo funcional (${fp}%), ${m} h de maniobras (${mp}%), ${ip} h de desplazamiento entre parcelas (${ipp}%) y ${a} h de repostaje/esperas (${ap}%). La fragmentación elevada incrementa sustancialmente las horas de desplazamiento.`,
     m_vend_body: () => `Cuando se selecciona vendimia mecánica, sólo se cuenta el tiempo de tractor para el transporte de uva. El capex de una vendimiadora autopropulsada (~400.000–600.000 €) o las tarifas de contratista (~250–400 €/ha por el servicio de vendimia mecánica) deben presupuestarse aparte.`,
     m_infl_body: ({e, g}) => `<strong>La inflación energética (${e}%/año)</strong> aplica a combustible, reparaciones y lubricantes. <strong>La inflación general (${g}%/año)</strong> aplica a neumáticos, seguros y amortización. <strong>General + 0,5 pp</strong> aplica a la mano de obra y a las tarifas de contratista. La amortización crece con la inflación general porque la proyección expresa cada año en € del año X — dejarla nominal subestimaría la base de coste de reposición a medida que suben los precios y contradiría el resto del marco inflacionario. (Esto no es un cálculo fiscal/contable; la amortización lineal sobre el activo originalmente comprado permanece constante en € del año 0.)`,
-    m_yield_body: ({y}) => `Se asume un rendimiento de uva de <code>${y} t/ha</code>. El coste por kg sólo recoge los costes asociados al tractor — insumos del viñedo (material vegetal, fertilizantes, fitosanitarios), mano de obra de poda y procesado post-cosecha quedan fuera de alcance.`,
+    m_yield_body: ({y, unit}) => unit === 'oil'
+      ? `Se asume un rendimiento de <code>${String(y).replace('.', ',')} t/ha</code> de aceite de oliva (referencia AEMO 2023 por sistema × agua). El coste por kg sólo recoge los costes asociados al tractor — insumos de la finca (fertilizantes, fitosanitarios, infraestructura de riego), mano de obra de poda y vendimia, y almazara quedan fuera de alcance.`
+      : `Se asume un rendimiento de uva de <code>${y} t/ha</code>. El coste por kg sólo recoge los costes asociados al tractor — insumos del viñedo (material vegetal, fertilizantes, fitosanitarios), mano de obra de poda y procesado post-cosecha quedan fuera de alcance.`,
 
     // ─── COMPARACIÓN VOLTRAC ─────────────────────────────────────
     voltrac_button: 'Comparar con Voltrac',
@@ -2393,6 +2783,92 @@ const T_STRINGS = {
     voltrac_m_road: ({h, eur, frag}) => `<strong>Transporte por carretera.</strong> Voltrac no es legal en carretera, así que los desplazamientos entre parcelas (${h} h/año) se contratan a ${P.voltrac.road_transport_eur_per_h} €/h. Total: <code>${eur} €/año</code>. Con fragmentación ${frag === 'low' ? 'baja' : frag === 'medium' ? 'media' : 'alta'} esta es ${frag === 'low' ? 'una línea menor' : frag === 'medium' ? 'una línea notable' : 'una línea importante'} — consolidar parcelas o instalar una pista privada interna la eliminaría.`,
     voltrac_m_headturn: ({mult, pct}) => `<strong>Penalización de giros: ${mult}× (${pct}% más lento).</strong> El piloto automático gira con más prudencia en cabecera que un conductor humano experimentado. Sólo se ve afectado el tiempo de maniobra (porción MH, ~18% de las horas productivas) — la velocidad de avance en trabajo activo es idéntica a un tractor con conductor humano.`,
 
+    // ═══════════════════════════════════════════════════════════════════
+    // MÓDULO OLIVAR — traducciones
+    //
+    // Términos agronómicos en español (vibrador, cabalgante, picadora,
+    // desbrozadora, sierra, campiña, loma, seto) se utilizan también en
+    // la versión inglesa por convención sectorial.
+    // ═══════════════════════════════════════════════════════════════════
+    version_olive: 'v 2.1 · módulo olivar',
+    o_area_ol_6:    'Menos de 10 ha · finca pequeña',
+    o_area_ol_20:   '10–30 ha · finca familiar típica',
+    o_area_ol_50:   '30–80 ha · finca mediana',
+    o_area_ol_130:  '80–200 ha · finca grande',
+    o_area_ol_300:  'Más de 200 ha · industrial',
+    o_region_ol_CM: 'Mediterráneo costero · litoral andaluz, C. Valenciana, Murcia',
+    o_region_ol_IM: 'Mediterráneo interior · Jaén, Córdoba, Sevilla, Extremadura',
+    o_region_ol_CN: 'Centro-norte · Bajo Aragón, Les Garrigues, La Rioja',
+    f_system: 'Sistema',
+    o_system_otnm: 'OTNM · Tradicional no mecanizable',
+    o_system_otm:  'OTM · Tradicional mecanizable',
+    o_system_oi:   'OI · Intensivo',
+    o_system_os:   'OS · Superintensivo / seto',
+    f_density:    'Densidad',
+    o_density_80:   '80 árboles/ha · marco amplio',
+    o_density_100:  '100 árboles/ha',
+    o_density_120:  '120 árboles/ha',
+    o_density_200:  '200 árboles/ha · OI baja',
+    o_density_400:  '400 árboles/ha · OI típica',
+    o_density_600:  '600 árboles/ha · OI alta',
+    o_density_1500: '1.500 árboles/ha · OS típica',
+    o_density_1800: '1.800 árboles/ha · OS densa',
+    o_density_2000: '2.000 árboles/ha · OS máxima',
+    o_frag_high_ol: 'Muy fragmentado · 9+ parcelas, típico de Jaén',
+    o_soil_ol_tillage_min:  'Laboreo mínimo · cultivador (1–2 pases) + herbicida',
+    o_soil_ol_tillage_trad: 'Laboreo tradicional · cultivador (3–4+ pases/año)',
+    o_soil_ol_cover:        'Cubierta vegetal con siega · desbrozadora + herbicida puntual',
+    o_soil_ol_bare:         'Suelo desnudo con herbicida solo',
+    o_spray_ol_otnm:         'Convencional · OTNM pulverizador (2 pases)',
+    o_spray_ol_standard:     'Convencional · estándar (3–4 pases)',
+    o_spray_ol_intensive:    'Convencional · intensivo (5–6 pases)',
+    o_spray_ol_organic_red:  'Ecológico · reducido (3–4 pases)',
+    o_spray_ol_organic_std:  'Ecológico · estándar (5–6 pases)',
+    f_residue_mgmt: 'Gestión de restos de poda',
+    o_residue_manual:    'Recogida manual + quema',
+    o_residue_biennial:  'Tractor + picadora · bienal',
+    o_residue_annual:    'Tractor + picadora · anual',
+    f_harvest_ol: 'Método de vendimia',
+    o_harvest_manual:        'Manual · vibrador de rama + vareo + lonas',
+    o_harvest_mantos:        'Vibrador de tronco · mantos ayudados',
+    o_harvest_paraguas:      'Vibrador de tronco · paraguas invertido',
+    o_harvest_cabal_own:     'Cabalgante · máquina propia',
+    o_harvest_cabal_contr:   'Cabalgante · contratado',
+    o_power_ol_70:  '60–80 CV · estrecho / frutero',
+    o_power_ol_90:  '80–100 CV · estándar medio (ref. AEMO 95 CV)',
+    o_power_ol_110: '100–120 CV · estándar pesado',
+    o_power_ol_130: '120+ CV · industrial / soporte OS',
+    f_labour_rate_hint_salaried_ol: 'típico 12–18 €/h con cargas (por defecto en olivar 14)',
+    w_os_irrigation:   'Superintensivo (<em>seto</em>) es, por definición, regadío — cambiado a <em>Regadío</em>.',
+    w_otnm_irrigation: 'OTNM es, por convenio, secano (sierra, sin infraestructura de riego) — cambiado a <em>Secano</em>.',
+    w_otnm_slope:      'OTNM se define como pendiente &gt;20% — pendientes menores se clasifican típicamente como OTM.',
+    w_steep_slope_ol:  'Pendiente fuerte (&gt;30%) — Sistema fijado a OTNM. La mecanización es limitada; el modelo sigue aplicándose, pero se esperan 10–20 h/ha con un peso fuerte de mano de obra manual fuera del presupuesto del tractor.',
+    w_organic_spray:   'Los programas de tratamiento convencional no están disponibles en producción ecológica — cambiado a <em>Ecológico · estándar</em>.',
+    w_cabal_otnm:      'El <em>cabalgante</em> requiere seto (OS) — cambiado a manual.',
+    w_cabal_below_breakeven: 'La rentabilidad de un <em>cabalgante</em> propio se sitúa en ~100–150 ha de OS. Por debajo de ese umbral, contratar suele ser más barato — cambiado a <em>contratado</em>.',
+    w_density_system_mismatch: 'Densidad ajustada al sistema seleccionado.',
+    i_olive_fleet_sweet_spot: ({n, h}) => `<strong>Punto óptimo para un solo tractor.</strong> ${n} tractor a ~${h} h/año está bien amortizado — típico de OTM en este tramo de superficie según AEMO 2023.`,
+    i_olive_frag_high: () => `<strong>Parcelas muy fragmentadas — los estudios AEMO sobre Jaén reportan una penalización de 0,3–0,4 €/kg de aceite</strong> frente a fincas concentradas. La planificación de rutas y la agrupación de operaciones pueden recuperar parte.`,
+    i_olive_cabal_below_breakeven: ({ha}) => `<strong>La rentabilidad del cabalgante propio se sitúa en ~100–150 ha de OS.</strong> Su superficie (${ha} ha) está por debajo del umbral — contratar suele ser más barato. La calculadora asume horas de cabalgante contratado.`,
+    i_olive_spray_upper: () => `<strong>El número de pases de tratamiento está en el límite superior del rango AEMO.</strong> Conviene revisar la intensidad del programa frente a la presión de enfermedad, especialmente en años de baja presión.`,
+    i_olive_oi_manual: () => `<strong>La vendimia manual en OI es inusual.</strong> La mayoría de fincas OI utilizan <em>vibrador de tronco con paraguas invertido</em> a 0,5–1,5 h/ha; lo manual se reserva típicamente para OTNM.`,
+    i_olive_otnm_low_slope: () => `<strong>OTNM se define como pendiente &gt;20%.</strong> Fincas en pendiente menor se clasifican típicamente como OTM y se benefician de mecanización completa.`,
+    i_olive_tillage_trad: () => `<strong>El laboreo tradicional en olivar de secano es más caro y no mejora la retención de agua.</strong> Es una creencia arraigada que multiplicar los pases de cultivador "abre" el suelo y favorece la infiltración de las lluvias en zonas secas. La literatura olivarera española (Junta de Andalucía 2007; Pastor y Castro / IFAPA; Univ. Jaén Liétor y García Ruiz / Sustainolive; AEMO 2023) reporta justo lo contrario: el laboreo crea costras superficiales y una capa compacta (<em>suela de labor</em>) que <em>reducen</em> la infiltración, mientras que las cubiertas vegetales espontáneas segadas 1–2 veces al año (la opción <em>cubierta vegetal con siega</em>) mejoran la infiltración, reducen la evaporación y cuestan menos en horas de tractor. La calculadora respeta la elección de laboreo tradicional porque sigue siendo una práctica real en Jaén y Córdoba, pero la penalización de coste que se ve aquí refleja fielmente la literatura.`,
+    i_olive_voltrac_cabal_out_of_scope: () => `<strong>Voltrac no sustituye al <em>cabalgante</em></strong> (cosechadora automotriz especializada). La comparación cubre solo las operaciones con tractor — las horas y el coste del cabalgante son idénticos en los dos escenarios.`,
+    'op_Soil management':                  'Gestión del suelo',
+    'op_Spraying_ol':                      'Tratamientos',
+    'op_Fertilising_ol':                   'Fertilización',
+    'op_Pruning residue shredding':        'Picado de restos de poda',
+    'op_Harvest — vibrador / cabalgante':  'Vendimia — <em>vibrador</em> / <em>cabalgante</em>',
+    'op_Harvest transport_ol':             'Transporte de vendimia',
+    'op_Cabalgante':                       'Cabalgante (fuera del alcance Voltrac)',
+    'op_Inter-plot / aux_ol':              'Entre parcelas / auxiliar',
+    m_olive_hph_body: ({system, water, lo, hi, position, hph}) =>
+      `Sobre la banda anclada en AEMO para ${system} ${water} (rango ${lo}–${hi} h/ha), posicionado en ${position}, la calculadora devuelve ${hph} h/ha tras los ajustes multiplicativos por tamaño de parcela, fragmentación, pendiente, gestión del suelo y programa de tratamientos.`,
+    m_olive_cabal_note: ({rate}) =>
+      `Las horas de cabalgante se reportan en una línea aparte a la tarifa horaria del contratista o de la máquina propia (típicamente ${rate} €/h, AEMO §7.2 rango 120–200 €/h). En OI y OTM, las horas de vibrador forman parte de las horas propias del tractor.`,
+    m_cabal_label: 'Alcance de maquinaria de vendimia',
+
   }
 };
 
@@ -2403,19 +2879,32 @@ function T(key) {
   return T_STRINGS.en[key] !== undefined ? T_STRINGS.en[key] : key;
 }
 
-// Map operation/category keys (used internally) to translated labels
+// Map operation/category keys (used internally) to translated labels.
+// Covers both vineyard task names (Tillage, Mowing, etc.) and olive
+// task names (Soil management, Pruning residue shredding, etc.).
+// The vineyard module emits the first set; the olive module emits the
+// second. Unknown keys fall through unchanged.
 function trOp(key) {
-  const m = { 'Tillage / cultivator': 'op_Tillage', 'Mowing / cover crop': 'op_Mowing',
+  const m = {
+    // Vineyard ops
+    'Tillage / cultivator': 'op_Tillage', 'Mowing / cover crop': 'op_Mowing',
     'Spraying': 'op_Spraying', 'Fertilising': 'op_Fertilising',
     'Cane shredding': 'op_CaneShredding', 'Green ops': 'op_GreenOps',
-    'Harvest transport': 'op_Harvest', 'Inter-plot / aux': 'op_InterPlot' };
+    'Harvest transport': 'op_Harvest', 'Inter-plot / aux': 'op_InterPlot',
+    // Olive ops (the i18n keys are quoted strings due to the names)
+    'Soil management': 'op_Soil management',
+    'Pruning residue shredding': 'op_Pruning residue shredding',
+    'Harvest — vibrador / cabalgante': 'op_Harvest — vibrador / cabalgante',
+    'Cabalgante': 'op_Cabalgante',
+  };
   return m[key] ? T(m[key]) : key;
 }
 function trCat(key) {
   const m = { 'Fuel': 'cat_Fuel', 'Repairs & maintenance': 'cat_Repairs',
     'Depreciation': 'cat_Depreciation', 'Tyres': 'cat_Tyres',
     'Lubricants': 'cat_Lubricants', 'Insurance': 'cat_Insurance',
-    'Labour': 'cat_Labour', 'Contractor': 'cat_Contractor' };
+    'Labour': 'cat_Labour', 'Contractor': 'cat_Contractor',
+    'Cabalgante': 'cat_Cabalgante' };
   return m[key] ? T(m[key]) : key;
 }
 
@@ -2439,7 +2928,21 @@ function trCat(key) {
 // ║                                                                           ║
 // ╚═══════════════════════════════════════════════════════════════════════════╝
 
-const P = {
+// ═══════════════════════════════════════════════════════════════════════════
+// VINEYARD PARAMETERS BLOCK
+//
+// `P_vineyard` is the source of truth for the Vineyard calculator. All
+// downstream helpers and `calculateVineyard()` read parameters via the
+// active-crop pointer `P` (declared just below this block), which the
+// dispatcher `calculate()` reassigns based on `CURRENT_CROP`.
+//
+// To extend with a new crop:  add a parallel `const P_<crop> = { … }` block
+// below `P_olive`, write a parallel `calculate<Crop>()` function, and add
+// a dispatcher branch.  Do not factor common code between crop pipelines
+// in the first pass; readability of each pipeline top-to-bottom matters.
+// ═══════════════════════════════════════════════════════════════════════════
+
+const P_vineyard = {
 
   // ─────────────────────────────────────────────────────────────────────────
   // 1. ECONOMIC ASSUMPTIONS (2025-2026 Spanish prices)
@@ -2662,11 +3165,11 @@ const P = {
     // Spraying programme intensity — number of passes scales nearly linearly
     // with this multiplier on total hours (§4.1, §5.1).
     spraying_mult: {
-      full:             1.00,   // conv 12-14 passes
-      standard:         0.92,   // conv 9-11 passes
-      reduced:          0.78,   // 5-7 passes
-      organic_full:     1.02,   // 10-13 passes, sulfur + copper
-      organic_reduced:  0.84,   // 6-8 passes
+      full:             1.00,   // conv 9-12 passes (Mediterranean baseline; matches §9.2 calendar implicit ~8-9 passes)
+      standard:         0.92,   // conv 6-9 passes
+      reduced:          0.78,   // 3-5 passes (dry zones, low-pressure years)
+      organic_full:     1.02,   // 8-12 passes, sulfur + copper (shorter intervals)
+      organic_reduced:  0.84,   // 5-8 passes
     },
 
     // Green operations (espaldera only). 'none' means all manual = -8% of
@@ -2809,7 +3312,15 @@ const P = {
   task_shares_default: {
     'Tillage / cultivator': 0.22,   // §5.1: 1.1-2.0 h/ha × multiple passes
     'Mowing / cover crop':  0.06,   // §5.1: 0.8-1.2 h/ha, small under tillage regime
-    'Spraying':             0.30,   // §5.1: dominant in espaldera (~10 passes)
+    // Spraying share calibrated from lit-supported pass counts (INNOVAGRI's
+    // 4-12 range, midpoint ~8 for Mediterranean conventional). At ~0.25 h/ha
+    // realistic per pass (effective + fill-and-go), 8 passes × 0.25 = 2 h/ha
+    // on a ~22-30 h/ha productive base = 7-12% pure arithmetic. Setting 0.18
+    // adds engineering headroom for the Mediterranean baseline while
+    // remaining well below the previously-overstated 0.30 figure (which had
+    // implied ~10-12 passes — closer to a high-pressure Atlantic year than
+    // the typical case).
+    'Spraying':             0.18,   // §5.1 + INNOVAGRI: ~6-9 passes, realistic per-pass time including auxiliary
     'Fertilising':          0.05,   // §4.1: occasional, light
     'Cane shredding':       0.10,   // §5.1: 0.5-1.0 h/ha post-pruning
     'Green ops':            0.00,   // §4.1: zero unless espaldera + greenOps != 'none'
@@ -2821,7 +3332,12 @@ const P = {
     // If full green ops in espaldera, add green-ops share & shave spraying:
     green_ops_full_share:        0.10,
     green_ops_prepruning_share:  0.06,
-    green_ops_spray_offset:      -0.04,  // spraying reduces by this amount
+    // Green ops in espaldera (mechanical leaf-removal, topping) improves
+    // canopy airflow → reduces fungal pressure → fewer spray passes needed.
+    // Was -0.04 on the old Spraying baseline of 0.30 (~13% relative cut).
+    // Recalibrated to -0.025 to preserve roughly the same relative effect
+    // on the new 0.18 baseline (~14%).
+    green_ops_spray_offset:      -0.025,
 
     // ── COVER-CROP REGIME — tillage and mowing shares ──
     // Under cover crop, inter-row mowing replaces inter-row tillage as the
@@ -3009,8 +3525,19 @@ const P = {
     // Narrow-implement, row-by-row tasks (tillage, mowing, cane shredding,
     // green ops) have lots of end-of-row turns. Wide-implement tasks
     // (spraying, fertilising) cover multiple rows per pass, fewer turns.
-    // Harvest transport is mostly straight-line travel to the cellar.
     // Inter-plot/aux already accounts for travel; no headturn component.
+    //
+    // Harvest transport is the one task with strong MODE-DEPENDENCE:
+    //   - Manual: tractor + trailer enters the field; some repositioning along
+    //     rows to keep workers' walking distance manageable, but very few true
+    //     row-end U-turns (roughly an order of magnitude fewer than tillage).
+    //   - Mechanical (own vendimiadora): tractor parks at the headland, the
+    //     vendimiadora travels the rows and dumps into the trailer via its
+    //     auger. The tractor never enters the row corridor — at most some
+    //     wide-open yard repositioning to align with the chute, which is not
+    //     subject to the canopy-constrained headturn penalty.
+    //   - Mechanical (contractor vendimiadora): same situation; the contractor's
+    //     machine harvests, the user's tractor shuttles. No row-end work.
     //
     // Voltrac task hours = task hours × (1 - mh_share + headturn_mult × mh_share)
     task_mh_share: {
@@ -3020,17 +3547,819 @@ const P = {
       'Fertilising':          0.15,
       'Cane shredding':       0.22,
       'Green ops':            0.20,
-      'Harvest transport':    0.08,
+      'Harvest transport':    {              // mode-dependent (see comment above)
+        manual:                 0.02,         // ~10× less than tillage; few in-field U-turns
+        mechanical:             0.00,         // tractor stays at field head; no row-end work
+        contractor_mechanical:  0.00,         // same as own mechanical from tractor's POV
+      },
       'Inter-plot / aux':     0.00,
     },
   },
 
 };
 
-// ─────────────────────────────────────────────────────────────────────────
-// LEGACY ALIASES — preserved so the calculate() body and helpers below
-// don't need to be rewritten. Edit values in `P` above, not here.
-// ─────────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// OLIVE-GROVE PARAMETERS BLOCK
+//
+// Independent source of truth for the Olive calculator. Mirrors the structure
+// of P_vineyard section-by-section; every coefficient is anchored to a
+// specific section of the olive literature review and inline-commented with
+// the source citation. Where the olive review is silent and the vineyard
+// review covers a topic (repairs-as-frac-of-fuel rule, inflation framework,
+// Voltrac engine parameters, etc.), the vineyard value is carried over and
+// the comment marks it explicitly.
+// ═══════════════════════════════════════════════════════════════════════════
+
+const P_olive = {
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 1. ECONOMIC ASSUMPTIONS (2025-2026 Spanish prices)
+  //    Source: Olive review §7.2 (hourly cost figures), §7.3 (labour),
+  //    §3.2 (yields by system × water), §8.1 (diesel).
+  // ─────────────────────────────────────────────────────────────────────────
+  economic: {
+    // Diesel B price — carried over from vineyard (the 2025–26 national
+    // average is unchanged across crops; same source [4]).
+    diesel_eur_per_L: { low: 1.30, central: 1.45, high: 1.65 },
+
+    // Salaried operator hourly cost (€/h, fully loaded).
+    // Olive review §7.3: 12–18 €/h band; default 14 — one euro lower than
+    // the vineyard default (15) for visual distinguishability, well within
+    // the band, and consistent with AEMO 2023's 10.15 €/h gross × ~1.4
+    // social-charge multiplier.
+    salaried_labour_eur_per_h: 14,
+
+    // Contractor model — carried over from vineyard (same Spanish ag
+    // contractor market; olive review §7.3 cites the same 40–60 €/h band).
+    contractor_operation_share: 0.20,
+    contractor_eur_per_h: 50,
+    contractor_labour_premium_eur_per_h: 10,
+
+    // Extra-operator concurrency — carried over from vineyard (the
+    // staffing-model question is crop-agnostic).
+    second_operator_overlap_default: 0.50,
+
+    // Yields by water regime (olive review §3.2 AEMO 2023 reference yields).
+    // The olive module reports €/kg of OIL, not olive — so yield is in
+    // tonnes of OIL per ha:
+    //   OTM rain-fed:    5.0 t olive/ha × 20% = 1.00 t oil/ha
+    //   OTM irrigated:   6.0 t olive/ha × 20% = 1.20 t oil/ha
+    //   OI rain-fed:     5.0 t olive/ha × 20% = 1.00 t oil/ha
+    //   OI irrigated:   10.0 t olive/ha × 18% = 1.80 t oil/ha
+    //   OS irrigated:   10.0 t olive/ha × 18% = 1.80 t oil/ha
+    //   OTNM rain-fed:  1.75 t olive/ha × 22% = 0.385 t oil/ha
+    // Lookup key is `${system}_${water}` so calculate() can resolve at runtime.
+    yield_t_per_ha: {
+      otnm_rainfed:   0.385,
+      otm_rainfed:    1.00,
+      otm_irrigated:  1.20,
+      oi_rainfed:     1.00,
+      oi_irrigated:   1.80,
+      os_irrigated:   1.80,
+    },
+
+    // Label used by the cost-per-kg card subtitle. Vineyard module uses
+    // 'grape'; this module uses 'oil'.
+    yield_unit_label: 'oil',
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 2. TRACTOR FLEET PARAMETERS
+  //    Source: Olive review §4.1 (power classes), §7.2 (hourly costs),
+  //    §8.1 (fuel consumption per task). New-tractor list prices, salvage,
+  //    insurance, service life — carried over from vineyard (the agricultural
+  //    machinery market is crop-agnostic).
+  // ─────────────────────────────────────────────────────────────────────────
+  fleet: {
+    // New-equivalent list price by power class (€). Carried over from
+    // vineyard — same Spanish ag tractor market; back-solved hourly cost in
+    // §7.2 (25–40 €/h narrow, 35–55 €/h standard) is consistent with this
+    // table once depreciation, repairs, fuel, etc. are reassembled.
+    new_price_eur_by_power_cv: {
+      'up_to_70':  38000,
+      '71_to_90':  55000,
+      '91_to_110': 72000,
+      '111_plus':  95000,
+    },
+
+    // Acquisition-price factor by age — carried over from vineyard (same
+    // used-tractor market structure; olive review silent on this).
+    acquisition_factor_by_age: { new: 1.00, mid: 0.55, old: 0.32 },
+
+    // Fuel L/h by power class — carried over from vineyard. Consistent with
+    // olive review §8.1 weighted average for mixed work (8–15 L/h on
+    // 95–115 CV mid-life tractors); per-task variation is captured by the
+    // time-share allocation in §9 of this block.
+    avg_fuel_L_per_h_by_power_cv: {
+      'up_to_70':  7.5,
+      '71_to_90':  9.5,
+      '91_to_110': 12,
+      '111_plus':  15,
+    },
+
+    service_life_h: 9000,                  // carried over from vineyard
+    calendar_life_yr: 12,                  // carried over from vineyard
+    salvage_fraction: 0.15,                // carried over from vineyard
+
+    // Tyre set cost — carried over from vineyard (same tyre market;
+    // olive review silent on this line).
+    tyre_set_eur_by_power_cv: {
+      'up_to_70':  2800,
+      '71_to_90':  3500,
+      '91_to_110': 4200,
+      '111_plus':  5000,
+    },
+    tyre_life_h: 3500,
+    tyre_life_yr: 8,
+
+    insurance_rate_per_yr: 0.015,          // carried over from vineyard
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 3. COST-FORMULA COEFFICIENTS
+  //    Source: Olive review §7.1 (internal cost proportions), MAPA 2012
+  //    repairs rule (cited in vineyard review).  All carried over —
+  //    olive review §7.1 reports the same internal proportions (fuel
+  //    40–55%, repairs 20–25%, tyres 10–15%, lubricants 3–6%).
+  // ─────────────────────────────────────────────────────────────────────────
+  cost_formula: {
+    repairs_as_frac_of_fuel: 0.36,         // carried over from vineyard
+    repairs_age_mult: { new: 0.6, mid: 1.0, old: 1.6 },  // carried over
+    lubricants_as_frac_of_fuel: 0.07,      // carried over from vineyard
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 4. HOURS PER HECTARE — MONTHLY BANDS BY SYSTEM × REGION
+  //    Source: Olive review §10.2 (OTM/OI IM base calendar verbatim),
+  //    §10.3 (OS profile), §10.4 (OTNM profile).
+  //
+  //    Bands are [lo, hi] h/ha per month.  The calculator picks the active
+  //    band via system × region and positions within [lo, hi] using the
+  //    same piecewise frequency-position logic as the vineyard module.
+  //
+  //    Verification: at typical position (midpoint), each system's annual
+  //    sum must land inside the §6.2 range:
+  //      OTNM 10-20 / OTM rain-fed 20-35 / OTM irrigated 25-40 /
+  //      OI rain-fed 25-40 / OI irrigated 30-45 / OS irrigated 35-55.
+  //
+  //    Numbers are validated below; tagged with the sum at typical position.
+  // ─────────────────────────────────────────────────────────────────────────
+  hours_monthly_bands: {
+    // ─── OTM: traditional mechanisable (the AEMO reference base case) ───
+    // OTM × IM base from §10.2 verbatim.  Mid-sum ≈ 24.6 h/ha (low of OTM
+    // rain-fed band, midpoint of irrigated lower).
+    otm: {
+      IM: [           // §10.2 EC-IM table; harvest peak November
+        [0.5, 1.0],   // Jan
+        [1.0, 1.5],   // Feb
+        [1.0, 1.5],   // Mar
+        [2.0, 3.0],   // Apr
+        [2.0, 3.0],   // May
+        [2.0, 3.0],   // Jun
+        [1.5, 2.5],   // Jul
+        [0.5, 1.0],   // Aug
+        [0.0, 1.5],   // Sep
+        [1.0, 2.0],   // Oct
+        [3.0, 4.0],   // Nov (peak)
+        [2.0, 3.0],   // Dec
+      ],
+      CM: [           // Harvest shifted earlier (Oct–Nov peak)
+        [0.5, 1.0],   // Jan
+        [1.0, 1.5],   // Feb
+        [1.0, 1.5],   // Mar
+        [2.0, 3.0],   // Apr
+        [2.0, 3.0],   // May
+        [2.0, 3.0],   // Jun
+        [1.5, 2.5],   // Jul
+        [0.5, 1.5],   // Aug
+        [1.5, 2.5],   // Sep
+        [3.0, 4.0],   // Oct (peak)
+        [2.5, 3.5],   // Nov
+        [0.5, 1.5],   // Dec
+      ],
+      CN: [           // Harvest shifted later (Dec–Jan peak)
+        [1.0, 2.0],   // Jan (cold-zone harvest tail)
+        [1.0, 1.5],   // Feb
+        [1.0, 1.5],   // Mar
+        [2.0, 3.0],   // Apr
+        [2.0, 3.0],   // May
+        [2.0, 3.0],   // Jun
+        [1.5, 2.5],   // Jul
+        [0.5, 1.0],   // Aug
+        [0.0, 0.5],   // Sep
+        [0.5, 1.5],   // Oct
+        [2.0, 3.0],   // Nov
+        [3.0, 4.0],   // Dec (peak — late harvest)
+      ],
+    },
+
+    // ─── OI: intensive — same shape as OTM but with 1–2 extra spray h/ha
+    //     April–July (4 vs 3 passes) and tighter harvest peak ─────────────
+    oi: {
+      IM: [
+        [0.5, 1.0],   // Jan
+        [1.0, 1.5],   // Feb
+        [1.0, 1.5],   // Mar
+        [2.5, 3.5],   // Apr — +0.5
+        [2.5, 3.5],   // May — +0.5
+        [2.5, 3.5],   // Jun — +0.5
+        [2.0, 3.0],   // Jul — +0.5
+        [0.5, 1.0],   // Aug
+        [0.0, 1.5],   // Sep
+        [1.5, 2.5],   // Oct — slightly earlier with paraguas invertido
+        [3.5, 4.5],   // Nov (peak, more concentrated)
+        [1.5, 2.5],   // Dec
+      ],
+      CM: [
+        [0.5, 1.0],   // Jan
+        [1.0, 1.5],   // Feb
+        [1.0, 1.5],   // Mar
+        [2.5, 3.5],   // Apr
+        [2.5, 3.5],   // May
+        [2.5, 3.5],   // Jun
+        [2.0, 3.0],   // Jul
+        [0.5, 1.5],   // Aug
+        [1.5, 2.5],   // Sep
+        [3.5, 4.5],   // Oct (peak)
+        [2.5, 3.5],   // Nov
+        [0.5, 1.5],   // Dec
+      ],
+      CN: [
+        [1.0, 2.0],   // Jan
+        [1.0, 1.5],   // Feb
+        [1.0, 1.5],   // Mar
+        [2.5, 3.5],   // Apr
+        [2.5, 3.5],   // May
+        [2.5, 3.5],   // Jun
+        [2.0, 3.0],   // Jul
+        [0.5, 1.0],   // Aug
+        [0.0, 0.5],   // Sep
+        [1.0, 2.0],   // Oct
+        [2.5, 3.5],   // Nov
+        [3.5, 4.5],   // Dec (peak)
+      ],
+    },
+
+    // ─── OS: superintensivo / seto.  §10.3 profile: 5 spray passes
+    //     concentrated in spring, 2 h/ha annual residue shredding (winter),
+    //     cabalgante harvest concentrated in October–November.
+    //     Mid-sum target: 40-45 h/ha (within the 35-55 band). ──────────────
+    os: {
+      IM: [           // OS is almost exclusively in CM/IM (irrigated)
+        [1.0, 1.5],   // Jan — pruning + shredding
+        [1.5, 2.5],   // Feb — pruning + shredding finish
+        [1.5, 2.5],   // Mar — soil/cover + first treatments
+        [3.5, 4.5],   // Apr — heavy spray (5 passes × 1.1 h spread)
+        [3.5, 4.5],   // May — heavy spray
+        [3.5, 4.5],   // Jun — heavy spray
+        [2.5, 3.5],   // Jul — final treatments
+        [1.0, 2.0],   // Aug — irrigation, prep
+        [1.5, 2.5],   // Sep — pre-harvest
+        [5.0, 7.0],   // Oct (cabalgante peak)
+        [4.5, 6.0],   // Nov
+        [1.0, 2.0],   // Dec
+      ],
+      CM: [
+        [1.0, 1.5],   // Jan
+        [1.5, 2.5],   // Feb
+        [1.5, 2.5],   // Mar
+        [3.5, 4.5],   // Apr
+        [3.5, 4.5],   // May
+        [3.5, 4.5],   // Jun
+        [2.5, 3.5],   // Jul
+        [1.0, 2.0],   // Aug
+        [2.0, 3.0],   // Sep — slightly earlier in CM
+        [5.5, 7.0],   // Oct (peak)
+        [4.0, 5.5],   // Nov
+        [0.5, 1.5],   // Dec
+      ],
+      CN: [
+        [1.5, 2.5],   // Jan (cold-zone harvest tail)
+        [1.5, 2.5],   // Feb
+        [1.5, 2.5],   // Mar
+        [3.5, 4.5],   // Apr
+        [3.5, 4.5],   // May
+        [3.5, 4.5],   // Jun
+        [2.5, 3.5],   // Jul
+        [1.0, 2.0],   // Aug
+        [1.0, 2.0],   // Sep
+        [3.5, 4.5],   // Oct
+        [4.5, 5.5],   // Nov
+        [5.0, 6.5],   // Dec (peak — latest)
+      ],
+    },
+
+    // ─── OTNM: sierra, slope >20%, mostly manual.  §10.4 profile: 2 spray
+    //     passes, no tractor-picadora, manual harvest with tractor transport.
+    //     Mid-sum target: 13-16 h/ha (within the 10-20 band). ──────────────
+    otnm: {
+      IM: [
+        [0.3, 0.5],   // Jan — minor transport
+        [0.3, 0.5],   // Feb
+        [0.3, 0.5],   // Mar
+        [1.0, 1.5],   // Apr — pulverizador con pistolas pass 1 (1.3 h/ha)
+        [0.5, 1.0],   // May
+        [0.5, 1.0],   // Jun
+        [1.0, 1.5],   // Jul — pulverizador pass 2
+        [0.3, 0.5],   // Aug
+        [0.3, 0.5],   // Sep
+        [1.5, 2.5],   // Oct — manual harvest, tractor transport only
+        [3.5, 4.5],   // Nov (peak)
+        [2.5, 3.5],   // Dec
+      ],
+      CM: [
+        [0.3, 0.5],
+        [0.3, 0.5],
+        [0.3, 0.5],
+        [1.0, 1.5],
+        [0.5, 1.0],
+        [0.5, 1.0],
+        [1.0, 1.5],
+        [0.3, 0.5],
+        [0.5, 1.0],
+        [3.0, 4.0],   // Oct peak in CM
+        [2.0, 3.0],
+        [0.5, 1.0],
+      ],
+      CN: [
+        [1.0, 1.5],   // Jan — cold-zone harvest tail
+        [0.3, 0.5],
+        [0.3, 0.5],
+        [1.0, 1.5],
+        [0.5, 1.0],
+        [0.5, 1.0],
+        [1.0, 1.5],
+        [0.3, 0.5],
+        [0.3, 0.5],
+        [0.5, 1.5],
+        [2.5, 3.5],
+        [3.0, 4.0],   // Dec peak (late)
+      ],
+    },
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 5. FREQUENCY POSITION — same semantics as vineyard module.
+  //    "Position within report bands": 0 = lo, 1 = hi, 0.5 = midpoint.
+  // ─────────────────────────────────────────────────────────────────────────
+  frequency_position: {
+    moderate:  0.00,
+    typical:   0.50,
+    intensive: 1.00,
+    // 'custom' is back-solved at runtime
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 6. HOURS ADJUSTMENTS — multipliers applied to monthly bands
+  //    Plot size, fragmentation, slope time, breakdown allowance, organic —
+  //    carried over from vineyard (same IDAE evidence base).
+  //    Soil management and spray intensity — redefined for olive control.
+  // ─────────────────────────────────────────────────────────────────────────
+  hours_adjustments: {
+    // Plot size — carried over from vineyard (IDAE evidence is crop-agnostic
+    // and consistent with olive review §7.4 fleet-step thresholds).
+    plot_size_mult: { '<1': 1.22, '1-3': 1.10, '3-5': 1.00, '5-10': 0.90, '>10': 0.82 },
+
+    // Soil management — olive control keys.
+    //
+    // Maps to the AEMO 2023 typology used in their cost tables, which the
+    // olive literature is unanimous about:
+    //   tillage_min  = "Laboreo mínimo + cubierta espontánea" — cultivador
+    //                  with light passes (1–2/yr) + herbicide on tree rows.
+    //                  This is the modern Jaén default for OTM/OI rain-fed.
+    //   tillage_trad = "Laboreo tradicional" — multiple cultivador passes
+    //                  per year (3–4+), typical of long-standing dry-zone
+    //                  practice. Still common in Jaén/Córdoba sierras.
+    //   cover        = "No laboreo + cubierta espontánea (desbrozadora)"
+    //                  — mowing/shredding the spontaneous cover with a
+    //                  desbrozadora 1–2/yr + spot herbicide on tree rows.
+    //                  This is the AEMO no-laboreo system and the
+    //                  literature-recommended approach in dry zones.
+    //   bare         = "Suelo desnudo con herbicida" — no cultivator at
+    //                  all, just one herbicide application per year.
+    //                  Typical of OS hedgerow and some low-investment OTM.
+    //
+    // Multipliers are calibrated against the §10.2 OTM-with-vibrador
+    // calendar (anchor = tillage_min = 1.00). Sources for the ordering
+    // (mowing < tillage):
+    //   - Junta de Andalucía "Cubiertas vegetales" manual (2007):
+    //     "el empleo de cubiertas vegetales suele disminuir el número de
+    //     horas de trabajo en el campo y los costes, en comparación con
+    //     el laboreo"
+    //   - Pastor & Castro (IFAPA), via Interempresas (2024 update):
+    //     same finding, replicated across multiple Andalucía trials
+    //   - DO Estepa / Univ. Jaén Liétor & García Ruiz (Sustainolive,
+    //     2023): same finding for olivar of Sierra Sur and Campiña
+    //   - AEMO 2023 cost study: their "no laboreo + desbrozadora" line
+    //     consistently shows lower machinery hours than "laboreo mínimo".
+    //
+    // Calibration:
+    //   tillage_min:  1.00  — anchor (1–2 cultivator passes + 1 herbicide)
+    //   tillage_trad: 1.15  — +3-4 extra cultivator passes; soil mgmt is
+    //                         ~25% of total hours so total +~4% from extra
+    //                         passes alone; round up to 1.15 to also
+    //                         capture the ground-prep + finishing passes
+    //                         that traditional management implies.
+    //   cover:        0.92  — desbrozadora is faster per pass than
+    //                         cultivador (no soil inversion) AND typically
+    //                         done with fewer passes (1–2/yr vs 1–2 cult
+    //                         + 1 herb in tillage_min); net ~8% saving.
+    //   bare:         0.80  — no cultivator at all; just one herbicide
+    //                         application per year, so soil-mgmt drops to
+    //                         ~30% of its tillage_min level.
+    soil_mgmt_mult: {
+      tillage_min:  1.00,
+      tillage_trad: 1.15,
+      cover:        0.92,
+      bare:         0.80,
+    },
+
+    // Spraying intensity — olive control keys (§5.3 + §6.1 AEMO pass counts):
+    //   The monthly bands already carry the *typical* spray load for each
+    //   System.  These multipliers correct up/down relative to the
+    //   default programme.  Anchor: each System's default programme = 1.00.
+    //
+    //   conv_otnm:        2 passes (default OTNM)
+    //   conv_standard:    3-4 passes (default OTM/OI)
+    //   conv_intensive:   5-6 passes (default OS)
+    //   organic_reduced:  3-4 passes
+    //   organic_standard: 5-6 passes
+    //
+    //   The relative scaling captures incremental spray hours only; total
+    //   annual hours move by ~5-15% across these options (much less than
+    //   vineyard since olive's spray fraction is smaller and harvest
+    //   dominates).
+    spraying_intensity_mult: {
+      conv_otnm:        0.92,
+      conv_standard:    1.00,
+      conv_intensive:   1.08,
+      organic_reduced:  1.02,
+      organic_standard: 1.10,
+    },
+
+    // Organic production multiplier — carried over from vineyard (olive
+    // review silent on a specific multiplier; the same +12% qualitative
+    // burden applies).
+    production_mult: { conventional: 1.00, organic: 1.12 },
+
+    // Pruning residue management — olive-specific control:
+    //   manual_burn:        no tractor-picadora (OTNM default)
+    //   tractor_biennial:   0.7-1.0 h/ha every 2 yr = ~0.4-0.5 h/ha annual avg
+    //   tractor_annual:     2 h/ha annual (OS default)
+    // Expressed as multiplier on total hours (the picadora is a small
+    // fraction of annual work; impact in the +0% to +5% range).
+    residue_mgmt_mult: {
+      manual_burn:      0.94,
+      tractor_biennial: 1.00,
+      tractor_annual:   1.06,
+    },
+
+    // Harvest method — olive-specific. The cabalgante is OUT OF SCOPE
+    // for the tractor calculation (it is a self-propelled specialised
+    // machine; its hours are surfaced separately with their own hourly rate).
+    // Vibrador de tronco hours are part of the tractor's own operating
+    // hours.  Multipliers applied to total hours, anchored at the §10.2
+    // OTM-with-vibrador reference (vibrador_mantos = 1.00 to avoid
+    // double-counting hours already captured by the monthly bands):
+    //   manual_otnm:        slightly less tractor time (purely manual)
+    //   vibrador_mantos:    OTM baseline (anchor)
+    //   vibrador_paraguas:  slightly faster than mantos (paraguas invertido)
+    //   cabalgante_own:     cabalgante does the harvesting work; tractor
+    //                       drops to bañera support only
+    //   cabalgante_contr:   same from tractor's POV
+    harvest_method_mult: {
+      manual_otnm:        0.95,
+      vibrador_mantos:    1.00,
+      vibrador_paraguas:  0.98,
+      cabalgante_own:     0.85,
+      cabalgante_contr:   0.85,
+    },
+
+    // Water regime — irrigated adds ~5% (irrigation network checks,
+    // additional cover management on wetter soils).  Carried over from
+    // vineyard (olive review §10.3 mentions irrigation checks as a tractor
+    // task; the magnitude is consistent).
+    water_mult: { rainfed: 1.00, irrigated: 1.05 },
+
+    // Slope time penalty — carried over from vineyard (IDAE).  Note: olive
+    // on steep slope is OTNM by definition; the calculator still applies.
+    slope_time_mult: { flat: 1.00, gentle: 1.05, moderate: 1.13, steep: 1.25 },
+
+    // Breakdown allowance — carried over from vineyard (the §7.1 olive note
+    // on older fleets needing higher contingency aligns with this).
+    breakdown_pct: { low: 0.03, standard: 0.08, high: 0.15 },
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 7. INTER-PLOT / AUX HOURS MODEL — system-aware base share
+  //    Source: Olive review §9.2 FH/MH/TH/ASH splits by system.
+  //
+  //    OTNM (sierra, fragmented):  FH 55-65%  → ipAux share inflated
+  //    OTM/OI (campiña):           FH 65-75%  → carried over from vineyard
+  //    OS (large blocks):          FH 70-80%  → ipAux share reduced
+  //
+  //    Olive review §2.3 quotes a 0.3-0.4 €/kg oil cost penalty for
+  //    highly fragmented Jaén farms — consistent with the existing
+  //    1.00 / 1.25 / 1.55 fragmentation multipliers.
+  // ─────────────────────────────────────────────────────────────────────────
+  inter_plot: {
+    // System-aware base share by plot size.
+    base_share_by_plot_size: {
+      otnm: {
+        under_1_ha:   0.30,
+        from_1_to_3:  0.22,
+        from_3_to_5:  0.18,
+        from_5_to_10: 0.15,
+        over_10_ha:   0.13,
+      },
+      otm: {                  // carried over from vineyard values
+        under_1_ha:   0.20,
+        from_1_to_3:  0.14,
+        from_3_to_5:  0.11,
+        from_5_to_10: 0.09,
+        over_10_ha:   0.08,
+      },
+      oi: {                   // same as OTM
+        under_1_ha:   0.20,
+        from_1_to_3:  0.14,
+        from_3_to_5:  0.11,
+        from_5_to_10: 0.09,
+        over_10_ha:   0.08,
+      },
+      os: {                   // large blocks, narrower default
+        under_1_ha:   0.18,
+        from_1_to_3:  0.12,
+        from_3_to_5:  0.10,
+        from_5_to_10: 0.08,
+        over_10_ha:   0.07,
+      },
+    },
+
+    // Fragmentation multiplier — carried over from vineyard.  Olive review
+    // §2.3 (71% of Jaén plots <1 ha; 0.3-0.4 €/kg cost penalty for highly
+    // fragmented farms) is consistent with the 1.55 high multiplier.
+    fragmentation_mult: { low: 1.00, medium: 1.25, high: 1.55 },
+
+    // Cost intensity productive vs ipAux — carried over from vineyard.
+    cost_intensity: { productive: 1.00, ipAux: 0.55 },
+
+    // Travel/auxiliary split within ipAux — carried over from vineyard.
+    travel_share_within_ipAux: 0.65,
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 8. SYSTEM × POWER COUPLING
+  //    Olive does not have a vineyard-style row-spacing-driven implement
+  //    width effect (implements are tree-sized, not row-sized).  Instead,
+  //    each System has a matched-power sweet spot — the AEMO 95 CV
+  //    reference for OTM, with adjustments for narrow tractors in OI/OS
+  //    and reduced power requirements in OTNM.
+  //
+  //    The hours/fuel penalty curves are reused unchanged from vineyard
+  //    (same engine-physics).  No implement-width effect (width_anchor_m /
+  //    width_slope_per_m are absent).
+  //    Source: Olive review §4.1 (power classes by system).
+  // ─────────────────────────────────────────────────────────────────────────
+  spacing: {
+    // Per-System matched power (CV).  Single lookup since olive has no
+    // row spacing dimension (the calculator selector below is on system,
+    // not row spacing).
+    matched_power_cv_by_system: {
+      otnm: 70,    // §4.1 narrow-tractor preference for tight sierra access
+      otm:  90,    // AEMO reference 95 CV (rounded to band match)
+      oi:   95,    // slightly heavier for vibrador + paraguas
+      os:  100,    // heavier for cabalgante support transport
+    },
+
+    // Penalty curves — carried over from vineyard (engine-physics).
+    underpower_curve_exp: 1.3,
+    underpower_strength:  1.5,
+    overpower_threshold:  1.5,
+    overpower_strength:   0.2,
+    fuel_overpower_threshold: 1.3,
+    fuel_overpower_strength:  0.8,
+    fuel_underpower_threshold: 0.8,
+    fuel_underpower_strength:  0.4,
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 9. SLOPE FUEL MULTIPLIER — carried over from vineyard (IDAE).
+  // ─────────────────────────────────────────────────────────────────────────
+  slope_fuel_mult: { flat: 1.00, gentle: 1.08, moderate: 1.18, steep: 1.35 },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 10. TASK SHARE DISTRIBUTION (productive operations only)
+  //     Source: Olive review §6.1 AEMO operation hour breakdowns for OTM
+  //     (the AEMO reference system).
+  //
+  //     Default allocation reflects OTM as the canonical case:
+  //       - Treatments: 2.7 h/ha (§6.1)
+  //       - Soil management: 4-8 h/ha (§6.2 triangulation)
+  //       - Picadora: 0.35 h/ha biennial
+  //       - Harvest (vibrador + trailer): 3-6 h/ha
+  //       - Fertilising: 2-3 h/ha
+  //     Total productive ~16-22 h/ha; shares below sum to 1.0 across all
+  //     operations on this base.
+  //
+  //     Modifiers (taskSharesOlive helper) handle:
+  //       - bare soil → smaller soil-management share
+  //       - cabalgante harvest → shrinks "Harvest — vibrador / cabalgante",
+  //         adds a separate "Cabalgante" line at its own hourly rate
+  //       - residue management mode → scales "Pruning residue shredding"
+  //       - spray intensity already handled via the hours multiplier
+  // ─────────────────────────────────────────────────────────────────────────
+  task_shares_default: {
+    // Anchored on the AEMO/§6.1 OTM × vibrador_mantos reference (the default
+    // scenario). Shares are AS-FRACTIONS-OF-PRODUCTIVE-TASK-HOURS, before
+    // Inter-plot / aux is added on top.
+    //
+    //   Soil management:         4-8 h/ha (largest single line in OTM)
+    //   Spraying:                2-4 h/ha (~3 OTM passes at ~0.15 h/ha)
+    //   Fertilising:             1-2 h/ha (mainly the autumn base pass)
+    //   Pruning residue:         0.35 h/ha biennial (picadora)
+    //   Harvest — vibrador:      3-6 h/ha (the bottleneck during harvest;
+    //                            ~30-60 trees/h at 1-3 min/tree). The largest
+    //                            harvest-window task in vibrador modes.
+    //   Harvest transport:       ~1-2 h/ha (ferry the bañera to almazara;
+    //                            depends on distance — 5-10 km typical). For
+    //                            mass-balance: 5 t/ha at ~5-tonne trailers
+    //                            ≈ 1 round-trip per ha × ~1 h/trip.
+    //
+    // The vibrador hours dominate harvest in mantos/paraguas modes — the
+    // ratio of vibrador to transport is typically ~3:1. (Earlier versions
+    // had this inverted because they were calibrated for the manual_otnm
+    // case where vibrador is zero. The harvest_share_modifiers below now
+    // restore the right mode-by-mode ratio.)
+    'Soil management':                  0.25,
+    'Spraying':                         0.13,
+    'Fertilising':                      0.10,
+    'Pruning residue shredding':        0.05,
+    'Harvest — vibrador / cabalgante':  0.27,    // anchor: vibrador_mantos
+    'Harvest transport':                0.10,    // ~1-1.5 h/ha for OTM rain-fed
+  },
+
+  task_share_modifiers: {
+    // Soil management — scaling of the 'Soil management' task share
+    // relative to the anchor (tillage_min). Matches the soil_mgmt_mult
+    // ordering so the per-task chart reflects the cost reality. Note
+    // that the WHOLE-TRACTOR multiplier (soil_mgmt_mult) is calibrated
+    // on TOTAL hours; the task-share modifier here governs what fraction
+    // of those hours go to "Soil management" in the per-operation chart.
+    //   tillage_min  = 1.00 (anchor)
+    //   tillage_trad = 1.40 — more cultivator passes mean a bigger share
+    //                  of the year's tractor hours go to soil management
+    //   cover        = 0.78 — fewer mowing passes & no soil-inversion
+    //                  hours; soil mgmt drops to ~78% of tillage_min
+    //   bare         = 0.30 — only an herbicide pass; soil mgmt collapses
+    //                  to its herbicide-application share
+    soil_mgmt_tillage_min_factor:  1.00,
+    soil_mgmt_tillage_trad_factor: 1.40,
+    soil_mgmt_cover_factor:        0.78,
+    soil_mgmt_bare_factor:         0.30,
+
+    // Residue management
+    residue_manual_factor:   0.00,   // no tractor-picadora
+    residue_annual_factor:   2.5,    // OS annual = 2 h/ha vs OTM biennial 0.35 h/ha
+
+    // Harvest mode — the default shares (vibrador 0.27, transport 0.10) are
+    // anchored at vibrador_mantos. Each non-anchor mode scales them:
+    //
+    //   manual_otnm:        Vareo + lonas; no vibrador. The tractor only
+    //                       ferries the bañera. Vibrador share → 0; transport
+    //                       share scaled up (~1.4×) to capture the slightly
+    //                       longer trailer ferries from steep / fragmented
+    //                       OTNM fincas (more trips because cantilevered
+    //                       loading from terraces is slower).
+    //   vibrador_mantos:    Default — vibrador 0.27, transport 0.10.
+    //   vibrador_paraguas:  Paraguas invertido is faster per tree (no manto
+    //                       handling) → vibrador share trimmed ~8%. Transport
+    //                       slightly higher because the paraguas dumps into
+    //                       trailers continuously, increasing trailer cycles.
+    //   cabalgante_own/contr: Cabalgante is self-propelled — vibrador share
+    //                       collapses to zero on the tractor side and the
+    //                       cabalgante's hours go on a separate line. The
+    //                       tractor's transport role doubles (~2×) because
+    //                       the cabalgante harvests faster than a vibrador
+    //                       can fill bañeras, requiring more trailer cycles.
+    //
+    // Sources: Oro del Desierto (mode descriptions and time ratios),
+    // tractoresymaquinas.com (vibrador mantos vs paraguas), Centroliva /
+    // monteoliva (vibrador throughput), Las Valdesas (cabalgante separate
+    // from support tractor), AEMO 2023 cost study (harvest-line decomposition).
+    harvest_vibrador_manual_factor:      0.00,   // manual: no tractor vibrador
+    harvest_transport_manual_factor:     1.40,   // manual: slightly longer ferries
+    harvest_vibrador_paraguas_factor:    0.92,   // paraguas: marginally faster
+    harvest_transport_paraguas_factor:   1.15,   // paraguas: more trailer cycles
+    harvest_vibrador_cabalgante_factor:  0.00,   // cabalgante: separate machine
+    harvest_transport_cabalgante_factor: 2.00,   // cabalgante: 2× trailer cycles
+
+    // Harvest mode — cabalgante shifts hours from vibrador to support trailer
+    cabalgante_vibrador_share:        0.00,   // tractor-vibrador absent (legacy alias)
+    cabalgante_transport_factor:      0.85,   // legacy alias — kept for compat
+    cabalgante_share:                 0.15,   // new "Cabalgante" line for the cabalgante hours
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 11. FLEET SIZING — area thresholds and count recommendations
+  //     Source: Olive review §7.4 fleet thresholds.
+  // ─────────────────────────────────────────────────────────────────────────
+  fleet_steps_ha: [10, 30, 80, 200],  // 4 thresholds → 5 buckets
+
+  // Recommended count range per area bucket (min, max).
+  fleet_recommended_count: [
+    { min: 1, max: 1 },   // <10 ha — single tractor (or contractor)
+    { min: 1, max: 1 },   // 10-30 ha — sweet spot
+    { min: 1, max: 2 },   // 30-80 ha — second tractor (one standard + one narrow)
+    { min: 2, max: 3 },   // 80-200 ha — 2 standard + 1 narrow typical
+    { min: 3, max: 6 },   // >200 ha — industrial with own cabalgante
+  ],
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 12. INFLATION FRAMEWORK — carried over from vineyard.
+  //     Olive review §7.5 reports the same 2020→2023 inflation pattern
+  //     (+9% labour, +70% inputs, +40% energy → +32% total cost), so the
+  //     vineyard framework (energy-tied for fuel/repairs/lubricants,
+  //     general-tied for tyres/insurance/depreciation, general+0.5pp for
+  //     labour) maps directly.
+  // ─────────────────────────────────────────────────────────────────────────
+  inflation: {
+    labour_premium_over_general_pp: 0.005,
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 13. VOLTRAC COMPARISON PARAMETERS
+  //     Carried over from vineyard EXCEPT for task_mh_share, which is
+  //     rebuilt for the olive task list.  The Voltrac engine itself is
+  //     crop-agnostic and shared across modules.
+  // ─────────────────────────────────────────────────────────────────────────
+  voltrac: {
+    price_eur: 125000,
+    headturn_time_mult: 1.25,
+    diesel_efficiency: 0.30,
+    diesel_energy_kwh_per_L: 9.7,
+    voltrac_efficiency: 0.90,
+    electricity_eur_per_kwh: { grid: 0.18, solar: 0.05 },
+    monthly_fee_eur: 1500,
+    battery_kwh: 200,
+    motors_kw_total: 80,
+    motors_cv_equivalent: 107,
+    charge_time_h_at_40A: 8,
+    charge_time_h_at_80A: 4,
+
+    service_life_h: 10000,
+    calendar_life_yr: 15,
+    salvage_fraction: 0.25,
+    maintenance_vs_diesel_factor: 0.50,
+    road_transport_eur_per_h: 50,
+    annual_hours_per_unit: 2400,
+
+    // Per-task manoeuvre-hour share — rebuilt for olive task names.
+    //   Soil management:               row-by-row passes (cultivator/desbrozadora) — 0.20
+    //   Spraying:                      atomiser, wide-pass — 0.12 (same as vineyard)
+    //   Fertilising:                   centrifugal spreader, very wide — 0.15
+    //   Pruning residue shredding:     row-by-row with picadora — 0.20
+    //   Harvest — vibrador:            tree-by-tree, low ground speed, very few headturns — 0.08
+    //   Harvest transport (manual):    field traversal — 0.02
+    //   Harvest transport (vibrador):  same — 0.02
+    //   Harvest transport (cabalgante): tractor parks at field head, no row-end work — 0.00
+    //   Cabalgante:                    SELF-PROPELLED — out of Voltrac scope (mh share irrelevant; the
+    //                                  cabalgante line is reported identically in both diesel and Voltrac
+    //                                  scenarios and surfaced with a dedicated insight)
+    //   Inter-plot / aux:              0 — handled via road-transport contractor
+    task_mh_share: {
+      'Soil management':                  0.20,
+      'Spraying':                         0.12,
+      'Fertilising':                      0.15,
+      'Pruning residue shredding':        0.20,
+      'Harvest — vibrador / cabalgante':  0.08,
+      'Harvest transport':                {                  // mode-dependent
+        manual_otnm:        0.02,
+        vibrador_mantos:    0.02,
+        vibrador_paraguas:  0.02,
+        cabalgante_own:     0.00,    // tractor at field head
+        cabalgante_contr:   0.00,
+      },
+      'Cabalgante':                       0.00,    // out of scope; identical in both scenarios
+      'Inter-plot / aux':                 0.00,
+    },
+  },
+
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ACTIVE-CROP POINTER
+//
+// `P` is a let-binding reassigned by the dispatcher (`calculate()`) based on
+// `CURRENT_CROP`.  Module-level shell code (Voltrac engine, translation
+// strings, helpers like `tractorPrice()`) reads through `P` and therefore
+// targets the active calculator's parameter block automatically.
+//
+// `CURRENT_CROP` defaults to 'vineyard' for first-load behaviour.
+// `switchCrop()` updates both `CURRENT_CROP` and `P` and re-runs calculate().
+// ═══════════════════════════════════════════════════════════════════════════
+
+let CURRENT_CROP = 'vineyard';
+let P = P_vineyard;
 const SERVICE_LIFE_H = P.fleet.service_life_h;
 const ACQUISITION_FACTOR = P.fleet.acquisition_factor_by_age;
 const AGE_MULT      = P.cost_formula.repairs_age_mult;
@@ -3179,14 +4508,31 @@ function interPlotShare(plotSize, fragmentation) {
 // Each row sums to 1.0 (or all zeros if the operation doesn't happen).
 // Constraints from Report Section 9.2 (EC-MI calendar) and refined per user feedback:
 //
-//   Tillage:        Feb-Mar main + light Apr + post-harvest Oct/Nov.
-//                   ZERO May-Sep (Jun has "soil management" in the table but it's
-//                   typically light superficial work captured by mowing in mixed mode,
-//                   or by inter-plot/aux). NOTHING Dec-Jan.
+//   Tillage:        Twin Mar-Apr peak, with strong May continuing into a small
+//                   June tail. Feb is a meaningful but smaller contribution.
+//                   Post-harvest tail in Oct-Nov preserved. Rationale: while
+//                   "labor de invierno" is classically Feb-Mar in the lit (§4.1),
+//                   the wet-soil constraint (no tractor entry on heavy/clayey soils
+//                   in mid-winter) plus the recastra pattern (second pass once
+//                   spring weeds emerge) push the actual peak of soil work toward
+//                   Mar-Apr in most Spanish vineyards. Vinetur, Familia Torres and
+//                   ID-David all describe winter+autumn deep work + recurring
+//                   spring-summer superficial passes. The "avión" (shallow seal)
+//                   pass extends into July in some Mediterranean zones but most
+//                   tillage stops by early June, when canopy fills out and tractor
+//                   passes risk damage. NOTHING Jul-Sep (peak heat) or Dec-Jan
+//                   (dormant + post-harvest wrap-up).
 //   Mowing:         All zeros if soil_mgmt == 'tillage' (no mowing planned).
 //                   Spring-summer-only otherwise.
-//   Spraying:       Mar (start, MC only) / Apr → Jul main / small Sep (post-harvest).
-//                   ZERO Aug (mid-harvest), Oct-Feb.
+//   Spraying:       Mar (start, MC only) / Apr → Jul main + small Aug (pre-harvest
+//                   botrytis/mosquito-verde watch — BASF Aug, Rioja avisos confirm
+//                   sprays continuing into early August on botrytis-prone vineyards).
+//                   Sep weight kept ONLY for CN (late-variety pre-harvest treatments
+//                   still needed). NO post-harvest treatments anywhere — the Rioja
+//                   boletín explicitly states "tratamiento con azufre en polvo
+//                   después de vendimiar... no tiene ninguna eficacia... no es
+//                   aconsejable", and most calendars mark post-harvest as optional
+//                   and rarely practised. ZERO Oct-Feb everywhere.
 //   Fertilising:    One-off in winter — concentrated in Jan, small tail in Feb.
 //   Cane shredding: Oct → Feb only.
 //   Green ops:      Feb-Mar pre-pruning (if 'prepruning' or 'full'), plus May-Jul
@@ -3196,18 +4542,30 @@ function interPlotShare(plotSize, fragmentation) {
 //   Inter-plot/aux: Always-on baseline scaled with general activity.
 // ============================================================
 function buildTaskMonthlyWeights(region, training, soilMgmt, greenOps) {
+  // Tillage: twin Mar-Apr peak (where weed pressure rises and soil is workable),
+  // strong May (recastra over emerging weeds), small Jun (final pass before
+  // canopy fills out), meaningful Feb (initial winter labor de invierno but
+  // constrained by wet-soil entry conditions), and post-harvest Oct-Nov tail
+  // (soil aeration after vendimia, "labor de otoño" per ID-David and Vinetur).
+  // Pre-normalisation totals sum to ~1.20-1.21; the `tw` normalisation in the
+  // consumer (line ~3800) brings each row to a unit-sum distribution.
   const tillage = soilMgmt === 'cover'
-    ? [0, 0.25, 0.20, 0.10, 0, 0, 0, 0, 0, 0.25, 0.20, 0]  // when present, still clusters Feb-Mar + post-harvest
-    : [0, 0.30, 0.30, 0.10, 0, 0, 0, 0, 0, 0.20, 0.10, 0];
+    ? [0, 0.15, 0.22, 0.22, 0.12, 0.05, 0, 0, 0, 0.25, 0.20, 0]
+    : [0, 0.18, 0.28, 0.25, 0.15, 0.05, 0, 0, 0, 0.20, 0.10, 0];
 
   const mowing = soilMgmt === 'tillage'
     ? [0,0,0,0,0,0,0,0,0,0,0,0]
     : [0, 0, 0.05, 0.15, 0.20, 0.20, 0.15, 0.10, 0.08, 0.04, 0.02, 0.01];
 
+  // Spraying: spring-summer treatments + small August component (pre-harvest
+  // botrytis/mosquito-verde watch per BASF + Rioja avisos). Post-harvest
+  // treatments REMOVED everywhere (rare, ineffective per regional boletines).
+  // CN keeps a small Sep weight because main harvest is later there — that's
+  // pre-harvest spraying on late varieties, not post-harvest.
   let spraying;
-  if (region === 'MC')      spraying = [0, 0, 0.05, 0.20, 0.30, 0.25, 0.15, 0, 0.05, 0, 0, 0];
-  else if (region === 'CN') spraying = [0, 0, 0,    0.10, 0.25, 0.30, 0.25, 0, 0.10, 0, 0, 0];
-  else                       spraying = [0, 0, 0.02, 0.18, 0.30, 0.30, 0.15, 0, 0.05, 0, 0, 0]; // MI
+  if (region === 'MC')      spraying = [0, 0, 0.05, 0.20, 0.30, 0.25, 0.15, 0.05, 0,    0, 0, 0];
+  else if (region === 'CN') spraying = [0, 0, 0,    0.10, 0.25, 0.30, 0.25, 0.03, 0.05, 0, 0, 0];
+  else                       spraying = [0, 0, 0.02, 0.18, 0.30, 0.30, 0.15, 0.05, 0,    0, 0, 0]; // MI
 
   const fertilising = [0.75, 0.20, 0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -3253,7 +4611,226 @@ function readArea() {
   return parseFloat(sel);
 }
 
-function calculate() {
+// ═══════════════════════════════════════════════════════════════════════════
+// OLIVE TASK MONTHLY WEIGHTS — built dynamically from the user's inputs.
+//
+// Returns a {taskName: [12 weights]} map. The consumer normalises each row
+// so the absolute magnitudes don't need to sum to 1.0; what matters is the
+// SHAPE of each curve.
+//
+// Sources (cross-checked against olive review §10 + the present literature
+// search of Spanish olive calendars):
+//
+//   SOIL MANAGEMENT
+//     Minimum tillage  (1-2 cultivador passes + herbicide):
+//       Feb-Mar    "labor de invierno" / first superficial pass after
+//                  pruning, weather permitting (laabejareina, gesmontes,
+//                  agromatica, olicloud).
+//       Apr-May    "segunda vuelta" — second superficial pass during weed
+//                  flush ("daremos una segunda vuelta muy beneficiosa",
+//                  laabejareina, agromatica, olicloud).
+//       Sep        Pre-harvest "rulo" / levelling to prepare the floor for
+//                  mantos and sweepers (olicloud: "es época de pasar el
+//                  rulo"; the same source notes this can move to Sep in
+//                  warmer zones).
+//       Zero in Jun-Aug (peak heat, dry soil, no entry) and Oct-Jan
+//       (harvest + dormant period after pruning).
+//
+//     Traditional tillage (3-4+ passes):
+//       Same shape as min tillage but with extra weight in Mar, May, Jun
+//       (the extra passes "abrir el suelo" + "labor de mantenimiento"),
+//       and a small Oct weight (post-harvest soil-prep, less common).
+//
+//     Cover crop with mowing (desbrozadora):
+//       Apr  Main siega when cover competes for spring water
+//            (beloleum: "En abril, la siega o desbroce de la cubierta
+//            vegetal se ocupa de evitar la competencia por agua y
+//            nutrientes"; PAC ecoregimen: "siega o desbrozado...
+//            realizándose los pases necesarios").
+//       May  Second pass if dense cover.
+//       Sep  Cleanup before harvest (clean strip for mantos / sweepers).
+//
+//     Bare soil (herbicide only):
+//       Mar  Pre-emergent herbicide.
+//       Sep  Pre-harvest clean-up application.
+//       (Just two herbicide passes per year, no cultivator.)
+//
+//   SPRAYING
+//     Tied to the olive phenology. The bulk of fungicide/insecticide work
+//     is in Apr-Aug. Specifically (laabejareina, gesmontes, agromatica,
+//     beloleum, antestodoestoeracampo, olicloud, csrlaboratorio):
+//       Mar         Prays first generation (early in MC).
+//       Apr-May     Flower-protection + prays Gen 2 + Repilo preventive.
+//       Jun         Mosca del olivo monitoring + cebos + nutrition.
+//       Jul-Aug     Mosca peak + caolín/zeolita anti-mosca.
+//       Sep         Mosca + repilo if humid.
+//       Oct         Pre-harvest copper preventive against repilo.
+//     No Nov-Feb sprays (vegetative rest) outside post-pruning copper
+//     which is bundled into the residue task in this model.
+//
+//   FERTILISING
+//     Two windows (gesmontes, laabejareina, csrlaboratorio):
+//       Nov-Feb     "Abonado de fondo" (autumn-winter base fertilisation,
+//                   organic matter — gesmontes: "los meses de otoño son
+//                   los más adecuados... el mes de febrero podría
+//                   considerarse como el último para realizar esta
+//                   operación").
+//       Apr-May     Foliar boost during fruit set.
+//     Almost all the tractor hours are in the first window (the foliar
+//     boost is light and often piggy-backed with a spray).
+//
+//   PRUNING RESIDUE SHREDDING (picadora)
+//     Concentrated in Feb-Mar, immediately after winter pruning. The
+//     picadora pass takes ~1-2 days per ha and is done on a campaign
+//     basis when the pruning crew finishes. ZERO any other month.
+//     Biennial picadora alternates years; the annual rate sums to half
+//     the biennial weight (handled in calculate via residue_annual_factor).
+//
+//   HARVEST — vibrador / cabalgante AND Harvest transport
+//     Region-shifted, with the IM (Jaén/Córdoba) profile being the
+//     reference (oleorevista, ellagar, jardin202, aroden, centrifugacion-
+//     alemana, directodelolivar, garciamoron):
+//
+//       CM  (Andalucía littoral, C. Valenciana, Murcia):
+//           Earlier start due to warmer temperatures, harvest Oct-Dec
+//           with peak in Nov.
+//       IM  (Jaén, Córdoba, Sevilla, Extremadura — the main olive belt):
+//           Main harvest late Oct/Nov-Feb with peak in Dec-Jan. Most
+//           Jaén/Córdoba cooperatives report 2-4 month campaigns
+//           starting in late Oct/early Nov and finishing Jan-Feb.
+//       CN  (Bajo Aragón, Les Garrigues, La Rioja):
+//           Cooler highland climate delays maturity. Picual in alta
+//           montaña jiennense can start in Dec; northern Spain (Bajo
+//           Aragón, Les Garrigues) similar — harvest Dec-Feb with peak
+//           in Jan.
+//
+//     Harvest transport mirrors vibrador hours since the bañera follows
+//     the harvester. For cabalgante (OS), the transport curve is
+//     compressed even more (1-2 month campaigns are typical for hedgerow).
+//
+//   INTER-PLOT / AUX
+//     Always-on baseline, slight bias toward active months — same
+//     convention as the vineyard model. Olive has more uniform aux
+//     activity than vineyard because work is spread across the year.
+//
+// ═══════════════════════════════════════════════════════════════════════════
+function buildOliveTaskMonthlyWeights(region, system, soilMgmt, residueMgmt, harvest) {
+  // ── Soil management ──
+  let soil;
+  if (soilMgmt === 'tillage_trad') {
+    // More frequent passes — extra weight on the spring weed-flush windows
+    // and a small pre-harvest pass; pre-normalisation sums to ~1.45
+    soil = [0, 0.18, 0.25, 0.20, 0.15, 0.07, 0, 0, 0.10, 0.05, 0, 0];
+  } else if (soilMgmt === 'tillage_min') {
+    // Anchor — 1-2 cultivador passes + pre-harvest rulo, sums to ~1.0
+    soil = [0, 0.20, 0.25, 0.20, 0.10, 0, 0, 0, 0.20, 0.05, 0, 0];
+  } else if (soilMgmt === 'cover') {
+    // Mowing windows: main siega in spring + cleanup before harvest
+    soil = [0, 0, 0, 0.35, 0.20, 0, 0, 0, 0.30, 0.15, 0, 0];
+  } else if (soilMgmt === 'bare') {
+    // Just two herbicide passes (Mar + Sep)
+    soil = [0, 0, 0.45, 0, 0, 0, 0, 0, 0.50, 0.05, 0, 0];
+  } else {
+    // Defensive default — uniform if unrecognised
+    soil = [1/12, 1/12, 1/12, 1/12, 1/12, 1/12, 1/12, 1/12, 1/12, 1/12, 1/12, 1/12];
+  }
+
+  // ── Spraying — region-shifted ──
+  // CM brings the calendar forward by ~1 month vs IM; CN delays by ~3 weeks.
+  let spraying;
+  if (region === 'CM') {
+    // Earlier flowering + earlier mosca pressure (warmer climate)
+    spraying = [0, 0, 0.10, 0.20, 0.25, 0.20, 0.10, 0.05, 0.05, 0.05, 0, 0];
+  } else if (region === 'CN') {
+    // Delayed flowering; mosca peak later
+    spraying = [0, 0, 0, 0.08, 0.20, 0.25, 0.15, 0.15, 0.10, 0.07, 0, 0];
+  } else {
+    // IM (default — Jaén, Córdoba)
+    spraying = [0, 0, 0.05, 0.18, 0.25, 0.18, 0.12, 0.10, 0.05, 0.07, 0, 0];
+  }
+
+  // ── Fertilising ──
+  // Base fertilisation Nov-Feb (the bulk of tractor hours), small Apr-May
+  // foliar boost typically piggy-backed with a spray pass.
+  const fertilising = [0.20, 0.15, 0.05, 0.10, 0.10, 0, 0, 0, 0, 0, 0.20, 0.20];
+
+  // ── Pruning residue shredding ──
+  // After winter pruning. ZERO any other month.
+  // (Biennial vs annual rate handled in calculate() via task_share modifier.)
+  let residue;
+  if (residueMgmt === 'manual_burn') {
+    residue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  } else {
+    // Tractor picadora — Feb-Mar window immediately after pruning
+    residue = [0, 0.45, 0.50, 0.05, 0, 0, 0, 0, 0, 0, 0, 0];
+  }
+
+  // ── Harvest (vibrador) and Harvest transport — region-shifted ──
+  // Both follow the same regional shape since the bañera tracks the
+  // harvester. Cabalgante (OS) campaigns are compressed but the regional
+  // shift still applies; we keep one shape per region.
+  let harvest_v;
+  if (region === 'CM') {
+    // Coastal warm — Oct-Dec, peak Nov
+    harvest_v = [0, 0, 0, 0, 0, 0, 0, 0, 0.05, 0.30, 0.45, 0.20];
+  } else if (region === 'CN') {
+    // Northern cool — Dec-Feb, peak Jan
+    harvest_v = [0.30, 0.20, 0, 0, 0, 0, 0, 0, 0, 0.05, 0.20, 0.25];
+  } else {
+    // IM (Jaén/Córdoba) — Oct-Feb, peak Dec-Jan (the main olive belt)
+    harvest_v = [0.20, 0.10, 0, 0, 0, 0, 0, 0, 0, 0.10, 0.25, 0.35];
+  }
+  // Harvest transport mirrors vibrador timing exactly — same array
+  const harvest_t = harvest_v.slice();
+
+  // ── Cabalgante (only present in OS scenarios with cabalgante_*) ──
+  // Cabalgante campaigns are compressed (1-2 months for OS) — typically
+  // the peak harvest months only. We keep this aligned with harvest_v
+  // but tighter; the consumer ignores this row when the scenario doesn't
+  // emit a Cabalgante task.
+  let cabalgante;
+  if (region === 'CM') {
+    cabalgante = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.25, 0.55, 0.20];
+  } else if (region === 'CN') {
+    cabalgante = [0.40, 0.25, 0, 0, 0, 0, 0, 0, 0, 0, 0.10, 0.25];
+  } else {
+    cabalgante = [0.25, 0.10, 0, 0, 0, 0, 0, 0, 0, 0, 0.20, 0.45];
+  }
+
+  // ── Inter-plot / aux ──
+  // Always-on baseline. Slightly biased toward the active months (when
+  // there are more trips between plots). Mirror the vineyard convention
+  // but with a flatter shape since olive work is more spread across the
+  // year (no sharp August lull like the vineyard).
+  const interplot = [0.08, 0.09, 0.09, 0.10, 0.10, 0.08, 0.06, 0.05, 0.07, 0.08, 0.10, 0.10];
+
+  return {
+    'Soil management':                  soil,
+    'Spraying':                         spraying,
+    'Fertilising':                      fertilising,
+    'Pruning residue shredding':        residue,
+    'Harvest — vibrador / cabalgante':  harvest_v,
+    'Harvest transport':                harvest_t,
+    'Cabalgante':                       cabalgante,
+    'Inter-plot / aux':                 interplot,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VINEYARD CALCULATOR pipeline
+//
+// Reads vineyard form fields (no `_ol` suffix), uses P_vineyard via the
+// `P` pointer, and returns a result object consumed by the shared shell
+// renderers. The dispatcher `calculate()` further down routes to this
+// function when CURRENT_CROP === 'vineyard'.
+// ═══════════════════════════════════════════════════════════════════════════
+function calculateVineyard() {
+  // Ensure P points at the vineyard block — defensive in case switchCrop
+  // left it on P_olive. This is a single-pointer reassignment with no
+  // side effects on the vineyard math (the module-level legacy aliases
+  // at the top of this file were initialised against P_vineyard at load
+  // time and remain vineyard-specific; this function reads them through).
+  P = P_vineyard;
   const area = readArea();
   const region = document.getElementById('region').value;
   const training = document.getElementById('training').value;
@@ -3987,6 +5564,13 @@ function calculate() {
     fixed, variable, years, yearsBreakdown, insights, dieselPrice, yieldTha,
     generalInflation, energyInflation, confidencePct: confidence * 100,
     frequency, training, region, production, fragmentation, slope, matchedPower,
+    harvest,    // exposed for Voltrac comparison — task_mh_share for 'Harvest transport' depends on mode
+    // Crop tag + yield-unit label so the shared shell can route copy
+    // correctly across crop modules. Vineyard reports €/kg of GRAPE; the
+    // olive module reports €/kg of OIL. The shell renderer reads
+    // `r.yieldUnitLabel` to pick the cost-per-kg card subtitle.
+    crop: 'vineyard',
+    yieldUnitLabel: 'grape',
     bandLo, bandHi,
     // Frequency regime: which intensity band the actual usage falls into
     // (back-solved when frequency = 'custom', else equals the dropdown choice).
@@ -4006,6 +5590,616 @@ function calculate() {
   } else {
     renderResults(dieselResult);
   }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// OLIVE CALCULATOR pipeline
+//
+// Independent pipeline. Reads olive form fields (suffixed `_ol`), uses
+// P_olive directly via the `P` pointer. Returns a result object of the
+// same shape as the vineyard pipeline so the shared renderers work
+// without crop-specific branches.
+//
+// Verification target (default scenario: OTM rain-fed IM, 20 ha,
+// conventional standard spray, biennial picadora, vibrador de tronco
+// con mantos ayudados, 1 tractor 80–100 CV mid-life, 14 €/h salaried):
+//   ~28 h/ha · ~560 h/year · ~€18,000–22,000 · ~€1,000/ha · ~€1.50/kg oil
+// (Sanity-checked against AEMO 2023 totals; tagged in renderResults.)
+// ═══════════════════════════════════════════════════════════════════════════
+function calculateOlive() {
+  // Point P at the olive parameters block. Helpers that read P.* (tractorPrice,
+  // tractorAcquisitionPrice, tyreSetCost, avgFuelLh) will resolve through to
+  // P_olive automatically.
+  P = P_olive;
+
+  // ── Read olive form fields ──────────────────────────────────────────────
+  // Area: supports custom value via #areaCustom_ol like the vineyard does.
+  const areaSelEl = document.getElementById('area_ol');
+  const areaSel = areaSelEl ? areaSelEl.value : '20';
+  const area = areaSel === 'custom'
+    ? Math.max(0.1, parseFloat(document.getElementById('areaCustom_ol').value) || 20)
+    : (parseFloat(areaSel) || 20);
+
+  const region = (document.getElementById('region_ol') || {}).value || 'IM';
+  let system = (document.getElementById('system_ol') || {}).value || 'otm';
+  let water  = (document.getElementById('water_ol')  || {}).value || 'rainfed';
+  const production = (document.getElementById('production_ol') || {}).value || 'conventional';
+  const frequency  = (document.getElementById('frequency_ol')  || {}).value || 'typical';
+  const plotSize   = parseFloat((document.getElementById('plotSize_ol') || {}).value) || 2;
+  const fragmentation = (document.getElementById('fragmentation_ol') || {}).value || 'low';
+  let slope = (document.getElementById('slope_ol') || {}).value || 'flat';
+  const soilMgmt = (document.getElementById('soilMgmt_ol') || {}).value || 'tillage_min';
+  let spraying = (document.getElementById('spraying_ol') || {}).value || 'conv_standard';
+  const residueMgmt = (document.getElementById('residueMgmt_ol') || {}).value || 'tractor_biennial';
+  let harvest = (document.getElementById('harvest_ol') || {}).value || 'vibrador_mantos';
+  const tractorPowerRaw = parseFloat((document.getElementById('tractorPower_ol') || {}).value) || 90;
+  const tractorAge   = (document.getElementById('tractorAge_ol')   || {}).value || 'mid';
+  const tractorCount = parseInt((document.getElementById('tractorCount_ol') || {}).value, 10) || 1;
+  const operator     = (document.getElementById('operator_ol')     || {}).value || 'salaried';
+
+  // ── Cross-validations (defensive UX) ────────────────────────────────────
+  //  - OS forces irrigated  (§3.1: "almost all irrigated")
+  //  - OTNM forces rain-fed (§3.1: "mostly rain-fed")
+  //  - steep slope forces system → OTNM (§5.1 OTNM is by definition slope >20%)
+  //  - OTNM is incompatible with cabalgante (cabalgante requires OS hedgerow)
+  //  - cabalgante_own below 100 ha → switch to cabalgante_contr
+  //  - organic production + conventional spray → switch to organic_standard
+  const waterWarnEl = document.getElementById('waterWarning_ol');
+  const slopeWarnEl = document.getElementById('slopeWarning_ol');
+  const sprayWarnEl = document.getElementById('sprayWarning_ol');
+  const harvestWarnEl = document.getElementById('harvestWarning_ol');
+  if (waterWarnEl) waterWarnEl.classList.remove('show');
+  if (slopeWarnEl) slopeWarnEl.classList.remove('show');
+  if (sprayWarnEl) sprayWarnEl.classList.remove('show');
+  if (harvestWarnEl) harvestWarnEl.classList.remove('show');
+
+  if (system === 'os' && water !== 'irrigated') {
+    water = 'irrigated';
+    const el = document.getElementById('water_ol'); if (el) el.value = 'irrigated';
+    if (waterWarnEl) { waterWarnEl.innerHTML = T('w_os_irrigation'); waterWarnEl.classList.add('show'); }
+  } else if (system === 'otnm' && water !== 'rainfed') {
+    water = 'rainfed';
+    const el = document.getElementById('water_ol'); if (el) el.value = 'rainfed';
+    if (waterWarnEl) { waterWarnEl.innerHTML = T('w_otnm_irrigation'); waterWarnEl.classList.add('show'); }
+  }
+
+  if (slope === 'steep' && system !== 'otnm') {
+    system = 'otnm';
+    const el = document.getElementById('system_ol'); if (el) el.value = 'otnm';
+    if (slopeWarnEl) { slopeWarnEl.innerHTML = T('w_steep_slope_ol'); slopeWarnEl.classList.add('show'); }
+  } else if (system === 'otnm' && (slope === 'flat' || slope === 'gentle')) {
+    if (slopeWarnEl) { slopeWarnEl.innerHTML = T('w_otnm_slope'); slopeWarnEl.classList.add('show'); }
+  }
+
+  if (production === 'organic' && !spraying.startsWith('organic')) {
+    spraying = 'organic_standard';
+    const el = document.getElementById('spraying_ol'); if (el) el.value = 'organic_standard';
+    if (sprayWarnEl) { sprayWarnEl.innerHTML = T('w_organic_spray'); sprayWarnEl.classList.add('show'); }
+  }
+
+  if ((harvest === 'cabalgante_own' || harvest === 'cabalgante_contr') && system === 'otnm') {
+    harvest = 'manual_otnm';
+    const el = document.getElementById('harvest_ol'); if (el) el.value = 'manual_otnm';
+    if (harvestWarnEl) { harvestWarnEl.innerHTML = T('w_cabal_otnm'); harvestWarnEl.classList.add('show'); }
+  } else if (harvest === 'cabalgante_own' && area < 100) {
+    harvest = 'cabalgante_contr';
+    const el = document.getElementById('harvest_ol'); if (el) el.value = 'cabalgante_contr';
+    if (harvestWarnEl) { harvestWarnEl.innerHTML = T('w_cabal_below_breakeven'); harvestWarnEl.classList.add('show'); }
+  }
+
+  // ── Hour budget — monthly base by system × region, positioned in band ───
+  const PA = P_olive.hours_adjustments;
+  const SP = P_olive.spacing;
+  const bands = P_olive.hours_monthly_bands[system] && P_olive.hours_monthly_bands[system][region]
+    ? P_olive.hours_monthly_bands[system][region]
+    : P_olive.hours_monthly_bands.otm.IM;
+  const sumLo = bands.reduce((s, [lo]) => s + lo, 0);
+  const sumHi = bands.reduce((s, [, hi]) => s + hi, 0);
+
+  // Frequency position — supports preset + custom back-solve (same semantics
+  // as vineyard module).
+  let resolvedPos;
+  let customHoursRequested = null;
+  if (frequency === 'custom') {
+    const v = parseFloat(document.getElementById('frequencyCustom_ol').value);
+    customHoursRequested = (isFinite(v) && v > 0) ? v : 560;
+    // Pre-compute ipShare and adjustment multiplier so we can back-solve
+    // the per-month base hours per hectare that match the target total.
+    // We'll compute these below for the normal path too; duplicate here
+    // just to perform the back-solve, then commit resolvedPos.
+    const _ipBase = (P_olive.inter_plot.base_share_by_plot_size[system] || P_olive.inter_plot.base_share_by_plot_size.otm);
+    const _ipKey = plotSize < 1 ? 'under_1_ha' : plotSize < 3 ? 'from_1_to_3' : plotSize < 5 ? 'from_3_to_5' : plotSize < 10 ? 'from_5_to_10' : 'over_10_ha';
+    const _ipShare = (_ipBase[_ipKey] || 0.14) * (P_olive.inter_plot.fragmentation_mult[fragmentation] || 1.0);
+    const plotSizeKey = plotSize < 1 ? '<1' : plotSize < 3 ? '1-3' : plotSize < 5 ? '3-5' : plotSize < 10 ? '5-10' : '>10';
+    const _adjMult = (PA.plot_size_mult[plotSizeKey] || 1.0)
+                    * (PA.soil_mgmt_mult[soilMgmt] || 1.0)
+                    * (PA.spraying_intensity_mult[spraying] || 1.0)
+                    * (PA.production_mult[production] || 1.0)
+                    * (PA.residue_mgmt_mult[residueMgmt] || 1.0)
+                    * (PA.harvest_method_mult[harvest] || 1.0)
+                    * (PA.water_mult[water] || 1.0)
+                    * (PA.slope_time_mult[slope] || 1.0)
+                    * (1 + (PA.breakdown_pct.standard || 0.08));
+    const target_base = (customHoursRequested * (1 - _ipShare)) / (_adjMult * Math.max(area, 0.001));
+    if (target_base >= sumLo) {
+      const denom = sumHi - sumLo;
+      resolvedPos = denom > 0 ? (target_base - sumLo) / denom : 0.5;
+    } else {
+      resolvedPos = sumLo > 0 ? Math.max(-1, target_base / sumLo - 1) : -1;
+    }
+  } else {
+    resolvedPos = P_olive.frequency_position[frequency];
+    if (resolvedPos === undefined) resolvedPos = 0.5;
+  }
+  // Apply piecewise position formula
+  const monthlyBaseHpha = bands.map(([lo, hi]) => {
+    if (resolvedPos >= 0) return lo + resolvedPos * (hi - lo);
+    if (resolvedPos > -1) return lo * (1 + resolvedPos);
+    return 0;
+  });
+  const baseHoursPerHa = monthlyBaseHpha.reduce((a, b) => a + b, 0);
+
+  // Adjustment multipliers — multiply on top of the base h/ha
+  const breakdownAdj = 1 + (PA.breakdown_pct.standard || 0.08);
+  const plotSizeKey = plotSize < 1 ? '<1' : plotSize < 3 ? '1-3' : plotSize < 5 ? '3-5' : plotSize < 10 ? '5-10' : '>10';
+  const plotAdj = PA.plot_size_mult[plotSizeKey] || 1.0;
+  const soilAdj = PA.soil_mgmt_mult[soilMgmt] || 1.0;
+  const sprayAdj = PA.spraying_intensity_mult[spraying] || 1.0;
+  const productionAdj = PA.production_mult[production] || 1.0;
+  const residueAdj = PA.residue_mgmt_mult[residueMgmt] || 1.0;
+  const harvestAdj = PA.harvest_method_mult[harvest] || 1.0;
+  const waterAdj = PA.water_mult[water] || 1.0;
+  const slopeTimeAdj = PA.slope_time_mult[slope] || 1.0;
+
+  // System × power coupling (no row-spacing in olive)
+  const matchedPower = SP.matched_power_cv_by_system[system] || 90;
+  const powerRatio = tractorPowerRaw / matchedPower;
+  let matchAdj = 1.0;
+  if (powerRatio < 1.0) {
+    matchAdj = 1.0 + Math.pow(1.0 - powerRatio, SP.underpower_curve_exp) * SP.underpower_strength;
+  } else if (powerRatio > SP.overpower_threshold) {
+    matchAdj = 1.0 + (powerRatio - SP.overpower_threshold) * SP.overpower_strength;
+  }
+
+  const adjustmentMult = plotAdj * soilAdj * sprayAdj * productionAdj * residueAdj
+                       * harvestAdj * waterAdj * slopeTimeAdj * matchAdj * breakdownAdj;
+
+  // Inter-plot share — system-aware
+  const ipBase = P_olive.inter_plot.base_share_by_plot_size[system] || P_olive.inter_plot.base_share_by_plot_size.otm;
+  const ipKey = plotSize < 1 ? 'under_1_ha' : plotSize < 3 ? 'from_1_to_3' : plotSize < 5 ? 'from_3_to_5' : plotSize < 10 ? 'from_5_to_10' : 'over_10_ha';
+  const ipShare = (ipBase[ipKey] || 0.14) * (P_olive.inter_plot.fragmentation_mult[fragmentation] || 1.0);
+
+  // Final hour totals
+  const productiveHoursPerHa = baseHoursPerHa * adjustmentMult;
+  const productiveHours = productiveHoursPerHa * area;
+  const ipHours = productiveHours * (ipShare / (1 - ipShare));
+  const totalHours = productiveHours + ipHours;
+  const hoursPerHa = totalHours / Math.max(area, 0.001);
+
+  // Monthly hours are now derived from per-task seasonal weights further
+  // below (see buildOliveTaskMonthlyWeights consumer). The base monthly
+  // shape (monthlyBaseHpha) is kept for the frequency back-solve only.
+
+  // ── Task shares (olive task list) ───────────────────────────────────────
+  const T0 = Object.assign({}, P_olive.task_shares_default);
+  const TM = P_olive.task_share_modifiers;
+  // Soil management — 4-option AEMO typology. The default task share in
+  // T0['Soil management'] is calibrated for tillage_min (the anchor);
+  // each non-anchor option scales it.
+  if (soilMgmt === 'tillage_trad') {
+    T0['Soil management'] *= TM.soil_mgmt_tillage_trad_factor;
+  } else if (soilMgmt === 'cover') {
+    T0['Soil management'] *= TM.soil_mgmt_cover_factor;
+  } else if (soilMgmt === 'bare') {
+    T0['Soil management'] *= TM.soil_mgmt_bare_factor;
+  }
+  // (tillage_min uses the anchor factor 1.00 implicitly)
+  // Residue management — manual_burn = no tractor-picadora; annual = ~2.5× biennial
+  if (residueMgmt === 'manual_burn') T0['Pruning residue shredding'] = 0;
+  else if (residueMgmt === 'tractor_annual') T0['Pruning residue shredding'] *= TM.residue_annual_factor;
+  // Harvest mode — per-mode adjustment of the vibrador and transport shares.
+  // The default state (vibrador_mantos) is the anchor and gets factor 1.0.
+  // See task_share_modifiers for the per-mode rationale.
+  const isCabalgante = (harvest === 'cabalgante_own' || harvest === 'cabalgante_contr');
+  if (harvest === 'manual_otnm') {
+    T0['Harvest — vibrador / cabalgante'] *= TM.harvest_vibrador_manual_factor;
+    T0['Harvest transport']               *= TM.harvest_transport_manual_factor;
+  } else if (harvest === 'vibrador_paraguas') {
+    T0['Harvest — vibrador / cabalgante'] *= TM.harvest_vibrador_paraguas_factor;
+    T0['Harvest transport']               *= TM.harvest_transport_paraguas_factor;
+  } else if (isCabalgante) {
+    T0['Harvest — vibrador / cabalgante'] *= TM.harvest_vibrador_cabalgante_factor;
+    T0['Harvest transport']               *= TM.harvest_transport_cabalgante_factor;
+    // Add the standalone Cabalgante line — its hours go on the cabalgante
+    // machine (out of Voltrac scope) at its own hourly rate.
+    T0['Cabalgante'] = TM.cabalgante_share;
+  }
+  // vibrador_mantos = anchor, no scaling needed.
+  // Normalise to sum to 1.0 over productive operations
+  const totalShare = Object.values(T0).reduce((a,b)=>a+b,0);
+  const taskShares = {};
+  for (const k in T0) taskShares[k] = totalShare > 0 ? T0[k] / totalShare : 0;
+  // Convert to absolute productive hours then add inter-plot/aux
+  const taskHours = {};
+  for (const k in taskShares) taskHours[k] = taskShares[k] * productiveHours;
+  taskHours['Inter-plot / aux'] = ipHours;
+
+  // ── Tractor cost — inline (mirrors the vineyard's tractorCost block) ────
+  function olive_tractorCost(power, hours, age) {
+    if (power === 0) return { fuel: 0, repairs: 0, depreciation: 0, tyres: 0, lubricants: 0, insurance: 0, total: 0, hourly: 0 };
+    // Fuel
+    let fuelLh = avgFuelLh(power) * (P_olive.slope_fuel_mult[slope] || 1.0);
+    const r = power / matchedPower;
+    if (r > SP.fuel_overpower_threshold)       fuelLh *= 1 + (r - SP.fuel_overpower_threshold) * SP.fuel_overpower_strength;
+    else if (r < SP.fuel_underpower_threshold) fuelLh *= 1 + (SP.fuel_underpower_threshold - r) * SP.fuel_underpower_strength;
+    const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.45;
+    const fuel = fuelLh * dieselPrice * hours;
+
+    const acqPrice = tractorAcquisitionPrice(power, age);
+    const depreciable = acqPrice * (1 - P_olive.fleet.salvage_fraction);
+    const depByHours = (depreciable / P_olive.fleet.service_life_h) * hours;
+    const depByYears = depreciable / P_olive.fleet.calendar_life_yr;
+    const depreciation = Math.max(depByHours, depByYears);
+    const tyreSet = tyreSetCost(power);
+    const tyresByHours = (tyreSet / P_olive.fleet.tyre_life_h) * hours;
+    const tyresByYears = tyreSet / P_olive.fleet.tyre_life_yr;
+    const tyres = Math.max(tyresByHours, tyresByYears);
+    const insurance = acqPrice * P_olive.fleet.insurance_rate_per_yr;
+    const repairs = fuel * P_olive.cost_formula.repairs_as_frac_of_fuel * P_olive.cost_formula.repairs_age_mult[age];
+    const lubricants = fuel * P_olive.cost_formula.lubricants_as_frac_of_fuel;
+    const total = fuel + repairs + depreciation + tyres + lubricants + insurance;
+    return { fuel, repairs, depreciation, tyres, lubricants, insurance, total, hourly: hours > 0 ? total / hours : 0 };
+  }
+
+  const tractorPowerEff = tractorPowerRaw;
+  const perTractorHours = totalHours / Math.max(1, tractorCount);
+  const perTractor = olive_tractorCost(tractorPowerEff, perTractorHours, tractorAge);
+  const c1 = {
+    fuel:         perTractor.fuel         * tractorCount,
+    repairs:      perTractor.repairs      * tractorCount,
+    depreciation: perTractor.depreciation * tractorCount,
+    tyres:        perTractor.tyres        * tractorCount,
+    lubricants:   perTractor.lubricants   * tractorCount,
+    insurance:    perTractor.insurance    * tractorCount,
+    total:        perTractor.total        * tractorCount,
+  };
+  const c2 = { fuel: 0, repairs: 0, depreciation: 0, tyres: 0, lubricants: 0, insurance: 0, total: 0 };
+  const machCost = c1.total;
+
+  // ── Labour ──────────────────────────────────────────────────────────────
+  const labourRateEl = document.getElementById('labourRate_ol');
+  const rawLabourRate = labourRateEl ? parseFloat(labourRateEl.value) : NaN;
+  const defaultRateByMode = {
+    owner:      0,
+    salaried:   P_olive.economic.salaried_labour_eur_per_h,
+    contractor: P_olive.economic.contractor_eur_per_h,
+  };
+  const labourRate = (isFinite(rawLabourRate) && rawLabourRate >= 0)
+    ? rawLabourRate
+    : (defaultRateByMode[operator] !== undefined ? defaultRateByMode[operator] : 0);
+  const secondOpEl = document.getElementById('secondOperator_ol');
+  const secondOpOverlap = secondOpEl ? parseFloat(secondOpEl.value) : P_olive.economic.second_operator_overlap_default;
+  const labourMultiplier = 1 + Math.max(0, tractorCount - 1) * secondOpOverlap;
+  const extraLabourHours = totalHours * (labourMultiplier - 1);
+  const effectiveLabourHours = totalHours * labourMultiplier;
+  let labourCost = 0;
+  let contractorExtra = 0;
+  if (operator === 'salaried') {
+    labourCost = effectiveLabourHours * labourRate;
+  } else if (operator === 'contractor') {
+    contractorExtra = effectiveLabourHours * P_olive.economic.contractor_operation_share * labourRate;
+  } else if (operator === 'owner' && labourRate > 0) {
+    labourCost = effectiveLabourHours * labourRate;
+  }
+
+  // ── Cabalgante line (out of tractor scope; surfaced as its own task) ────
+  // Cabalgante working rate: 1–2 h/ha (§5.2); use 1.5 h/ha mid-range.
+  // Hourly rate: own machine €150/h (mid of 120–200 range), contractor €170/h
+  // (slight premium for service). The cabalgante is a self-propelled machine
+  // not subject to the tractor cost formula; its cost is added as a flat line.
+  let cabalganteCost = 0;
+  let cabalganteHours = 0;
+  if (isCabalgante) {
+    cabalganteHours = 1.5 * area;
+    const cabalganteRate = harvest === 'cabalgante_own' ? 150 : 170;
+    cabalganteCost = cabalganteHours * cabalganteRate;
+    taskHours['Cabalgante'] = cabalganteHours;
+  }
+
+  const totalCost = machCost + labourCost + contractorExtra + cabalganteCost;
+  const costPerHa = area > 0 ? totalCost / area : 0;
+  const yieldKey = `${system}_${water}`;
+  const yieldTha = P_olive.economic.yield_t_per_ha[yieldKey] || 1.0;
+  const costPerKg = area > 0 && yieldTha > 0 ? totalCost / (area * yieldTha * 1000) : 0;
+  const confidence = parseFloat(document.getElementById('confidence').value) || 0.20;
+  const confLo = totalCost * (1 - confidence);
+  const confHi = totalCost * (1 + confidence);
+
+  // ── Breakdown by cost category ─────────────────────────────────────────
+  const breakdownObj = {
+    'Fuel':                    c1.fuel,
+    'Repairs & maintenance':   c1.repairs,
+    'Depreciation':            c1.depreciation,
+    'Tyres':                   c1.tyres,
+    'Lubricants':              c1.lubricants,
+    'Insurance':               c1.insurance,
+    'Labour':                  labourCost + contractorExtra,
+  };
+  if (cabalganteCost > 0) breakdownObj['Cabalgante'] = cabalganteCost;
+  for (const k in breakdownObj) if (breakdownObj[k] < 1) delete breakdownObj[k];
+
+  // ── Per-task cost — proportional split of machine cost by task hours ────
+  const taskCost = {};
+  const productiveTaskHourSum = Object.entries(taskHours)
+    .filter(([k]) => k !== 'Inter-plot / aux' && k !== 'Cabalgante')
+    .reduce((s, [, v]) => s + v, 0);
+  for (const k in taskHours) {
+    if (k === 'Inter-plot / aux') {
+      // ipAux at reduced cost intensity
+      const machinePerProdH = machCost / Math.max(1, productiveHours + ipHours * P_olive.inter_plot.cost_intensity.ipAux);
+      taskCost[k] = (taskHours[k] * P_olive.inter_plot.cost_intensity.ipAux) * machinePerProdH
+                  + (taskHours[k] / Math.max(1, totalHours)) * (labourCost + contractorExtra);
+    } else if (k === 'Cabalgante') {
+      taskCost[k] = cabalganteCost;
+    } else {
+      const machinePerProdH = machCost / Math.max(1, productiveHours + ipHours * P_olive.inter_plot.cost_intensity.ipAux);
+      taskCost[k] = taskHours[k] * machinePerProdH
+                  + (taskHours[k] / Math.max(1, totalHours)) * (labourCost + contractorExtra);
+    }
+  }
+
+  // ── Six-year projection ────────────────────────────────────────────────
+  const generalInflation = parseFloat(document.getElementById('generalInflation').value) || 0.028;
+  const energyInflation = parseFloat(document.getElementById('energyInflation').value) || 0.035;
+  const labourInflation = generalInflation + P_olive.inflation.labour_premium_over_general_pp;
+  // Per-category inflation rates (mirrors vineyard)
+  const cy = (i_e, i_g, i_l) => ({
+    Fuel: i_e, 'Repairs & maintenance': i_e, Lubricants: i_e,
+    Tyres: i_g, Insurance: i_g, Depreciation: i_g, Cabalgante: i_g,
+    Labour: i_l
+  });
+  const inflationByCategory = cy(energyInflation, generalInflation, labourInflation);
+  const years = [];
+  const yearsBreakdown = [];
+  for (let y = 0; y < 6; y++) {
+    const yb = {};
+    let sum = 0;
+    for (const cat in breakdownObj) {
+      const r = inflationByCategory[cat] !== undefined ? inflationByCategory[cat] : generalInflation;
+      const v = breakdownObj[cat] * Math.pow(1 + r, y);
+      yb[cat] = v; sum += v;
+    }
+    years.push(sum);
+    yearsBreakdown.push(yb);
+  }
+
+  // ── Fleet recommendation ───────────────────────────────────────────────
+  const steps = P_olive.fleet_steps_ha;
+  let stepIdx = 0;
+  for (let i = 0; i < steps.length; i++) if (area > steps[i]) stepIdx = i + 1;
+  const stepDescs = [
+    `<${steps[0]} ha`,
+    `${steps[0]}–${steps[1]} ha`,
+    `${steps[1]}–${steps[2]} ha`,
+    `${steps[2]}–${steps[3]} ha`,
+    `>${steps[3]} ha`,
+  ];
+  const step = stepDescs[stepIdx];
+  const stepDesc = step;
+  const rec = P_olive.fleet_recommended_count[stepIdx];
+  let fleetStatus = 'ok';
+  if (tractorCount < rec.min) fleetStatus = 'few';
+  else if (tractorCount > rec.max) fleetStatus = 'many';
+  const fleetRec = { min: rec.min, max: rec.max, status: fleetStatus, userN: tractorCount };
+
+  // ── Functional / manoeuvre / TH / ASH split (IDAE convention) ──────────
+  // FH ≈ 70% · MH ≈ 15% · TH ≈ 10% · ASH ≈ 5% for OTM/OI; for OTNM ~60/20/15/5;
+  // for OS ~75/10/8/7. We surface these as informational fields consumed by
+  // the Voltrac engine (which slows MH and contracts out TH).
+  let fhShare, mhShare, thShare, ashShare;
+  if (system === 'otnm')      { fhShare = 0.60; mhShare = 0.18; thShare = 0.17; ashShare = 0.05; }
+  else if (system === 'os')   { fhShare = 0.75; mhShare = 0.10; thShare = 0.08; ashShare = 0.07; }
+  else                        { fhShare = 0.70; mhShare = 0.15; thShare = 0.10; ashShare = 0.05; }
+  const functional = totalHours * fhShare;
+  const manoeuvre  = totalHours * mhShare;
+  const interplot  = totalHours * thShare;
+  const auxiliary  = totalHours * ashShare;
+
+  // ── Insights ───────────────────────────────────────────────────────────
+  const insights = [];
+  if (fleetStatus === 'ok' && tractorCount === 1 && area >= 10 && area <= 30) {
+    insights.push({ type: 'ok', text: T('i_olive_fleet_sweet_spot')({ n: tractorCount, h: Math.round(perTractorHours) }) });
+  }
+  if (fragmentation === 'high') {
+    insights.push({ type: 'info', text: T('i_olive_frag_high')() });
+  }
+  if (harvest === 'cabalgante_contr' && system === 'os' && area < 100) {
+    insights.push({ type: 'warn', text: T('i_olive_cabal_below_breakeven')({ ha: Math.round(area) }) });
+  }
+  if (spraying === 'conv_intensive' || spraying === 'organic_standard') {
+    insights.push({ type: 'info', text: T('i_olive_spray_upper')() });
+  }
+  if (system === 'oi' && harvest === 'manual_otnm') {
+    insights.push({ type: 'warn', text: T('i_olive_oi_manual')() });
+  }
+  if (system === 'otnm' && (slope === 'flat' || slope === 'gentle')) {
+    insights.push({ type: 'alert', text: T('i_olive_otnm_low_slope')() });
+  }
+  // Traditional tillage in rain-fed conditions — cost penalty is real and
+  // the water-retention rationale that often motivates the practice is
+  // not supported by the literature (cubierta vegetal infiltrates better
+  // than laboreo per Pastor & Castro, Junta de Andalucía, Sustainolive).
+  if (soilMgmt === 'tillage_trad' && water === 'rainfed') {
+    insights.push({ type: 'info', text: T('i_olive_tillage_trad')() });
+  }
+  // Inflation note — reuse vineyard template (crop-agnostic)
+  const inflationImpact = ((years[5] - years[0]) / Math.max(1, years[0])) * 100;
+  insights.push({ type: 'info', text: T('i_inflation')({ pct: inflationImpact.toFixed(1), y6: Math.round(years[5]/1000), y0: Math.round(years[0]/1000), eInfl: (energyInflation*100).toFixed(1) }) });
+
+  // ── Per-month / per-task / per-category distributions ──────────────────
+  // All four structures must match the vineyard module's shape so the shared
+  // filter logic in renderCharts() can drill down by month / task / category
+  // without crop-specific branches:
+  //   monthlyTaskCost   → [12 elements, each {taskName: cost_in_€}]
+  //   monthlyBreakdown  → [12 elements, each {category: cost_in_€}]
+  //   categoryMonthly   → {category: [12 monthly cost values]}
+  //   categoryTaskCost  → {category: {taskName: cost_in_€}}
+  //
+  // Each task carries its own monthly weight curve (see buildOliveTaskMonthlyWeights),
+  // anchored to the Spanish olive literature for the specific operation:
+  // tractor soil work peaks Feb-Mar + a small Sep pre-harvest pass; pruning
+  // residue shredding happens only in Feb-Mar (after pruning); spraying runs
+  // Apr-Oct following olive phenology; harvest is region-shifted (CM Oct-Dec,
+  // IM Oct-Feb peak Dec-Jan, CN Dec-Feb peak Jan).
+  //
+  // The total monthly hours/cost emerges from summing per-task contributions.
+  // That makes the monthly distribution honour the real per-task calendars
+  // instead of imposing a single uniform seasonal envelope on every task.
+  const taskMonthlyWeights = buildOliveTaskMonthlyWeights(region, system, soilMgmt, residueMgmt, harvest);
+  const taskMonthlyHours = {};
+  const taskMonthlyCost = {};
+  for (const k in taskHours) {
+    const w = taskMonthlyWeights[k] || Array(12).fill(1/12);
+    const tw = w.reduce((a, b) => a + b, 0);
+    if (tw > 0) {
+      taskMonthlyHours[k] = w.map(x => (x / tw) * taskHours[k]);
+      taskMonthlyCost[k]  = w.map(x => (x / tw) * (taskCost[k] || 0));
+    } else {
+      taskMonthlyHours[k] = Array(12).fill(0);
+      taskMonthlyCost[k]  = Array(12).fill(0);
+    }
+  }
+  // monthlyTaskCost: 12-element array, each entry is {taskName: cost}
+  // Built by transposing taskMonthlyCost so each month's object lists every task.
+  const monthlyTaskCost = Array.from({ length: 12 }, (_, i) => {
+    const o = {};
+    for (const k in taskMonthlyCost) o[k] = taskMonthlyCost[k][i];
+    return o;
+  });
+  // Recompute the TOTAL monthly hours as the sum across tasks. This replaces
+  // the prior uniform shape and lets the bar chart reflect real per-task
+  // seasonality (e.g., harvest-heavy Dec, very light summer).
+  const monthly = Array.from({ length: 12 }, (_, i) =>
+    Object.values(taskMonthlyHours).reduce((sum, arr) => sum + arr[i], 0)
+  );
+  const monthlySum = monthly.reduce((a, b) => a + b, 0);
+  const monthlyShareArr = monthly.map(v => monthlySum > 0 ? v / monthlySum : 0);
+  const monthlyHpha = monthly.map(v => v / Math.max(area, 0.001));
+  // monthlyBreakdown: 12-element array, each entry is {category: cost}
+  // Each month's category split is proportional to that month's share of total cost.
+  const monthlyBreakdown = monthlyShareArr.map(s => {
+    const o = {};
+    for (const k in breakdownObj) o[k] = s * breakdownObj[k];
+    return o;
+  });
+  const monthlyFixVar = monthlyShareArr.map(s => ({
+    fixed:    s * (c1.depreciation + c1.insurance + c1.tyres),
+    variable: s * (c1.fuel + c1.repairs + c1.lubricants),
+    labour:   s * (labourCost + contractorExtra),
+  }));
+  // Per-task cost breakdown by category (used in task → category compare view)
+  //   shape: {taskName: {category: value}}
+  const taskCostBreakdown = {};
+  const taskFixVar = {};
+  for (const k in taskHours) {
+    const o = {};
+    if (k === 'Cabalgante') {
+      // Cabalgante is its own line — bills to the Cabalgante category only.
+      o['Cabalgante'] = cabalganteCost;
+      taskCostBreakdown[k] = o;
+      taskFixVar[k] = { fixed: 0, variable: cabalganteCost, labour: 0 };
+    } else {
+      // Other tasks: split their cost across categories proportionally to
+      // each category's share of the (non-cabalgante) total.
+      const nonCabalCost = totalCost - cabalganteCost;
+      const taskCostVal = taskCost[k] || 0;
+      const taskShareOfNonCabal = nonCabalCost > 0 ? taskCostVal / nonCabalCost : 0;
+      for (const cat in breakdownObj) {
+        if (cat === 'Cabalgante') continue;
+        o[cat] = taskShareOfNonCabal * breakdownObj[cat];
+      }
+      taskCostBreakdown[k] = o;
+      const fixedShare = taskShareOfNonCabal * (c1.depreciation + c1.insurance + c1.tyres);
+      const varShare   = taskShareOfNonCabal * (c1.fuel + c1.repairs + c1.lubricants);
+      const labShare   = taskShareOfNonCabal * (labourCost + contractorExtra);
+      taskFixVar[k] = { fixed: fixedShare, variable: varShare, labour: labShare };
+    }
+  }
+  // categoryMonthly: {category: [12 monthly values]}
+  const categoryMonthly = {};
+  for (const cat in breakdownObj) {
+    categoryMonthly[cat] = monthlyShareArr.map(s => s * breakdownObj[cat]);
+  }
+  // categoryTaskCost: {category: {taskName: value}}  — inverse of taskCostBreakdown
+  const categoryTaskCost = {};
+  for (const cat in breakdownObj) {
+    const o = {};
+    for (const k in taskCostBreakdown) {
+      o[k] = taskCostBreakdown[k][cat] || 0;
+    }
+    categoryTaskCost[cat] = o;
+  }
+
+  // Cost-split summaries
+  const fixed = c1.depreciation + c1.insurance + c1.tyres;
+  const variable = c1.fuel + c1.repairs + c1.lubricants;
+
+  // Regime classification
+  const regime = (resolvedPos < 0.25 ? { key: 'moderate', style: 'ok' }
+                : resolvedPos < 0.75 ? { key: 'typical', style: 'ok' }
+                : resolvedPos < 1.15 ? { key: 'intensive', style: 'ok' }
+                : { key: 'beyond_intensive', style: 'warn' });
+  const bandLo = sumLo;
+  const bandHi = sumHi;
+
+  // ── Result object (shell-compatible shape) ─────────────────────────────
+  const dieselResult = {
+    area, hoursPerHa, totalHours, totalCost, costPerHa, costPerKg, confLo, confHi,
+    step, stepIdx, stepDesc, fleetRec,
+    tractorPower: tractorPowerEff, tractorAge, tractorCount, perTractorHours,
+    u1: perTractorHours, u2: 0, t1Power: tractorPowerEff, t2Power: 0,
+    monthly, monthlyHpha, breakdownObj, taskCost, taskHours,
+    fixed, variable, years, yearsBreakdown, insights,
+    dieselPrice: parseFloat(document.getElementById('dieselPrice').value) || 1.45,
+    yieldTha,
+    generalInflation, energyInflation, confidencePct: confidence * 100,
+    // Crop tag + the labels the shell shell renderer needs
+    crop: 'olive',
+    yieldUnitLabel: 'oil',
+    // Vineyard-named fields the shell renderer reads — populate with olive
+    // equivalents so the shell prose remains coherent.
+    frequency, training: system, region, production, fragmentation, slope, matchedPower,
+    harvest,
+    bandLo, bandHi, resolvedPos, regime, customHoursRequested,
+    monthlyBreakdown, monthlyTaskCost, monthlyFixVar,
+    taskMonthlyCost, taskMonthlyHours, taskCostBreakdown, taskFixVar,
+    categoryMonthly, categoryTaskCost,
+    functional, manoeuvre, interplot, auxiliary,
+    machineCost: machCost, labourCost, contractorExtra, c1, c2,
+    effectiveLabourHours, extraLabourHours, secondOpOverlap,
+    // Olive-specific extras (consumed by olive-specific methodology copy)
+    system, water, soilMgmt, spraying, residueMgmt,
+    cabalganteCost, cabalganteHours,
+  };
+
+  if (compareMode) {
+    // Cabalgante-out-of-scope Voltrac insight
+    if (isCabalgante) {
+      insights.push({ type: 'info', text: T('i_olive_voltrac_cabal_out_of_scope')() });
+    }
+    const voltracResult = computeVoltracComparison(dieselResult);
+    renderVoltracComparison(dieselResult, voltracResult);
+  } else {
+    renderResults(dieselResult);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DISPATCHER — routes the active crop to the right calculator
+// ═══════════════════════════════════════════════════════════════════════════
+function calculate() {
+  if (CURRENT_CROP === 'olive') return calculateOlive();
+  return calculateVineyard();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -4305,7 +6499,18 @@ function computeVoltracComparison(d) {
   // Voltrac — keep the same hour figure here for display.
   const v_taskHours = {};
   for (const taskKey in (d.taskHours || {})) {
-    const mhShare = V.task_mh_share[taskKey] !== undefined ? V.task_mh_share[taskKey] : 0.18;
+    // Resolve manoeuvre-hour share. For 'Harvest transport' the share depends
+    // on whether vendimia is manual (tractor in field, some turns) vs
+    // mechanical / contractor (tractor parked at headland, no row-end work).
+    // See P.voltrac.task_mh_share comment for full rationale.
+    let mhShare;
+    const raw = V.task_mh_share[taskKey];
+    if (raw !== undefined && typeof raw === 'object') {
+      // Mode-keyed lookup (currently only Harvest transport).
+      mhShare = raw[d.harvest] !== undefined ? raw[d.harvest] : 0.00;
+    } else {
+      mhShare = raw !== undefined ? raw : 0.18;
+    }
     const mult = (1 - mhShare) + headturnMult * mhShare;
     v_taskHours[taskKey] = d.taskHours[taskKey] * mult;
   }
@@ -4467,9 +6672,9 @@ function renderResults(r) {
         <div class="range">${T('card_perHa_subtitle')}</div>
       </div>
       <div class="card">
-        <div class="label"><span class="marker"></span>${T('card_perKg')}</div>
+        <div class="label"><span class="marker"></span>${T('card_perKg')(r.yieldUnitLabel || 'grape')}</div>
         <div class="value">€${formatKg(r.costPerKg)}<span class="unit">/kg</span></div>
-        <div class="range">${T('card_perKg_subtitle')(formatYield(r.yieldTha))}</div>
+        <div class="range">${T('card_perKg_subtitle')(formatYield(r.yieldTha), r.yieldUnitLabel || 'grape')}</div>
       </div>
     </div>
 
@@ -4592,10 +6797,9 @@ function renderResults(r) {
           })}</div>
         </div>
 
-        <div class="method-block">
-          <div class="method-label">${T('m_vend_label')}</div>
-          <div class="method-body">${T('m_vend_body')()}</div>
-        </div>
+        ${r.crop === 'olive'
+          ? `<div class="method-block"><div class="method-label">${T('m_cabal_label')}</div><div class="method-body">${T('m_olive_cabal_note')({ rate: '150–170' })}</div></div>`
+          : `<div class="method-block"><div class="method-label">${T('m_vend_label')}</div><div class="method-body">${T('m_vend_body')()}</div></div>`}
 
         <div class="method-block">
           <div class="method-label">${T('m_infl_label')}</div>
@@ -4606,7 +6810,7 @@ function renderResults(r) {
 
         <div class="method-block">
           <div class="method-label">${T('m_yield_label')}</div>
-          <div class="method-body">${T('m_yield_body')({y: formatYield(r.yieldTha)})}</div>
+          <div class="method-body">${T('m_yield_body')({y: formatYield(r.yieldTha), unit: r.yieldUnitLabel || 'grape'})}</div>
         </div>
       </div>
     </div>
@@ -5160,7 +7364,48 @@ function renderCharts(r) {
   Chart.defaults.color = '#a3a3a3';
   Chart.defaults.borderColor = 'rgba(255,255,255,0.04)';
 
+  // Seasonal colouring for the monthly bar chart.
+  //
+  // Earth-tone palette consistently used by both crop modules:
+  //   '#5a5a52' (winter slate) — dormant / off-season
+  //   '#8b9d70' (sage olive)   — growing-season (treatments, soil work)
+  //   '#b87333' (harvest copper) — active harvest months
+  //
+  // The harvest window differs by crop and by region:
+  //   VINEYARD: harvest Aug-Sep (regional shifts are small enough that the
+  //             two-month band covers all three vineyard regions).
+  //   OLIVE:    harvest is far more region-dependent. CM (coastal) is
+  //             Oct-Dec, IM (Jaén belt) is Oct-Feb with Dec-Jan peak,
+  //             CN (Aragón / Rioja / alta montaña) is Dec-Feb peak Jan.
+  //             Sources: directodelolivar, ellagar, garciamoron,
+  //             centrifugacionalemana, oleorevista.
   const monthColorBase = (i) => {
+    if (r.crop === 'olive') {
+      // Pick a harvest-month set based on the olive region.
+      let harvestMonths, dormantMonths;
+      if (r.region === 'CM') {
+        // Coastal Mediterranean: Oct-Dec harvest. Dormant = Jan + Feb.
+        harvestMonths = [9, 10, 11];
+        dormantMonths = [0, 1];
+      } else if (r.region === 'CN') {
+        // Centre-north: Dec-Feb harvest, peak Jan. No "winter slate"
+        // months here because harvest fills the dormant window.
+        harvestMonths = [11, 0, 1];
+        dormantMonths = [];
+      } else {
+        // IM (default — Jaén, Córdoba, the main olive belt):
+        // Oct-Feb harvest with Dec-Jan peak. No separate dormant band:
+        // the few non-harvest cold months are still active for pruning
+        // residue shredding and base fertilisation.
+        harvestMonths = [9, 10, 11, 0, 1];
+        dormantMonths = [];
+      }
+      if (harvestMonths.includes(i)) return '#b87333'; // harvest copper
+      if (dormantMonths.includes(i)) return '#5a5a52'; // winter slate
+      return '#8b9d70';                                 // growing-season sage
+    }
+    // VINEYARD: harvest Aug-Sep (hardcoded — vineyard regions all fall
+    // within this two-month window per Report §9.2-§9.4).
     if (i === 0 || i === 1 || i === 9 || i === 10 || i === 11) return '#5a5a52';
     if (i === 7 || i === 8) return '#b87333';
     return '#8b9d70';
@@ -5488,7 +7733,8 @@ function renderCharts(r) {
   const yearlyPalette = {
     'Fuel': '#c8956d', 'Repairs & maintenance': '#8b9d70', 'Depreciation': '#d4b483',
     'Tyres': '#a87a5c', 'Lubricants': '#7a8478', 'Insurance': '#5e6b5e',
-    'Labour': '#b8a888', 'Contractor': '#9d8366'
+    'Labour': '#b8a888', 'Contractor': '#9d8366',
+    'Cabalgante': '#b87333',  // harvest copper — olive cabalgante line
   };
   const datasets = catList.map(cat => ({
     label: trCat(cat),
@@ -5685,6 +7931,169 @@ document.getElementById('voltracCompareBtn').addEventListener('click', () => {
   }
   calculate();
 });
+
+// ════════════════════════════════════════════════════════════════════════
+// CROP ROUTING — tab switching, form-panel toggling, localStorage
+// ════════════════════════════════════════════════════════════════════════
+//
+// `switchCrop()` is the only entry point that should mutate CURRENT_CROP
+// and the active `P` pointer. It updates the visible form, the tab
+// state, the masthead version string, and re-runs calculate().
+//
+// The two crop modules' inputs live in separate `data-crop` containers in
+// the form panel; the inactive one is display:none. The Advanced section
+// and the Voltrac assumptions block sit outside both containers and are
+// shared (they apply to whichever crop is active).
+//
+// Choice persists in localStorage under key 'tractorCalc.crop' so users
+// land back on their last-used tab on reload.
+function switchCrop(crop) {
+  if (crop !== 'vineyard' && crop !== 'olive') return;
+  CURRENT_CROP = crop;
+  P = (crop === 'olive') ? P_olive : P_vineyard;
+
+  // Toggle form-panel visibility
+  document.querySelectorAll('.crop-form-container').forEach(el => {
+    el.style.display = (el.getAttribute('data-crop') === crop) ? '' : 'none';
+  });
+
+  // Update tab active state
+  document.querySelectorAll('.tab[data-crop]').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-crop') === crop);
+  });
+
+  // Update masthead version label (data-i18n key swaps between the two)
+  const verEl = document.querySelector('[data-i18n="version"], [data-i18n="version_olive"]');
+  if (verEl) verEl.setAttribute('data-i18n', crop === 'olive' ? 'version_olive' : 'version');
+
+  // Persist choice
+  try { localStorage.setItem('tractorCalc.crop', crop); } catch (e) { /* private mode etc. */ }
+
+  // Refresh translations (masthead version + any other data-i18n updates)
+  applyTranslations();
+
+  // Re-run calculation with the new active crop
+  calculate();
+}
+
+// Wire tab clicks
+document.querySelectorAll('.tab[data-crop]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('disabled')) return;
+    const crop = btn.getAttribute('data-crop');
+    if (crop !== CURRENT_CROP) switchCrop(crop);
+  });
+});
+
+// Wire olive-form change listeners (vineyard's listeners already exist and
+// cover only the vineyard form fields by inspecting the same generic
+// `.form-panel select, .form-panel input` selector — which now matches
+// both forms. We need to ensure calculate() is also called when an olive
+// field changes; the generic selector already covers this since both
+// form containers live inside `.form-panel`).
+//
+// However: when the user changes #area_ol to 'custom', we must toggle the
+// custom-area-row visibility — same as the vineyard does for #area.
+const areaOlEl = document.getElementById('area_ol');
+if (areaOlEl) {
+  areaOlEl.addEventListener('change', () => {
+    const row = document.getElementById('customAreaRow_ol');
+    if (row) row.classList.toggle('show', areaOlEl.value === 'custom');
+  });
+}
+const areaCustomOlEl = document.getElementById('areaCustom_ol');
+if (areaCustomOlEl) {
+  areaCustomOlEl.addEventListener('input', () => {
+    if (document.getElementById('area_ol').value === 'custom') calculate();
+  });
+}
+const freqOlEl = document.getElementById('frequency_ol');
+if (freqOlEl) {
+  freqOlEl.addEventListener('change', () => {
+    const row = document.getElementById('customFrequencyRow_ol');
+    if (row) row.classList.toggle('show', freqOlEl.value === 'custom');
+  });
+}
+const freqCustomOlEl = document.getElementById('frequencyCustom_ol');
+if (freqCustomOlEl) {
+  freqCustomOlEl.addEventListener('input', () => {
+    if (document.getElementById('frequency_ol').value === 'custom') calculate();
+  });
+}
+
+// Olive system selector: filter the density options based on the chosen
+// system, matching the olive review §3.1 typology:
+//   OTNM / OTM:  80 / 100 / 120 trees/ha (wide frames)
+//   OI:          200 / 400 / 600 trees/ha
+//   OS:          1500 / 1800 / 2000 trees/ha (seto)
+const systemOlEl = document.getElementById('system_ol');
+const densityOlEl = document.getElementById('density_ol');
+function syncOliveDensityOptions() {
+  if (!systemOlEl || !densityOlEl) return;
+  const sys = systemOlEl.value;
+  const optionsBySystem = {
+    otnm: [['80','o_density_80'], ['100','o_density_100'], ['120','o_density_120']],
+    otm:  [['80','o_density_80'], ['100','o_density_100'], ['120','o_density_120']],
+    oi:   [['200','o_density_200'], ['400','o_density_400'], ['600','o_density_600']],
+    os:   [['1500','o_density_1500'], ['1800','o_density_1800'], ['2000','o_density_2000']],
+  };
+  const defaultsBySystem = { otnm: '80', otm: '80', oi: '400', os: '1500' };
+  const opts = optionsBySystem[sys] || optionsBySystem.otm;
+  const currentVal = densityOlEl.value;
+  // Rebuild option list
+  densityOlEl.innerHTML = '';
+  opts.forEach(([val, key]) => {
+    const opt = document.createElement('option');
+    opt.value = val;
+    opt.setAttribute('data-i18n', key);
+    opt.textContent = T(key);
+    densityOlEl.appendChild(opt);
+  });
+  // Preserve the current selection if still valid, else fall back to default
+  const validVals = opts.map(o => o[0]);
+  densityOlEl.value = validVals.includes(currentVal) ? currentVal : defaultsBySystem[sys];
+}
+if (systemOlEl) systemOlEl.addEventListener('change', () => {
+  syncOliveDensityOptions();
+  // System change can also auto-default operations (harvest, residue,
+  // soil management, spray programme) but we keep that minimal here:
+  // calculateOlive() handles cross-validations defensively when it runs.
+});
+
+// Olive operator dropdown: reset the labour rate to the mode default and
+// refresh the hint string (same UX as vineyard).
+function applyOliveLabourModeDefaults() {
+  const opEl = document.getElementById('operator_ol');
+  const rateEl = document.getElementById('labourRate_ol');
+  const hintEl = document.getElementById('labourRateHint_ol');
+  if (!opEl || !rateEl) return;
+  const mode = opEl.value;
+  const defaults = { owner: 0, salaried: 14, contractor: 50 };
+  rateEl.value = String(defaults[mode] !== undefined ? defaults[mode] : 0);
+  if (hintEl) {
+    // For olive, salaried uses the olive-specific hint; other modes share
+    // the vineyard keys (hint text is mode-meaning, not crop-specific).
+    const hintKey = (mode === 'salaried') ? 'f_labour_rate_hint_salaried_ol' : ('f_labour_rate_hint_' + mode);
+    hintEl.setAttribute('data-i18n', hintKey);
+    hintEl.textContent = T(hintKey);
+  }
+}
+const operatorOlEl = document.getElementById('operator_ol');
+if (operatorOlEl) operatorOlEl.addEventListener('change', applyOliveLabourModeDefaults);
+
+// Restore the user's last-used crop choice on load (before the initial
+// calculate() call below). If none stored, default stays 'vineyard'.
+try {
+  const stored = localStorage.getItem('tractorCalc.crop');
+  if (stored === 'olive' || stored === 'vineyard') {
+    if (stored !== CURRENT_CROP) {
+      // Defer the visible swap to switchCrop() once DOM listeners are wired.
+      // We call it now since all the form elements and listeners are in
+      // place by this point in the file.
+      switchCrop(stored);
+    }
+  }
+} catch (e) { /* localStorage unavailable */ }
 
 applyTranslations();
 calculate();
